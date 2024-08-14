@@ -8,3 +8,34 @@
 .app-layout {
   height: 100vh;
 }
+
+nz-header {
+  display: flex;
+  padding: 2em;
+  align-items: center;
+  background-color: white;
+  box-shadow: 0px 2px 4px gray;
+  z-index: 1;
+}
+
+#search-bar {
+  flex-basis: 20%;
+}
+
+#filter-options {
+  flex-basis: content;
+  margin-left: 1em;
+}
+
+#spacer {
+  flex-grow: 1;
+}
+
+#menu-button {
+  flex-basis: content;
+}
+
+nz-content {
+  padding: 2em;
+  overflow: scroll;
+}
