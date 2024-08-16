@@ -1,5 +1,6 @@
 :host {
   display: flex;
+  // From NgZorro template.
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -16,10 +17,13 @@ nz-header {
   background-color: white;
   box-shadow: 0px 2px 4px gray;
   z-index: 1;
+  justify-content: space-between;
 }
 
-#search-bar {
-  flex-basis: 20%;
+#search-panel {
+  display: flex;
+  flex-basis: 25%;
+  align-items: center;
 }
 
 #filter-options {
@@ -27,15 +31,20 @@ nz-header {
   margin-left: 1em;
 }
 
-#spacer {
-  flex-grow: 1;
+#actions-bar {
+  flex-basis: content;
+  align-items: center;
 }
 
-#menu-button {
-  flex-basis: content;
+#juri-button {
+  margin-right: 1em;
 }
 
 nz-content {
-  padding: 2em;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  flex-wrap: wrap;
   overflow: scroll;
+  padding: 2em;
 }

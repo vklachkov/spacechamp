@@ -1,30 +1,38 @@
 <nz-layout class="app-layout">
     <nz-header>
-        <div id="search-bar">
-            <nz-input-group [nzSuffix]="suffixIconSearch">
-                <input type="text" nz-input placeholder="Поиск участника" />
-            </nz-input-group>
-
-            <ng-template #suffixIconSearch>
-                <span nz-icon nzType="search"></span>
-            </ng-template>
+        <div id="search-panel">
+            <div id="search-bar">
+                <nz-input-group [nzSuffix]="suffixIconSearch">
+                    <input nz-input type="text" placeholder="Поиск участника" />
+                </nz-input-group>
+    
+                <ng-template #suffixIconSearch>
+                    <span nz-icon nzType="search"></span>
+                </ng-template>
+            </div>
+    
+            <button nz-button id="filter-options">
+                <span nz-icon nzType="filter" nzTheme="outline"></span>
+                Фильтр
+            </button>
         </div>
 
-        <button nz-button id="filter-options">
-            <span nz-icon nzType="filter" nzTheme="outline"></span>
-            Фильтр
-        </button>
+        <div id="actions-bar">
+            <button nz-button id="juri-button">
+                <span nz-icon nzType="star" nzTheme="outline"></span>
+                Жюри
+            </button>
 
-        <div id="spacer"></div>
-
-        <button nz-button id="menu-button">
-            Какая-то залётная кнопка
-        </button>
+            <button nz-button id="logout-button">
+                <span nz-icon nzType="logout" nzTheme="outline"></span>
+                Выход
+            </button>
+        </div>
     </nz-header>
 
-    <nz-content nz-flex nzJustify="center" nzGap="middle" nzWrap="wrap">
+    <nz-content>
         @for (participant of participants; track participant.id) {
-            <KnownParticipantCard [participant]="participant"></KnownParticipantCard>
+            <app-known-participant-card [participant]="participant" />
         }
     </nz-content>
 </nz-layout>

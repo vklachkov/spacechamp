@@ -15,7 +15,7 @@ export interface ParticipantInfo {
     // Город, регион.
     location: string,
 
-    // Номер телефона, всегда начинается с +7.
+    // Номер телефона.
     phoneNumber: string,
 
     // Адрес электронной почты.

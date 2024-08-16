@@ -1,10 +1,10 @@
 import { Component, input } from '@angular/core';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { Participant } from '../../models/participant';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 @Component({
-  selector: 'KnownParticipantCard',
+  selector: 'app-known-participant-card',
   standalone: true,
   imports: [NzCardModule, NzAvatarModule],
   templateUrl: './known-participant-card.component.html',
