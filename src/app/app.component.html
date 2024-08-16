@@ -23,8 +23,8 @@
     </nz-header>
 
     <nz-content nz-flex nzJustify="center" nzGap="middle" nzWrap="wrap">
-        @for (_ of array; track _) {
-            <KnownParticipantCard></KnownParticipantCard>
+        @for (participant of participants; track participant.id) {
+            <KnownParticipantCard [participant]="participant"></KnownParticipantCard>
         }
     </nz-content>
 </nz-layout>
