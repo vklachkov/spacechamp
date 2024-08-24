@@ -27,7 +27,10 @@ nz-header {
 }
 
 #filter-options {
-  flex-basis: content;
+  margin-left: 1em;
+}
+
+#view-button {
   margin-left: 1em;
 }
 
@@ -40,11 +43,25 @@ nz-header {
   margin-right: 1em;
 }
 
-nz-content {
+nz-content.grid {
   display: flex;
   justify-content: center;
   gap: 1em;
   flex-wrap: wrap;
   overflow: scroll;
   padding: 2em;
+}
+
+nz-content.grid > app-known-participant-card {
+  width: 24em;
+}
+
+nz-content.list {
+  display: block;
+  overflow: scroll;
+  padding: 2em;
+}
+
+nz-content.list > app-known-participant-card {
+  margin-bottom: 1em;
 }

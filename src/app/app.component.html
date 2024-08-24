@@ -15,6 +15,10 @@
                 <span nz-icon nzType="filter" nzTheme="outline"></span>
                 Фильтр
             </button>
+
+            <button nz-button nzType="dashed" id="view-button" (click)="viewType = viewType === 'grid' ? 'list' : 'grid'">
+                <span nz-icon [nzType]="viewType === 'grid' ? 'bars' : 'appstore'" nzTheme="outline"></span>
+            </button>
         </div>
 
         <div id="actions-bar">
@@ -30,9 +34,9 @@
         </div>
     </nz-header>
 
-    <nz-content>
+    <nz-content [class]="viewType">
         @for (participant of participants; track participant.id) {
-            <app-known-participant-card [participant]="participant" />
+            <app-known-participant-card [participant]="participant" [viewType]="viewType"></app-known-participant-card>
         }
     </nz-content>
 </nz-layout>

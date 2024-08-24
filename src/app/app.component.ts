@@ -41,4 +41,6 @@ export class AppComponent {
       answers: {}
     };
   });
+
+  viewType: 'grid' | 'list' = 'list';
 }

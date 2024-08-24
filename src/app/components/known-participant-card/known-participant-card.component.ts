@@ -12,4 +12,5 @@ import { Participant } from '../../models/participant';
 })
 export class KnownParticipantCardComponent {
   participant = input.required<Participant>();
+  viewType = input.required<'grid' | 'list'>();
 }
