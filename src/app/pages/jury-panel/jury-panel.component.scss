@@ -20,26 +20,16 @@ nz-header {
   justify-content: space-between;
 }
 
-#search-panel {
+.header {
   display: flex;
-  flex-basis: 25%;
+  justify-content: space-between;
   align-items: center;
-}
+  width: 100%;
 
-#filter-options {
-  margin-left: 1em;
-}
-
-#actions-bar {
-  display: flex;
-  flex-basis: content;
-  align-items: center;
-}
-
-#name {
-  margin: 0;
-  padding: 1em;
-  font-weight: 500;
+  &__name {
+    margin: 0;
+    font-weight: 500;
+  }
 }
 
 nz-content {
@@ -52,6 +42,8 @@ nz-content > app-known-participant-card {
   margin-bottom: 1em;
 }
 
-h2 {
-  margin-top: 1em;
+h5 {
+  &:not(:first-child) {
+    margin-top: 1em;
+  }
 }

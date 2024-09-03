@@ -1,47 +1,38 @@
 <nz-layout class="app-layout">
     <nz-header>
-        <div id="search-panel">
-            <div id="search-bar">
-                <nz-input-group [nzSuffix]="suffixIconSearch">
-                    <input nz-input type="text" placeholder="Поиск участника" />
-                </nz-input-group>
-    
-                <ng-template #suffixIconSearch>
-                    <span nz-icon nzType="search"></span>
-                </ng-template>
-            </div>
-    
-            <button nz-button id="filter-options">
-                <span nz-icon nzType="filter" nzTheme="outline"></span>
-                Фильтр
-            </button>
-        </div>
-
-        <div id="actions-bar">
-            <p id="name">
-                Имя Фамилия
+        <header class="header">
+            <p nz-typography class="header__name">
+                КФ: Имя Фамилия
             </p>
 
-            <button nz-button id="logout-button" (click)="goToLogin()">
+            <button nz-button class="header__button" (click)="goToLogin()">
                 <span nz-icon nzType="logout" nzTheme="outline"></span>
                 Выход
             </button>
-        </div>
+        </header>
     </nz-header>
 
-    <nz-content>
-        <h2>Заявки без оценки</h2>
-        
-        @for (participant of participants; track participant.id) {
-            @if (participant.scores[juriId] === undefined) {
-                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
+    <nz-content>    
+        @if (inTeamParticipants.length > 0) {
+            <h5 nz-typography>В команде</h5>
+            
+            @for (participant of inTeamParticipants; track participant.id) {
+                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>   
             }
         }
 
-        <h2>Оценённые заявки</h2>
-        
-        @for (participant of participants; track participant.id) {
-            @if (participant.scores[juriId] !== undefined) {
+        @if (notEvaluatedParticipants.length > 0) {
+            <h5 nz-typography>Заявки без оценки</h5>
+            
+            @for (participant of notEvaluatedParticipants; track participant.id) {
+                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
+            }
+        }
+            
+        @if (evaluatedParticipants.length > 0) {
+            <h5 nz-typography>Оценённые заявки</h5>
+            
+            @for (participant of evaluatedParticipants; track participant.id) {
                 <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
             }
         }

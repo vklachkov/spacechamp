@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -6,10 +6,11 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
+import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { JuriScore, Participant } from '../../models/participant';
-import { ROOT_ROUTE_PATHS } from '../../app.routes';
 import { ViewType } from '../admin-panel/admin-panel';
+import { ROOT_ROUTE_PATHS } from '../../app.routes';
 
 @Component({
   standalone: true,
@@ -23,11 +24,12 @@ import { ViewType } from '../admin-panel/admin-panel';
     NzInputModule,
     NzFlexModule,
     KnownParticipantCardComponent,
+    NzTypographyComponent
   ],
   templateUrl: './jury-panel.component.html',
   styleUrls: ['./jury-panel.component.scss']
 })
-export class JuryPanelPage {
+export class JuryPanelPage implements OnInit {
   juriId: number = 1;
   ViewType = ViewType;
 
@@ -42,7 +44,17 @@ export class JuryPanelPage {
     };
   });
 
+  inTeamParticipants: Participant[] = [];
+  notEvaluatedParticipants: Participant[] = [];
+  evaluatedParticipants: Participant[] = [];
+
   private readonly router: Router = inject(Router);
+
+  ngOnInit(): void {
+    // this.inTeamParticipants = this.participants;
+    this.notEvaluatedParticipants = this.participants.filter((participant: Participant) => participant.scores[this.juriId] === undefined);
+    this.evaluatedParticipants = this.participants.filter((participant: Participant) => participant.scores[this.juriId] !== undefined);
+  }
 
   goToLogin(): void {
     this.router.navigate([ROOT_ROUTE_PATHS.Login]);
