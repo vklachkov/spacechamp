@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -8,6 +8,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { JuriScore, Participant } from '../../models/participant';
+import { ROUTE_PATHS } from '../../app.routes';
 
 @Component({
   standalone: true,
@@ -22,10 +23,10 @@ import { JuriScore, Participant } from '../../models/participant';
     NzFlexModule,
     KnownParticipantCardComponent,
   ],
-  templateUrl: './juri-panel.component.html',
-  styleUrls: ['./juri-panel.component.scss']
+  templateUrl: './jury-panel.component.html',
+  styleUrls: ['./jury-panel.component.scss']
 })
-export class JuriPanelPage {
+export class JuryPanelPage {
   juriId: number = 1;
 
   participants: Participant[] = Array.from({ length: 50 }, (_, index) => {
@@ -38,4 +39,10 @@ export class JuriPanelPage {
       : <Record<number, JuriScore>>{ },
     };
   });
+
+  private readonly router: Router = inject(Router);
+
+  goToLogin(): void {
+    this.router.navigate([ROUTE_PATHS.Login]);
+  }
 }

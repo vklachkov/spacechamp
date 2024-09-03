@@ -1,6 +1,6 @@
 export interface Participant {
     id: number,
-    info: ParticipantInfo | undefined,
+    info?: ParticipantInfo,
     answers: ParticipantAnswers,
     scores: Record<number, JuriScore>,
 }
