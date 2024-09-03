@@ -95,6 +95,10 @@ export class AdminPanelPage {
     this.router.navigate([ROOT_ROUTE_PATHS.Login]);
   }
 
+  goToParticipant(id: number): void {
+    this.router.navigate([ROOT_ROUTE_PATHS.AdminPanel, ADMIN_ROOT_PATHS.Participant, id]);
+  }
+
   changeViewType(): void {
     this.viewType = this.viewType === ViewType.Grid ? ViewType.List : ViewType.Grid;
   }

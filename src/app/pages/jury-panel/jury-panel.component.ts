@@ -39,7 +39,7 @@ export class JuryPanelPage implements OnInit {
       info: undefined,
       answers: {},
       scores: index % 9 !== 0
-      ? <Record<number, JuriScore>>{ 1: { rate: 4, comment: "Норм участник" } }
+      ? <Record<number, JuriScore>>{ 1: { salary: 4, comment: "Норм участник" } }
       : <Record<number, JuriScore>>{ },
     };
   });

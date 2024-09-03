@@ -54,7 +54,11 @@
 
     <nz-content [class]="viewType">
         @for (participant of participants$ | async; track participant.id) {
-            <app-known-participant-card [participant]="participant" [viewType]="viewType"></app-known-participant-card>
+            <app-known-participant-card 
+                [participant]="participant" 
+                [viewType]="viewType"
+                (click)="goToParticipant(participant.id)"
+            ></app-known-participant-card>
         }
     </nz-content>
 </nz-layout>

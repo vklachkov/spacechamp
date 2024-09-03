@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AdminPanelPage } from './pages/admin-panel/admin-panel.component';
 import { JuryPanelPage } from './pages/jury-panel/jury-panel.component';
 import { AdminPanelJuryPage } from './pages/admin-panel-jury/admin-panel-jury.component';
+import { AdminPanelParticipantPage } from './pages/admin-panel-participant/admin-panel-participant.component';
 
 export const enum ROOT_ROUTE_PATHS {
     Login = 'login',
@@ -10,7 +11,8 @@ export const enum ROOT_ROUTE_PATHS {
 } 
 
 export const enum ADMIN_ROOT_PATHS {
-    Jury = 'jury'
+    Jury = 'jury',
+    Participant = 'participant'
 }
 
 export const routes: Routes = [
@@ -35,6 +37,10 @@ export const routes: Routes = [
             {
                 path: ADMIN_ROOT_PATHS.Jury,
                 component: AdminPanelJuryPage,
+            },
+            {
+                path: `${ADMIN_ROOT_PATHS.Participant}/:id`,
+                component: AdminPanelParticipantPage
             }
         ]
     },

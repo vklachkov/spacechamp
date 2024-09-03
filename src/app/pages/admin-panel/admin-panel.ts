@@ -1,6 +1,7 @@
 import { FormControl } from "@angular/forms";
 import { JuriScore, Participant } from "../../models/participant";
 
+// TODO: надо бы наверное вынести куда получше, уже много где юзается
 export enum ViewType {
   Grid = 'grid',
   List = 'list'
@@ -25,7 +26,7 @@ export const mockData: Participant[] = Array.from({ length: 50 }, (_, index) => 
     },
     answers: {},
     scores: index % 9 !== 0
-      ? <Record<number, JuriScore>>{ 1: { rate: 4, comment: "Норм участник" } }
+      ? <Record<number, JuriScore>>{ 1: { salary: 4, comment: "Норм участник" } }
       : <Record<number, JuriScore>>{ },
   };
 });
