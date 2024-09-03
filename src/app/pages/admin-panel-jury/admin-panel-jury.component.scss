@@ -30,11 +30,11 @@ nz-header {
   align-items: baseline;
   gap: 1em;
 
-  overflow: scroll;
+  overflow-y: scroll;
   padding: 2em;
 }
 
 .add-button {
-  min-width: 30em;
+  min-width: 20em;
 }
 

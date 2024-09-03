@@ -1,7 +1,8 @@
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { Participant } from '../../models/participant';
+import { ViewType } from '../../pages/admin-panel/admin-panel';
 
 @Component({
   selector: 'app-known-participant-card',
@@ -11,6 +12,8 @@ import { Participant } from '../../models/participant';
   styleUrl: './known-participant-card.component.scss'
 })
 export class KnownParticipantCardComponent {
-  participant = input.required<Participant>();
-  viewType = input.required<'grid' | 'list'>();
+  @Input({ required: true }) public participant!: Participant;
+  @Input({ required: true }) public viewType!: ViewType;
+
+  ViewType = ViewType;
 }

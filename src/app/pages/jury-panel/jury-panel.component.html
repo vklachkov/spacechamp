@@ -34,7 +34,7 @@
         
         @for (participant of participants; track participant.id) {
             @if (participant.scores[juriId] === undefined) {
-                <app-known-participant-card [participant]="participant" viewType="list"></app-known-participant-card>
+                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
             }
         }
 
@@ -42,7 +42,7 @@
         
         @for (participant of participants; track participant.id) {
             @if (participant.scores[juriId] !== undefined) {
-                <app-known-participant-card [participant]="participant" viewType="list"></app-known-participant-card>
+                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
             }
         }
     </nz-content>

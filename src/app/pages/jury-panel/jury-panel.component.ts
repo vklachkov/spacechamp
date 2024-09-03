@@ -9,6 +9,7 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { JuriScore, Participant } from '../../models/participant';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
+import { ViewType } from '../admin-panel/admin-panel';
 
 @Component({
   standalone: true,
@@ -28,6 +29,7 @@ import { ROOT_ROUTE_PATHS } from '../../app.routes';
 })
 export class JuryPanelPage {
   juriId: number = 1;
+  ViewType = ViewType;
 
   participants: Participant[] = Array.from({ length: 50 }, (_, index) => {
     return {
