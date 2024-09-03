@@ -43,6 +43,14 @@ p, h3 {
 
 #status {
     font-size: small;
-    // TODO: Вынести цвета в переменные.
+}
+
+// TODO: Вынести цвета в переменные.
+#status.no-scores {
+    color: #ff2400;
+}
+
+// TODO: Вынести цвета в переменные.
+#status.have-scores {
     color: blueviolet;
 }

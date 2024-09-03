@@ -1,0 +1,67 @@
+:host {
+  display: flex;
+  // From NgZorro template.
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-layout {
+  height: 100vh;
+}
+
+nz-header {
+  display: flex;
+  padding: 2em;
+  align-items: center;
+  background-color: white;
+  box-shadow: 0px 2px 4px gray;
+  z-index: 1;
+  justify-content: space-between;
+}
+
+#search-panel {
+  display: flex;
+  flex-basis: 25%;
+  align-items: center;
+}
+
+#filter-options {
+  margin-left: 1em;
+}
+
+#view-button {
+  margin-left: 1em;
+}
+
+#actions-bar {
+  flex-basis: content;
+  align-items: center;
+}
+
+#juri-button {
+  margin-right: 1em;
+}
+
+nz-content.grid {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  flex-wrap: wrap;
+  overflow: scroll;
+  padding: 2em;
+}
+
+nz-content.grid > app-known-participant-card {
+  width: 24em;
+}
+
+nz-content.list {
+  display: block;
+  overflow: scroll;
+  padding: 2em;
+}
+
+nz-content.list > app-known-participant-card {
+  margin-bottom: 1em;
+}
