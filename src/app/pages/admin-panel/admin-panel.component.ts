@@ -1,57 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, map, Observable, of, startWith } from 'rxjs';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
-import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
-import { JuriScore, Participant } from '../../models/participant';
-import { ROUTE_PATHS } from '../../app.routes';
-import { debounceTime, map, Observable, of, startWith } from 'rxjs';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzPopoverDirective } from 'ng-zorro-antd/popover';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
-
-enum ViewType {
-  Grid = 'grid',
-  List = 'list'
-};
-
-enum ParticipantStatus {
-  Evaluated = 'evaluated',
-  NotEvaluated = 'not-evaluated',
-  InTeam = 'in-team'
-}
-
-const mockData: Participant[] = Array.from({ length: 50 }, (_, index) => {
-  return {
-    id: index + 1,
-    info: {
-      name: "Петроуговен Абдулагбек Чингызханович" + ' ' + Math.random().toFixed(4),
-      photoUrl: "https://kartinki.pics/pics/uploads/posts/2022-09/1662615787_1-kartinkin-net-p-milie-kotiki-v-shapochkakh-instagram-1.jpg",
-      location: "г. Подзалупинск-на-Каказе" + ' ' + Math.random().toFixed(5),
-      phoneNumber: "+7-999-555-35-35",
-      email: "test@mail.ru",
-      org: "МОУ СОШ №1",
-    },
-    answers: {},
-    scores: index % 9 !== 0
-      ? <Record<number, JuriScore>>{ 1: { rate: 4, comment: "Норм участник" } }
-      : <Record<number, JuriScore>>{ },
-  };
-});
-
-type FilterForm = {
-  search: FormControl<string | null>,
-  status: FormControl<ParticipantStatus | null>
-}
-
-type FilterFormValue = {
-  search?: string | null,
-  status?: ParticipantStatus | null
-}
+import { ADMIN_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
+import { Participant } from '../../models/participant';
+import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
+import { FilterForm, FilterFormValue, mockData, ParticipantStatus, ViewType } from './admin-panel';
 
 @Component({
   standalone: true,
@@ -126,11 +88,11 @@ export class AdminPanelPage {
   private readonly router: Router = inject(Router);
 
   goToJuryPanel(): void {
-    this.router.navigate([ROUTE_PATHS.JuryPanel]);
+    this.router.navigate([ROOT_ROUTE_PATHS.AdminPanel, ADMIN_ROOT_PATHS.Jury]);
   }
 
   goToLogin(): void {
-    this.router.navigate([ROUTE_PATHS.Login]);
+    this.router.navigate([ROOT_ROUTE_PATHS.Login]);
   }
 
   changeViewType(): void {
@@ -140,5 +102,4 @@ export class AdminPanelPage {
   changeFilterVisible(value: boolean): void {
     this.filterVisible = value;
   }
-  
 }

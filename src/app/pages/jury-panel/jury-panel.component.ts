@@ -8,7 +8,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { JuriScore, Participant } from '../../models/participant';
-import { ROUTE_PATHS } from '../../app.routes';
+import { ROOT_ROUTE_PATHS } from '../../app.routes';
 
 @Component({
   standalone: true,
@@ -43,6 +43,6 @@ export class JuryPanelPage {
   private readonly router: Router = inject(Router);
 
   goToLogin(): void {
-    this.router.navigate([ROUTE_PATHS.Login]);
+    this.router.navigate([ROOT_ROUTE_PATHS.Login]);
   }
 }

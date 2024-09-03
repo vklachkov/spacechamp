@@ -1,3 +1,4 @@
+// Участник
 export interface Participant {
     id: number,
     info?: ParticipantInfo,
