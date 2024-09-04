@@ -29,6 +29,7 @@ export interface ParticipantInfo {
 }
 
 // Оценка члена жюри.
+// TODO: где-то жюри с y, где-то с i
 export interface JuriScore {
     salary: number;
     comment: string;

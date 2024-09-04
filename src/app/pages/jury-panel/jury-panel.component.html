@@ -17,7 +17,11 @@
             <h5 nz-typography>В команде</h5>
             
             @for (participant of inTeamParticipants; track participant.id) {
-                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>   
+                <app-known-participant-card 
+                    [participant]="participant" 
+                    [viewType]="ViewType.List"
+                    (click)="goToApplication(participant.id)"
+                ></app-known-participant-card>   
             }
         }
 
@@ -25,7 +29,11 @@
             <h5 nz-typography>Заявки без оценки</h5>
             
             @for (participant of notEvaluatedParticipants; track participant.id) {
-                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
+                <app-known-participant-card 
+                    [participant]="participant" 
+                    [viewType]="ViewType.List"
+                    (click)="goToApplication(participant.id)"
+                ></app-known-participant-card>
             }
         }
             
@@ -33,7 +41,11 @@
             <h5 nz-typography>Оценённые заявки</h5>
             
             @for (participant of evaluatedParticipants; track participant.id) {
-                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
+                <app-known-participant-card 
+                    [participant]="participant" 
+                    [viewType]="ViewType.List"
+                    (click)="goToApplication(participant.id)"
+                ></app-known-participant-card>
             }
         }
     </nz-content>

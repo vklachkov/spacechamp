@@ -1,0 +1,19 @@
+.login {
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  &-form {
+    box-shadow: 0px 0px 5px #4891ff;
+    padding: 1em;
+    width: 30em;
+
+    &__button {
+      margin: 0 auto;
+      display: block;
+      width: 10em;
+    }
+  }
+}
