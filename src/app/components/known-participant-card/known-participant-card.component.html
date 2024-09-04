@@ -1,22 +1,22 @@
 <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
-    <div id="card-content" class="{{ viewType() === 'grid' ? 'tile' : 'item' }}">
-        @if (participant().info) {
-            <nz-avatar id="avatar" [nzSize]="72" [nzSrc]="participant().info!.photoUrl"></nz-avatar>
+    <div id="card-content" [class]="viewType === ViewType.Grid ? 'tile' : 'item'">
+        @if (participant.info) {
+            <nz-avatar id="avatar" [nzSize]="72" [nzSrc]="participant.info!.photoUrl"></nz-avatar>
     
             <div id="info">
-                <h3 id="name">{{ participant().info!.name }}</h3>
+                <h3 id="name">{{ participant.info!.name }}</h3>
             
                 <p id="location">
-                    {{ participant().info!.org }}, {{ participant().info!.location }}
+                    {{ participant.info!.org }}, {{ participant.info!.location }}
                 </p>
             
-                <p id="status" class="{{ participant().scores[1] !== undefined ? 'have-scores' : 'no-scores' }}">
-                    {{ participant().scores[1] !== undefined ? "Часть жюри оценили" : "Нет оценок жюри" }}
+                <p id="status" class="{{ participant.scores[1] !== undefined ? 'have-scores' : 'no-scores' }}">
+                    {{ participant.scores[1] !== undefined ? "Часть жюри оценили" : "Нет оценок жюри" }}
                 </p>
             </div>
         }
         @else {
-            <h3>Заявка #{{ participant().id }}</h3>
+            <h3>Заявка #{{ participant.id }}</h3>
         }
     </div>
 </nz-card>

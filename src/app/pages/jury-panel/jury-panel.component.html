@@ -1,0 +1,40 @@
+<nz-layout class="app-layout">
+    <nz-header>
+        <header class="header">
+            <p nz-typography class="header__name">
+                КФ: Имя Фамилия
+            </p>
+
+            <button nz-button class="header__button" (click)="goToLogin()">
+                <span nz-icon nzType="logout" nzTheme="outline"></span>
+                Выход
+            </button>
+        </header>
+    </nz-header>
+
+    <nz-content>    
+        @if (inTeamParticipants.length > 0) {
+            <h5 nz-typography>В команде</h5>
+            
+            @for (participant of inTeamParticipants; track participant.id) {
+                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>   
+            }
+        }
+
+        @if (notEvaluatedParticipants.length > 0) {
+            <h5 nz-typography>Заявки без оценки</h5>
+            
+            @for (participant of notEvaluatedParticipants; track participant.id) {
+                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
+            }
+        }
+            
+        @if (evaluatedParticipants.length > 0) {
+            <h5 nz-typography>Оценённые заявки</h5>
+            
+            @for (participant of evaluatedParticipants; track participant.id) {
+                <app-known-participant-card [participant]="participant" [viewType]="ViewType.List"></app-known-participant-card>
+            }
+        }
+    </nz-content>
+</nz-layout>

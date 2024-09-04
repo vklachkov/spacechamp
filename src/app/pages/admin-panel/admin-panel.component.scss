@@ -45,6 +45,7 @@ nz-header {
 
 nz-content.grid {
   display: flex;
+  flex: none;
   justify-content: center;
   gap: 1em;
   flex-wrap: wrap;
@@ -54,6 +55,13 @@ nz-content.grid {
 
 nz-content.grid > app-known-participant-card {
   width: 24em;
+
+  transition: box-shadow .15s ease-in-out;
+
+  &:hover {
+    box-shadow: 0px 0px 5px #c5dafa;
+    cursor: pointer;
+  }
 }
 
 nz-content.list {

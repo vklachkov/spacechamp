@@ -1,7 +1,9 @@
+// Участник
 export interface Participant {
     id: number,
-    info: ParticipantInfo | undefined,
-    answers: ParticipantAnswers,
+    // TODO: А оно точно не обязательное?
+    info?: ParticipantInfo,
+    answers: Record<string, string>,
     scores: Record<number, JuriScore>,
 }
 
@@ -26,13 +28,8 @@ export interface ParticipantInfo {
     org: string,
 }
 
-// Развёрнутые ответы участника.
-export interface ParticipantAnswers {
-    // TODO
-}
-
 // Оценка члена жюри.
 export interface JuriScore {
-    rate: 0 | 1 | 2 | 3 | 4 | 5;
+    salary: number;
     comment: string;
 }

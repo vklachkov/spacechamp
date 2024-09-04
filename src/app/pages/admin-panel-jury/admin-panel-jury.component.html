@@ -1,0 +1,21 @@
+<nz-layout class="app-layout">
+    <nz-header>
+        <h3 nz-typography>Жюри</h3>
+
+        <button nz-button (click)="goToLogin()">
+            <span nz-icon nzType="logout" nzTheme="outline"></span>
+            Выход
+        </button>
+    </nz-header>
+
+    <nz-content class="list">
+        <button nz-button nzType="default" class="add-button" (click)="openAddModal()">
+            Добавить
+            <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+        </button>
+
+        @for (jury of jury$ | async; track jury.id) {
+            <app-jury-card [jury]="jury" (removed)="removeJury(jury.id)"></app-jury-card>
+        }
+    </nz-content>
+</nz-layout>

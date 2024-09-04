@@ -12,12 +12,33 @@ import {
   FilterOutline,
   LogoutOutline,
   StarOutline,
+  StarFill,
   AppstoreOutline,
   BarsOutline,
+  DeleteOutline,
+  PlusCircleOutline
 } from '@ant-design/icons-angular/icons';
 
 registerLocaleData(ru);
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideExperimentalZonelessChangeDetection(), provideRouter(routes), provideNzIcons([FilterOutline, LogoutOutline, StarOutline, AppstoreOutline, BarsOutline]), provideNzI18n(ru_RU), importProvidersFrom(FormsModule), provideAnimationsAsync(), provideHttpClient()]
+  providers: [
+    provideExperimentalZonelessChangeDetection(),
+    provideRouter(routes),
+    provideNzIcons([
+      FilterOutline,
+      LogoutOutline,
+      StarOutline,
+      StarFill,
+      AppstoreOutline,
+      BarsOutline,
+      StarOutline,
+      DeleteOutline,
+      PlusCircleOutline
+    ]),
+    provideNzI18n(ru_RU),
+    importProvidersFrom(FormsModule),
+    provideAnimationsAsync(),
+    provideHttpClient(),
+  ],
 };

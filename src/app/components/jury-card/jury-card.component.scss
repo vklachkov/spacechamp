@@ -1,0 +1,19 @@
+.jury {
+    padding: .6em 1em;
+    min-width: 20em;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: .1em;
+    }
+
+    &__actions {
+        display: flex;
+        gap: .5em;
+    } 
+}

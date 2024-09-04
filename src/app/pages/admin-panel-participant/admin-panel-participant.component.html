@@ -1,0 +1,93 @@
+<nz-layout class="app-layout">
+    <nz-header>
+        <h3 nz-typography>Участник</h3>
+
+        <button nz-button (click)="goToLogin()">
+            <span nz-icon nzType="logout" nzTheme="outline"></span>
+            Выход
+        </button>
+    </nz-header>
+
+
+    @if (participant$ | async; as participant) {
+        <nz-content class="info">
+            <nz-tabset nzCentered>
+                <nz-tab nzTitle="Анкета">
+                    <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
+                        <div class="participant">
+                            <nz-avatar id="avatar" [nzSize]="150" [nzSrc]="participant.info!.photoUrl"></nz-avatar>
+                            
+                            <div id="card-info">
+                                <div id="info">
+                                    <p nz-typography>
+                                        Имя: <span nz-typography id="name"><strong>{{ participant.info!.name }}</strong></span>
+                                    </p>
+
+                                    <p nz-typography>
+                                        Город: <span nz-typography id="name">{{ participant.info!.location }}</span>
+                                    </p>
+
+                                    <p nz-typography>
+                                        Телефон: <span nz-typography id="name">{{ participant.info!.phoneNumber }}</span>
+                                    </p>
+
+                                    <p nz-typography>
+                                        Почта: <span nz-typography id="name">{{ participant.info!.email }}</span>
+                                    </p>
+
+                                    <p nz-typography>
+                                        Организация: <span nz-typography id="name">{{ participant.info!.org }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </nz-card>
+
+                    <h4 nz-typography>Ответы</h4>
+
+                    <ul class="answers">
+                        @for (answer of participant.answers | keyvalue; track $index) {
+                            <li>
+                                <p nz-typography><strong>{{ answer.key }}</strong></p>
+                                <p nz-typography>{{ answer.value }}</p>
+                            </li>
+                        }
+                    </ul>
+                
+                </nz-tab>
+                <nz-tab nzTitle="Оценки">
+                    <div class="team">
+                        <p nz-typography class="team__title">Команда</p>
+
+                        <nz-select class="team__select" [nzAllowClear]="true">
+                            <nz-option nzValue="1" nzLabel="Журич 1"></nz-option>
+                            <nz-option nzValue="2" nzLabel="Журич 2"></nz-option>
+                            <nz-option nzValue="3" nzLabel="Журич 3"></nz-option>
+                        </nz-select>
+                    </div>
+
+                    @if (tableData$ | async; as tableData) {
+                        <nz-table #basicTable [nzData]="tableData" [nzShowPagination]="false">
+                            <thead>
+                                <tr>
+                                    <th>Имя жюри</th>
+                                    <th>Зпка</th>
+                                    <th>Коммент</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @for (data of basicTable.data; track data) {
+                                <tr>
+                                    <td>{{ data.name }}</td>
+                                    <td>{{ data.salary }}</td>
+                                    <td>{{ data.comment }}</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </nz-table>
+                    }
+                </nz-tab>
+            </nz-tabset>
+        </nz-content>
+    }
+</nz-layout>
