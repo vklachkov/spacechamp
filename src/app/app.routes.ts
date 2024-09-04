@@ -3,8 +3,10 @@ import { AdminPanelPage } from './pages/admin-panel/admin-panel.component';
 import { JuryPanelPage } from './pages/jury-panel/jury-panel.component';
 import { AdminPanelJuryPage } from './pages/admin-panel-jury/admin-panel-jury.component';
 import { AdminPanelParticipantPage } from './pages/admin-panel-participant/admin-panel-participant.component';
+import { LoginPage } from './pages/login/login.component';
 
 export const enum ROOT_ROUTE_PATHS {
+    Index = '',
     Login = 'login',
     AdminPanel = 'admin-panel',
     JuryPanel = 'jury-panel'
@@ -18,14 +20,13 @@ export const enum ADMIN_ROOT_PATHS {
 export const routes: Routes = [
     {
         // TODO: потом сделать редирект в зависимости от бэка
-        path: '',
+        path: ROOT_ROUTE_PATHS.Index,
         pathMatch: 'full',
         redirectTo: ROOT_ROUTE_PATHS.AdminPanel
     },
     {
-        // TODO: сделать компонент
         path: ROOT_ROUTE_PATHS.Login,
-        redirectTo: 'test'
+        component: LoginPage
     },
     { 
         path: ROOT_ROUTE_PATHS.AdminPanel, 

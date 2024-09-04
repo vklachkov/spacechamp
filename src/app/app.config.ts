@@ -16,7 +16,9 @@ import {
   AppstoreOutline,
   BarsOutline,
   DeleteOutline,
-  PlusCircleOutline
+  PlusCircleOutline,
+  UserOutline,
+  LockOutline
 } from '@ant-design/icons-angular/icons';
 
 registerLocaleData(ru);
@@ -34,7 +36,9 @@ export const appConfig: ApplicationConfig = {
       BarsOutline,
       StarOutline,
       DeleteOutline,
-      PlusCircleOutline
+      PlusCircleOutline,
+      UserOutline,
+      LockOutline
     ]),
     provideNzI18n(ru_RU),
     importProvidersFrom(FormsModule),
