@@ -1,0 +1,21 @@
+<div>
+    <form nz-form [formGroup]="form">
+        <nz-form-item>
+            <nz-form-label nzRequired nzFor="salary">Зпка</nz-form-label>
+            <nz-form-control nzErrorTip="Поле является быть обязательным">
+              <input type="number" nz-input formControlName="salary" id="salary" />
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label nzFor="comment">Комментарий</nz-form-label>
+            <nz-form-control>
+                <textarea formControlName="comment" id="comment" nz-input rows="2" placeholder="Комментарий"></textarea>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</div>
+<div *nzModalFooter>
+    <button nz-button nzType="default" (click)="close()">Отмена</button>
+    <button nz-button nzType="primary" [disabled]="form.invalid" (click)="evaluate()">Оценить</button>
+</div>

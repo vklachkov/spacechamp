@@ -4,6 +4,7 @@ import { JuryPanelPage } from './pages/jury-panel/jury-panel.component';
 import { AdminPanelJuryPage } from './pages/admin-panel-jury/admin-panel-jury.component';
 import { AdminPanelParticipantPage } from './pages/admin-panel-participant/admin-panel-participant.component';
 import { LoginPage } from './pages/login/login.component';
+import { JuryPanelApplicationPage } from './pages/jury-panel-application/jury-panel-application.component';
 
 export const enum ROOT_ROUTE_PATHS {
     Index = '',
@@ -13,8 +14,14 @@ export const enum ROOT_ROUTE_PATHS {
 } 
 
 export const enum ADMIN_ROOT_PATHS {
+    Index = '',
     Jury = 'jury',
     Participant = 'participant'
+}
+
+export const enum JURY_ROOT_PATHS {
+    Index = '',
+    Application = 'application'
 }
 
 export const routes: Routes = [
@@ -32,7 +39,7 @@ export const routes: Routes = [
         path: ROOT_ROUTE_PATHS.AdminPanel, 
         children: [
             {
-                path: '',
+                path: ADMIN_ROOT_PATHS.Index,
                 component: AdminPanelPage,
             },
             {
@@ -47,6 +54,15 @@ export const routes: Routes = [
     },
     { 
         path: ROOT_ROUTE_PATHS.JuryPanel, 
-        component: JuryPanelPage 
+        children: [
+            {
+                path: JURY_ROOT_PATHS.Index,
+                component: JuryPanelPage,
+            },
+            {
+                path: `${JURY_ROOT_PATHS.Application}/:id`,
+                component: JuryPanelApplicationPage,
+            },
+        ]
     },
 ];

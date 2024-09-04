@@ -1,0 +1,31 @@
+<nz-layout class="app-layout">
+    <nz-header>
+        <header class="header">
+            <h4 nz-typography class="header__name">
+                Заявка
+            </h4>
+
+            <button nz-button class="header__button" (click)="goToLogin()">
+                <span nz-icon nzType="logout" nzTheme="outline"></span>
+                Выход
+            </button>
+        </header>
+    </nz-header>
+
+    <nz-content>    
+        @if (application$ | async; as application) {
+            <button nz-button nzType="primary" (click)="openEvaluateModal()">Оценить</button>
+
+            <h4 nz-typography>Ответы</h4>
+            
+            <ul class="answers">
+                @for (answer of application.answers | keyvalue; track $index) {
+                    <li>
+                        <p nz-typography><strong>{{ answer.key }}</strong></p>
+                        <p nz-typography>{{ answer.value }}</p>
+                    </li>
+                }
+            </ul>
+        }
+    </nz-content>
+</nz-layout>

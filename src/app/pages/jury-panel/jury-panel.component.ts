@@ -10,7 +10,7 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { JuriScore, Participant } from '../../models/participant';
 import { ViewType } from '../admin-panel/admin-panel';
-import { ROOT_ROUTE_PATHS } from '../../app.routes';
+import { ADMIN_ROOT_PATHS, JURY_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
 
 @Component({
   standalone: true,
@@ -58,5 +58,9 @@ export class JuryPanelPage implements OnInit {
 
   goToLogin(): void {
     this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+  }
+
+  goToApplication(id: number): void {
+    this.router.navigate([ROOT_ROUTE_PATHS.JuryPanel, JURY_ROOT_PATHS.Application, id]);
   }
 }
