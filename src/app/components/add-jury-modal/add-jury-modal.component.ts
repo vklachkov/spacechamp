@@ -5,6 +5,7 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzModalFooterDirective, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NzCheckboxComponent } from 'ng-zorro-antd/checkbox';
 import { FormGroupType, FormGroupValue } from './add-jury-modal';
 import { Jury } from '../../models/jury';
 
@@ -20,6 +21,7 @@ import { Jury } from '../../models/jury';
     NzFormItemComponent,
     NzFormLabelComponent,
     NzFormControlComponent,
+    NzCheckboxComponent,
     FormsModule,
     ReactiveFormsModule
   ],
@@ -29,7 +31,8 @@ import { Jury } from '../../models/jury';
 export class AddJuryModalComponent {
   form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null, [Validators.required]),
-    email: new FormControl<string | null>(null, [Validators.required, Validators.email])
+    email: new FormControl<string | null>(null, [Validators.required, Validators.email]),
+    isOrganizer: new FormControl<boolean | null>(false),
   });
 
   private readonly modalRef: NzModalRef<undefined, Omit<Jury, 'id'>> = inject(NzModalRef);

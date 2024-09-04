@@ -27,14 +27,30 @@ nz-header {
 .list {
   display: flex;
   flex-direction: column;
-  align-items: baseline;
-  gap: 1em;
+  align-items: center;
+  gap: .5em;
+
+  background-color: var(--primary-background);
 
   overflow-y: scroll;
   padding: 2em;
 }
 
+.note {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.star {
+  color: var(--star-color);
+}
+
 .add-button {
-  min-width: 20em;
+  min-width: 12em;
+  padding: 8px 12px;
+  height: 40px;
+
+  margin-bottom: 1em;
 }
 

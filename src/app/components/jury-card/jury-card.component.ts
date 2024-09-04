@@ -24,6 +24,7 @@ export class JuryCardComponent {
 
   @Output() public readonly removed: EventEmitter<void> = new EventEmitter<void>();
 
+  // TODO: это нихера не эвалуатед, это флаг что чел органайзер, то бишь адмиша
   public evaluated: boolean = false;
 
   changeEvaluated(): void {

@@ -7,6 +7,7 @@ import { FormGroupType, FormGroupValue } from './login';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { Router } from '@angular/router';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
+import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 
 @Component({
   standalone: true,
@@ -16,6 +17,7 @@ import { ROOT_ROUTE_PATHS } from '../../app.routes';
     NzInputDirective,
     NzInputGroupComponent,
     NzButtonComponent,
+    NzTypographyComponent,
     FormsModule,
     ReactiveFormsModule
   ],
@@ -33,6 +35,6 @@ export class LoginPage {
   login(): void {
     const data: FormGroupValue = this.form.value;
 
-    this.router.navigate([ROOT_ROUTE_PATHS.Index]);
+    this.router.navigate([ROOT_ROUTE_PATHS.AdminPanel]);
   }
 }

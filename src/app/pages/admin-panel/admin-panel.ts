@@ -13,7 +13,7 @@ export enum ParticipantStatus {
   InTeam = 'in-team'
 }
 
-export const mockData: Participant[] = Array.from({ length: 50 }, (_, index) => {
+export const mockData: Participant[] = Array.from({ length: 1000 }, (_, index) => {
   return {
     id: index + 1,
     info: {

@@ -1,14 +1,18 @@
 .login {
   height: 100vh;
+  background-color: var(--primary-background);
 
   display: flex;
+  flex-direction: column;
+  gap: 2em;
   justify-content: center;
   align-items: center;
   
   &-form {
-    box-shadow: 0px 0px 5px #4891ff;
-    padding: 1em;
-    width: 30em;
+    background-color: var(--white);
+    padding: 2em;
+    width: 25em;
+    border-radius: 1em;
 
     &__button {
       margin: 0 auto;

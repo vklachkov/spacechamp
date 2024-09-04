@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 import { AdminPanelPage } from './pages/admin-panel/admin-panel.component';
 import { JuryPanelPage } from './pages/jury-panel/jury-panel.component';
-import { AdminPanelJuryPage } from './pages/admin-panel-jury/admin-panel-jury.component';
 import { AdminPanelParticipantPage } from './pages/admin-panel-participant/admin-panel-participant.component';
 import { LoginPage } from './pages/login/login.component';
 import { JuryPanelApplicationPage } from './pages/jury-panel-application/jury-panel-application.component';
+import { AdminPanelJuryPage } from './pages/admin-panel-jury/admin-panel-jury.component';
 
 export const enum ROOT_ROUTE_PATHS {
     Index = '',
@@ -29,7 +29,7 @@ export const routes: Routes = [
         // TODO: потом сделать редирект в зависимости от бэка
         path: ROOT_ROUTE_PATHS.Index,
         pathMatch: 'full',
-        redirectTo: ROOT_ROUTE_PATHS.AdminPanel
+        redirectTo: ROOT_ROUTE_PATHS.Login,
     },
     {
         path: ROOT_ROUTE_PATHS.Login,
