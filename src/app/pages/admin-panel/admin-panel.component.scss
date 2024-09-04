@@ -1,3 +1,4 @@
+// TODO: норм стили, вложенность и название классов и бла бла
 :host {
   display: flex;
   // From NgZorro template.
@@ -19,6 +20,7 @@ nz-header {
   z-index: 1;
   justify-content: space-between;
 }
+
 
 #search-panel {
   display: flex;
@@ -43,13 +45,16 @@ nz-header {
   margin-right: 1em;
 }
 
+nz-content {
+  background-color: var(--primary-background);
+}
+
 nz-content.grid {
   display: flex;
-  flex: none;
   justify-content: center;
   gap: 1em;
   flex-wrap: wrap;
-  overflow: scroll;
+  overflow-y: scroll;
   padding: 2em;
 }
 
@@ -59,7 +64,7 @@ nz-content.grid > app-known-participant-card {
   transition: box-shadow .15s ease-in-out;
 
   &:hover {
-    box-shadow: 0px 0px 5px #c5dafa;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
     cursor: pointer;
   }
 }
@@ -71,5 +76,6 @@ nz-content.list {
 }
 
 nz-content.list > app-known-participant-card {
-  margin-bottom: 1em;
+  display: block;
+  margin-bottom: .5em;
 }

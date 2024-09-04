@@ -26,6 +26,12 @@ nz-header {
   align-items: center;
   width: 100%;
 
+  .info {
+    display: flex;
+    gap: 2em;
+    align-items: center;
+  }
+
   &__name {
     margin: 0;
     font-weight: 500;
@@ -38,8 +44,18 @@ nz-content {
   padding: 2em;
 }
 
-nz-content > app-known-participant-card {
-  margin-bottom: 1em;
+.answers {
+  list-style: none;
+  padding-left: 0;
+
+  li {
+    background-color: var(--white);
+    padding: 1em;
+
+    &:not(:last-child) {
+      margin-bottom: 0.5em;
+    }
+  }
 }
 
 h4 {

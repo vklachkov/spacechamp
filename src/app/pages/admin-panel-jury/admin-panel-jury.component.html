@@ -1,6 +1,6 @@
 <nz-layout class="app-layout">
     <nz-header>
-        <h3 nz-typography>Жюри</h3>
+        <h3 nz-typography>Аккаунты</h3>
 
         <button nz-button (click)="goToLogin()">
             <span nz-icon nzType="logout" nzTheme="outline"></span>
@@ -9,10 +9,14 @@
     </nz-header>
 
     <nz-content class="list">
-        <button nz-button nzType="default" class="add-button" (click)="openAddModal()">
-            Добавить
+        <button nz-button nzType="primary" class="add-button" (click)="openAddModal()">
             <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+            Добавить
         </button>
+
+        <p nz-typography class="note">
+            <span class="star" nz-icon nzType="star" nzTheme="fill"></span> является организатором
+        </p>
 
         @for (jury of jury$ | async; track jury.id) {
             <app-jury-card [jury]="jury" (removed)="removeJury(jury.id)"></app-jury-card>

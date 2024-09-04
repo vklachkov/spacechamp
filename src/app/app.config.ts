@@ -18,7 +18,8 @@ import {
   DeleteOutline,
   PlusCircleOutline,
   UserOutline,
-  LockOutline
+  LockOutline,
+  DollarOutline
 } from '@ant-design/icons-angular/icons';
 
 registerLocaleData(ru);
@@ -38,7 +39,8 @@ export const appConfig: ApplicationConfig = {
       DeleteOutline,
       PlusCircleOutline,
       UserOutline,
-      LockOutline
+      LockOutline,
+      DollarOutline
     ]),
     provideNzI18n(ru_RU),
     importProvidersFrom(FormsModule),

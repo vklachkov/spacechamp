@@ -46,7 +46,7 @@ export class AdminPanelJuryPage extends BaseComponent {
 
   openAddModal(): void {
     this.modalService.create<AddJuryModalComponent, undefined, Omit<Jury, 'id'>>({
-      nzTitle: 'Новый гондурас',
+      nzTitle: 'Новый аккаунт',
       nzContent: AddJuryModalComponent,
     }).afterClose
       .pipe(takeUntil(this.destroy$))

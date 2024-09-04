@@ -25,38 +25,60 @@ nz-header {
 }
 
 .info {
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 2em;
+  background-color: var(--primary-background);
 }
 
 .participant {
   display: flex;
   align-items: center;
   gap: 2em;
-  padding: .5em 1em;
+  padding: 1em;
 
   &-card {
-    max-width: 50%;
-    margin-bottom: 2em;
+    margin-bottom: 0.5em;
+
+    #card-info {
+      p {
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
   }
 }
 
 .answers {
   padding-left: 1em;
-  list-style-type: square;
+  list-style-type: none;
+  padding-left: 0;
+
+  li {
+    background-color: var(--white);
+    padding: 1em;
+
+    &:not(:last-child) {
+      margin-bottom: 0.5em;
+    }
+  }
 }
+
 
 .team {
   display: flex;
   align-items: center;
   gap: 1.5em;
-  margin-bottom: 2em;
+  margin-bottom: .5em;
+
+  background-color: var(--white);
+  padding: .8em;
 
   &__title {
     margin-bottom: 0;
   }
 
   &__select {
-    min-width: 10em;
+    min-width: 12em;
   }
 }

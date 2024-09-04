@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
@@ -31,8 +31,11 @@ export class JuryPanelApplicationPage extends BaseComponent {
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly modalService: NzModalService = inject(NzModalService);
+  private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   application$!: Observable<Participant | null>;
+
+  evaluated: boolean = false;
 
   ngOnInit(): void {
     this.application$ = this.activatedRoute.paramMap
@@ -55,7 +58,7 @@ export class JuryPanelApplicationPage extends BaseComponent {
 
   openEvaluateModal(): void {
     this.modalService.create<EvaluateApplicationModalComponent, undefined, JuriScore>({
-      nzTitle: 'Новый неизвестный гондурас',
+      nzTitle: 'Оценка',
       nzContent: EvaluateApplicationModalComponent,
     }).afterClose
       .pipe(takeUntil(this.destroy$))
@@ -64,7 +67,13 @@ export class JuryPanelApplicationPage extends BaseComponent {
           return;
         }
         
+        this.changeEvaluated();
+        this.cdr.markForCheck();
         console.warn(data, 'data');
       });
+  }
+
+  changeEvaluated(): void {
+    this.evaluated = !this.evaluated;
   }
 }

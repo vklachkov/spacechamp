@@ -18,37 +18,33 @@
                             <nz-avatar id="avatar" [nzSize]="150" [nzSrc]="participant.info!.photoUrl"></nz-avatar>
                             
                             <div id="card-info">
-                                <div id="info">
-                                    <p nz-typography>
-                                        Имя: <span nz-typography id="name"><strong>{{ participant.info!.name }}</strong></span>
-                                    </p>
+                                <p nz-typography>
+                                    <span nz-typography><strong>Имя:</strong></span> {{ participant.info!.name }}
+                                </p>
 
-                                    <p nz-typography>
-                                        Город: <span nz-typography id="name">{{ participant.info!.location }}</span>
-                                    </p>
+                                <p nz-typography>
+                                    <span nz-typography><strong>Город:</strong></span> {{ participant.info!.location }}
+                                </p>
 
-                                    <p nz-typography>
-                                        Телефон: <span nz-typography id="name">{{ participant.info!.phoneNumber }}</span>
-                                    </p>
+                                <p nz-typography>
+                                    <span nz-typography><strong>Телефон:</strong></span> {{ participant.info!.phoneNumber }}
+                                </p>
 
-                                    <p nz-typography>
-                                        Почта: <span nz-typography id="name">{{ participant.info!.email }}</span>
-                                    </p>
+                                <p nz-typography>
+                                    <span nz-typography><strong>Почта:</strong></span> {{ participant.info!.email }}
+                                </p>
 
-                                    <p nz-typography>
-                                        Организация: <span nz-typography id="name">{{ participant.info!.org }}</span>
-                                    </p>
-                                </div>
+                                <p nz-typography>
+                                    <span nz-typography><strong>Организация:</strong></span> {{ participant.info!.org }}
+                                </p>
                             </div>
                         </div>
                     </nz-card>
 
-                    <h4 nz-typography>Ответы</h4>
-
                     <ul class="answers">
                         @for (answer of participant.answers | keyvalue; track $index) {
                             <li>
-                                <p nz-typography><strong>{{ answer.key }}</strong></p>
+                                <h5 nz-typography>{{ answer.key }}</h5>
                                 <p nz-typography>{{ answer.value }}</p>
                             </li>
                         }
@@ -57,9 +53,9 @@
                 </nz-tab>
                 <nz-tab nzTitle="Оценки">
                     <div class="team">
-                        <p nz-typography class="team__title">Команда</p>
+                        <p nz-typography class="team__title">Команда участника:</p>
 
-                        <nz-select class="team__select" [nzAllowClear]="true">
+                        <nz-select class="team__select" nzPlaceHolder="Не выбрано" [nzAllowClear]="true">
                             <nz-option nzValue="1" nzLabel="Журич 1"></nz-option>
                             <nz-option nzValue="2" nzLabel="Журич 2"></nz-option>
                             <nz-option nzValue="3" nzLabel="Журич 3"></nz-option>
@@ -70,16 +66,16 @@
                         <nz-table #basicTable [nzData]="tableData" [nzShowPagination]="false">
                             <thead>
                                 <tr>
-                                    <th>Имя жюри</th>
-                                    <th>Зпка</th>
-                                    <th>Коммент</th>
+                                    <th style="background-color: white; font-weight: 700;" nzWidth="20%">Имя жюри</th>
+                                    <th style="background-color: white; font-weight: 700;" nzWidth="10%">Зпка</th>
+                                    <th style="background-color: white; font-weight: 700;">Коммент</th>
                                 </tr>
                             </thead>
                             <tbody>
                             @for (data of basicTable.data; track data) {
                                 <tr>
-                                    <td>{{ data.name }}</td>
-                                    <td>{{ data.salary }}</td>
+                                    <td>{{ data.name }} :eh,srsyjdbx</td>
+                                    <td>{{ data.salary | number:'1.0-0':'ru' }}</td>
                                     <td>{{ data.comment }}</td>
                                 </tr>
                             }
