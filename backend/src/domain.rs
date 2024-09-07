@@ -4,6 +4,7 @@ use std::collections::HashMap;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Adult {
+    pub id: AdultId,
     pub name: String,
     pub password: String,
     pub role: AdultRole,
