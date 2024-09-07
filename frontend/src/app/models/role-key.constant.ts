@@ -1,1 +1,1 @@
-export const ROLE_KEY: string = 'token';
+export const ROLE_KEY: string = 'role';

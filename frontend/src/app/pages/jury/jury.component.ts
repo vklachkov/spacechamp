@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -9,10 +9,11 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { JuriScore, Participant } from '../../models/participant';
-import { ViewType } from '../admin-panel/admin-panel';
-import { ADMIN_ROOT_PATHS, JURY_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
+import { ViewType } from '../organizer/organizer';
+import { ORGANIZER_ROOT_PATHS, JURY_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
 
 @Component({
+  selector: 'app-jury-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -26,10 +27,11 @@ import { ADMIN_ROOT_PATHS, JURY_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.r
     KnownParticipantCardComponent,
     NzTypographyComponent
   ],
-  templateUrl: './jury-panel.component.html',
-  styleUrls: ['./jury-panel.component.scss']
+  templateUrl: './jury.component.html',
+  styleUrls: ['./jury.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class JuryPanelPage implements OnInit {
+export class JuryPage implements OnInit {
   juriId: number = 1;
   ViewType = ViewType;
 
@@ -61,6 +63,6 @@ export class JuryPanelPage implements OnInit {
   }
 
   goToApplication(id: number): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.JuryPanel, JURY_ROOT_PATHS.Application, id]);
+    this.router.navigate([JURY_ROOT_PATHS.Application, id]);
   }
 }

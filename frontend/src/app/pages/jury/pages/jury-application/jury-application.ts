@@ -1,4 +1,4 @@
-import { Participant } from "../../models/participant";
+import { Participant } from "../../../../models/participant";
 
 export const mockData: Participant = {
   id: 3,

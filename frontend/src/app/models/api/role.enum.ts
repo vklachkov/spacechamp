@@ -1,7 +1,7 @@
 import { AdultRole } from './adult-role.enum';
 
 // Роль пользователя
-export const enum Role {
+export enum Role {
   // Участник
   Participant = 'participant',
   // Жюри

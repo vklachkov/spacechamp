@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,12 +10,13 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzPopoverDirective } from 'ng-zorro-antd/popover';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
-import { ADMIN_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
+import { ORGANIZER_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
 import { Participant } from '../../models/participant';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
-import { FilterForm, FilterFormValue, mockData, ParticipantStatus, ViewType } from './admin-panel';
+import { FilterForm, FilterFormValue, mockData, ParticipantStatus, ViewType } from './organizer';
 
 @Component({
+  selector: 'app-organizer-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -34,10 +35,11 @@ import { FilterForm, FilterFormValue, mockData, ParticipantStatus, ViewType } fr
     NzRadioGroupComponent,
     NzRadioComponent
   ],
-  templateUrl: './admin-panel.component.html',
-  styleUrls: ['./admin-panel.component.scss']
+  templateUrl: './organizer.component.html',
+  styleUrls: ['./organizer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdminPanelPage {
+export class OrganizerPage {
   viewType: ViewType = ViewType.Grid;
   ViewType = ViewType;
 
@@ -88,7 +90,7 @@ export class AdminPanelPage {
   private readonly router: Router = inject(Router);
 
   goToJuryPanel(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.AdminPanel, ADMIN_ROOT_PATHS.Jury]);
+    this.router.navigate([ORGANIZER_ROOT_PATHS.Jury]);
   }
 
   goToLogin(): void {
@@ -96,7 +98,7 @@ export class AdminPanelPage {
   }
 
   goToParticipant(id: number): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.AdminPanel, ADMIN_ROOT_PATHS.Participant, id]);
+    this.router.navigate([ORGANIZER_ROOT_PATHS.Participant, id]);
   }
 
   changeViewType(): void {

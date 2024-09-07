@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -30,7 +30,8 @@ import { BaseComponent } from '../../components/base/base.component';
     NzSpinComponent
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginPage extends BaseComponent {
   form = new FormGroup({
@@ -53,7 +54,7 @@ export class LoginPage extends BaseComponent {
         next: (loginData: LoginOutput) => {
           this.localStorageService.setAuthData(loginData);
 
-          this.router.navigate([ROOT_ROUTE_PATHS.AdminPanel]);
+          this.router.navigate([ROOT_ROUTE_PATHS.Index]);
           this.isLoginLoading = false;
         },
         error: (err: HttpErrorResponse) => {

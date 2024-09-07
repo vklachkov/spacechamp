@@ -26,7 +26,6 @@ export class LocalStorageService {
   }
 
   getToken(): string {
-    console.warn('dsfd')
     return this.getItem<string>(TOKEN_KEY);
   }
 

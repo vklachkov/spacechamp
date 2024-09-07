@@ -1,17 +1,17 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { ROOT_ROUTE_PATHS } from '../../app.routes';
+import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable, of, switchMap, takeUntil } from 'rxjs';
-import { JuriScore, Participant } from '../../models/participant';
-import { mockData } from './jury-panel-application';
+import { JuriScore, Participant } from '../../../../models/participant';
+import { mockData } from './jury-application';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BaseComponent } from '../../components/base/base.component';
-import { EvaluateApplicationModalComponent } from '../../components/evaluate-application-modal/evaluate-application-modal.component';
+import { BaseComponent } from '../../../../components/base/base.component';
+import { EvaluateApplicationModalComponent } from '../../../../components/evaluate-application-modal/evaluate-application-modal.component';
 
 @Component({
   standalone: true,
@@ -24,10 +24,11 @@ import { EvaluateApplicationModalComponent } from '../../components/evaluate-app
     AsyncPipe,
   ],
   providers: [NzModalService],
-  templateUrl: './jury-panel-application.component.html',
-  styleUrls: ['./jury-panel-application.component.scss']
+  templateUrl: './jury-application.component.html',
+  styleUrls: ['./jury-application.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class JuryPanelApplicationPage extends BaseComponent {
+export class JuryApplicationPage extends BaseComponent {
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly modalService: NzModalService = inject(NzModalService);

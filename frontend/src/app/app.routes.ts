@@ -1,28 +1,24 @@
 import { Routes } from '@angular/router';
-import { AdminPanelPage } from './pages/admin-panel/admin-panel.component';
-import { JuryPanelPage } from './pages/jury-panel/jury-panel.component';
-import { AdminPanelParticipantPage } from './pages/admin-panel-participant/admin-panel-participant.component';
 import { LoginPage } from './pages/login/login.component';
-import { JuryPanelApplicationPage } from './pages/jury-panel-application/jury-panel-application.component';
-import { AdminPanelJuryPage } from './pages/admin-panel-jury/admin-panel-jury.component';
 import { MainPage } from './pages/main/main.component';
 import { authGuard } from './guards/auth.guard';
+import { organizerGuard } from './guards/organizer.guard';
+import { juryGuard } from './guards/jury.guard';
+import { OrganizerJuryPage } from './pages/organizer/pages/organizer-jury/organizer-jury.component';
+import { OrganizerParticipantPage } from './pages/organizer/pages/organizer-participant/organizer-participant.component';
+import { JuryApplicationPage } from './pages/jury/pages/jury-application/jury-application.component';
 
 export const enum ROOT_ROUTE_PATHS {
     Index = '',
     Login = 'login',
-    AdminPanel = 'admin-panel',
-    JuryPanel = 'jury-panel'
 } 
 
-export const enum ADMIN_ROOT_PATHS {
-    Index = '',
+export const enum ORGANIZER_ROOT_PATHS {
     Jury = 'jury',
     Participant = 'participant'
 }
 
 export const enum JURY_ROOT_PATHS {
-    Index = '',
     Application = 'application'
 }
 
@@ -30,40 +26,27 @@ export const routes: Routes = [
     {
         path: ROOT_ROUTE_PATHS.Index,
         component: MainPage,
-        canActivate: [authGuard()]
+        canActivate: [authGuard()],
     },
     {
         path: ROOT_ROUTE_PATHS.Login,
         component: LoginPage
     },
-    { 
-        path: ROOT_ROUTE_PATHS.AdminPanel, 
-        children: [
-            {
-                path: ADMIN_ROOT_PATHS.Index,
-                component: AdminPanelPage,
-            },
-            {
-                path: ADMIN_ROOT_PATHS.Jury,
-                component: AdminPanelJuryPage,
-            },
-            {
-                path: `${ADMIN_ROOT_PATHS.Participant}/:id`,
-                component: AdminPanelParticipantPage
-            }
-        ]
+    // Роуты для организатора
+    {
+        path: ORGANIZER_ROOT_PATHS.Jury,
+        component: OrganizerJuryPage,
+        canActivate: [organizerGuard()]
     },
-    { 
-        path: ROOT_ROUTE_PATHS.JuryPanel, 
-        children: [
-            {
-                path: JURY_ROOT_PATHS.Index,
-                component: JuryPanelPage,
-            },
-            {
-                path: `${JURY_ROOT_PATHS.Application}/:id`,
-                component: JuryPanelApplicationPage,
-            },
-        ]
+    {
+        path: `${ORGANIZER_ROOT_PATHS.Participant}/:id`,
+        component: OrganizerParticipantPage,
+        canActivate: [organizerGuard()]
+    },
+    // Роуты для жюри
+    {
+        path: `${JURY_ROOT_PATHS.Application}/:id`,
+        component: JuryApplicationPage,
+        canActivate: [juryGuard()]
     },
 ];

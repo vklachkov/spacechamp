@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -6,15 +6,15 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { map, Observable, of, switchMap } from 'rxjs';
-import { ROOT_ROUTE_PATHS } from '../../app.routes';
-import { Participant } from '../../models/participant';
-import { mockData } from './admin-panel-participant';
+import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
+import { Participant } from '../../../../models/participant';
+import { mockData } from './organizer-participant';
 import { NzTabComponent, NzTabSetComponent } from 'ng-zorro-antd/tabs';
 import { NzCardComponent } from 'ng-zorro-antd/card';
 import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
 import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
-import { Jury } from '../../models/jury';
-import { mockData as mockJury } from '../admin-panel-jury/admin-panel-jury';
+import { Jury } from '../../../../models/jury';
+import { mockData as mockJury } from '../../../organizer/pages/organizer-jury/organizer-jury';
 import { NzTableModule } from 'ng-zorro-antd/table';
 
 interface TableData {
@@ -40,10 +40,11 @@ interface TableData {
     NzTableModule,
     AsyncPipe,
   ],
-  templateUrl: './admin-panel-participant.component.html',
-  styleUrls: ['./admin-panel-participant.component.scss']
+  templateUrl: './organizer-participant.component.html',
+  styleUrls: ['./organizer-participant.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdminPanelParticipantPage implements OnInit { 
+export class OrganizerParticipantPage implements OnInit { 
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
 

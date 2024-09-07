@@ -1,4 +1,4 @@
-import { Jury } from "../../models/jury";
+import { Jury } from "../../../../models/jury";
 
 export const mockData: Jury[] = Array.from({ length: 20 }, (_, index) => {
   return {
