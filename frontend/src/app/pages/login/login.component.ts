@@ -7,24 +7,27 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { takeUntil } from 'rxjs';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
 import { LoginInput } from '../../models/api/login-input.interface';
+import { LoginOutput } from '../../models/api/login-output.interface';
 import { AuthService } from '../../services/auth.service';
-import { BaseComponent } from '../../components/base/base.component';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { BaseComponent } from '../../components/base/base.component';
 
 @Component({
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     NzFormModule,
     NzInputDirective,
     NzInputGroupComponent,
     NzButtonComponent,
     NzTypographyComponent,
-    FormsModule,
-    ReactiveFormsModule
+    NzSpinComponent
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -34,6 +37,7 @@ export class LoginPage extends BaseComponent {
     name: new FormControl<string | null>(null, [Validators.required]),
     password: new FormControl<string | null>(null, [Validators.required])
   });
+  isLoginLoading: boolean = false;
 
   private readonly authService: AuthService = inject(AuthService);
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
@@ -42,15 +46,18 @@ export class LoginPage extends BaseComponent {
   login(): void {
     const data: LoginInput = <LoginInput>this.form.value;
 
+    this.isLoginLoading = true;
     this.authService.login(data)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (loginData) => {
+        next: (loginData: LoginOutput) => {
           this.localStorageService.setAuthData(loginData);
 
           this.router.navigate([ROOT_ROUTE_PATHS.AdminPanel]);
+          this.isLoginLoading = false;
         },
         error: (err: HttpErrorResponse) => {
+          this.isLoginLoading = false;
           this.notificationService.error('Ошибка', err.message ?? 'Ошибка при логине');
           console.error('Ошибка при логине: ', err);
         }
