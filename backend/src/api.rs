@@ -63,8 +63,15 @@ async fn adults(State(state): State<Arc<BackendState>>) -> Json<Vec<Adult>> {
     Json(state.datasource.adults().await)
 }
 
-async fn create_adult(State(state): State<Arc<BackendState>>, Json(adult): Json<Adult>) {
-    state.datasource.new_adult(adult).await;
+#[derive(Deserialize)]
+pub struct CreateAdultPayload {
+    pub name: String,
+    pub password: String,
+    pub role: AdultRole,
+}
+
+async fn create_adult(State(state): State<Arc<BackendState>>, Json(adult): Json<CreateAdultPayload>) {
+    state.datasource.new_adult(adult.name, adult.password, adult.role).await;
 }
 
 async fn delete_adult() -> StatusCode {

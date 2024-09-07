@@ -90,6 +90,7 @@ impl DataSource {
                 (
                     AdultId(1),
                     Adult {
+                        id: AdultId(1),
                         name: "Жюри Крутой".to_owned(),
                         password: "123123".to_owned(),
                         role: AdultRole::Jury,
@@ -98,6 +99,7 @@ impl DataSource {
                 (
                     AdultId(2),
                     Adult {
+                        id: AdultId(2),
                         name: "Орг Орг".to_owned(),
                         password: "987987".to_owned(),
                         role: AdultRole::Org,
@@ -149,15 +151,15 @@ impl DataSource {
         self.adults.lock().await.values().cloned().collect()
     }
 
-    pub async fn new_adult(&self, adult: Adult) {
+    pub async fn new_adult(&self, name: String, password: String, role: AdultRole) {
         let adult_id = self.adult_id.load(Ordering::Relaxed);
         self.adults
             .lock()
             .await
-            .insert(AdultId(adult_id), adult.clone());
+            .insert(AdultId(adult_id), Adult { id: AdultId(adult_id), name, password, role });
         self.adult_id.store(adult_id + 1, Ordering::Relaxed);
 
-        if matches!(adult.role, AdultRole::Jury) {
+        if matches!(role, AdultRole::Jury) {
             let mut participants = self.participants.lock().await;
             for (_id, participant) in participants.iter_mut() {
                 participant.rates.insert(AdultId(adult_id), None);

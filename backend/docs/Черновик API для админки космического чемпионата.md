@@ -15,7 +15,7 @@ GET `/api/v1/org/participants`
 ```
 [
     {
-        "id": string,
+        "id": number,
         "jury_id": number | null,
         "info": {
             "name": string,
@@ -51,6 +51,7 @@ GET `/api/v1/org/adults`
 ```
 [
     {
+        "id": number,
         "name": string,
         "password": string,
         "role": "org" | "jury",
@@ -80,7 +81,7 @@ GET `/api/v1/jury/participants`
 ```
 [
     {
-        "id": string,
+        "id": number,
         "in_command": true,
         "answers": {
             "Какую какашку ты высрал с утра?": "...",    
@@ -94,7 +95,7 @@ GET `/api/v1/jury/participants`
 ```
 
 
-POST `/api/v1/participant/rate`
+POST `/api/v1/jury/participant/rate`
 - Оценка участника
 ```
 { "id": number, "salary": number, "comment": null | string }
