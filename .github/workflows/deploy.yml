@@ -7,6 +7,7 @@ on:
     types: [closed]
     paths:
       - "frontend/**"
+      - ".github/workflows/**"
 
 env:
   REGISTRY: ghcr.io
@@ -41,7 +42,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: ./frontend
-        file: ./Dockerfile
+        file: ./frontend/Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }},${{ env.REGISTRY }}/${{ steps.formatting.outputs.lowercase }}:latest
         labels: ${{ steps.meta.outputs.labels }}
