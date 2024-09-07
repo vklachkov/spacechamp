@@ -1,32 +1,40 @@
 <div class="login">
-    <!-- TODO: переписать сабмит формы на событие формы -->
-    <h1 nz-typography>Космический Чемпионат 2024</h1>
+  <h1 nz-typography>Космический Чемпионат 2024</h1>
 
-    <form nz-form [formGroup]="form" class="login-form">
-        <nz-form-item>
-            <nz-form-control [nzErrorTip]="errorTpl">
-                <nz-input-group nzPrefixIcon="user">
-                    <input type="text" nz-input formControlName="email" placeholder="Email" />
-                </nz-input-group>
-            </nz-form-control>
+  <form nz-form [formGroup]="form" class="login-form" (ngSubmit)="login()">
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Поле является быть обязательным">
+        <nz-input-group nzPrefixIcon="user">
+          <input
+            type="text"
+            nz-input
+            formControlName="name"
+            placeholder="Name"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Поле является быть обязательным">
+        <nz-input-group nzPrefixIcon="lock">
+          <input
+            type="password"
+            nz-input
+            formControlName="password"
+            placeholder="Password"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
 
-            <ng-template #errorTpl let-control>
-                @if (control.errors?.['required']) {
-                    Поле является быть обязательным
-                }
-                @if (control.errors?.['email']) {
-                    Некорректный адрес почты
-                }
-            </ng-template>
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-control nzErrorTip="Поле является быть обязательным">
-                <nz-input-group nzPrefixIcon="lock">
-                    <input type="password" nz-input formControlName="password" placeholder="Password" />
-                </nz-input-group>
-            </nz-form-control>
-        </nz-form-item>
-
-        <button nz-button class="login-form__button" nzType="primary" [disabled]="form.invalid" (click)="login()">Войти</button>
-    </form>
+    <button
+      nz-button
+      type="submit"
+      class="login-form__button"
+      nzType="primary"
+      [disabled]="form.invalid"
+    >
+      Войти
+    </button>
+  </form>
 </div>
