@@ -6,7 +6,7 @@ pub type Result<T, E = ApiError> = ::core::result::Result<T, E>;
 
 #[derive(Debug, Error)]
 pub enum ApiError {
-    #[error("datasource error: {0}")]
+    #[error("data error: {0}")]
     DataSource(#[from] DataSourceError),
 
     #[error("internal error: {0}")]

@@ -3,9 +3,12 @@ mod error;
 mod payloads;
 
 use self::{error::*, payloads::*};
-use crate::{data::DataSource, domain::*};
+use crate::{
+    data::{DataSource, DataSourceError},
+    domain::*,
+};
 use axum::{
-    extract::State,
+    extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
     routing::{get, post},
@@ -30,7 +33,8 @@ pub fn v1() -> Router {
             "/org",
             Router::new()
                 .route("/participants", get(all_participants))
-                .route("/participants/command", post(set_participant_command))
+                .route("/participant/:id", get(get_participant))
+                .route("/participant/:id/command", post(set_participant_command))
                 .route("/adults", get(adults))
                 .route("/adult", post(create_adult).delete(delete_adult))
                 .route_layer(axum_login::permission_required!(
@@ -42,7 +46,8 @@ pub fn v1() -> Router {
             "/jury",
             Router::new()
                 .route("/participants", get(jury_participants))
-                .route("/participant/rate", post(set_participant_rate))
+                .route("/participant/:id", get(get_jury_participant))
+                .route("/participant/:id/rate", post(set_participant_rate))
                 .route_layer(axum_login::permission_required!(
                     auth::Backend,
                     AdultRole::Jury,
@@ -84,13 +89,21 @@ async fn all_participants(
     Ok(Json(state.datasource.participants().await))
 }
 
+async fn get_participant(
+    State(state): State<Arc<BackendState>>,
+    Path(id): Path<ParticipantId>,
+) -> Result<Json<Participant>> {
+    Ok(Json(state.datasource.participant(id).await?))
+}
+
 async fn set_participant_command(
     State(state): State<Arc<BackendState>>,
-    Json(payload): Json<SetParticipantCommandPayload>,
+    Path(id): Path<ParticipantId>,
+    Json(SetParticipantCommandPayload { jury_id }): Json<SetParticipantCommandPayload>,
 ) -> Result<()> {
     state
         .datasource
-        .set_participant_command(payload.participant_id, payload.jury_id)
+        .set_participant_command(id, jury_id)
         .await
         .map_err(Into::into)
 }
@@ -101,10 +114,17 @@ async fn adults(State(state): State<Arc<BackendState>>) -> Result<Json<Vec<Adult
 
 async fn create_adult(
     State(state): State<Arc<BackendState>>,
-    Json(adult): Json<Adult>,
+    Json(NewAdultPayload {
+        name,
+        password,
+        role,
+    }): Json<NewAdultPayload>,
 ) -> Result<()> {
-    state.datasource.new_adult(adult).await;
-    Ok(())
+    state
+        .datasource
+        .new_adult(name, password, role)
+        .await
+        .map_err(Into::into)
 }
 
 async fn delete_adult() -> StatusCode {
@@ -132,6 +152,27 @@ async fn jury_participants(
             })
             .collect(),
     ))
+}
+
+async fn get_jury_participant(
+    auth_session: auth::AuthSession,
+    State(state): State<Arc<BackendState>>,
+    Path(id): Path<ParticipantId>,
+) -> Result<Json<AnonymousParticipant>> {
+    let jury_id = auth_session.user.as_ref().unwrap().0.id;
+
+    let mut participant = state.datasource.participant(id).await?;
+
+    if participant.jury_id != Some(jury_id) && participant.jury_id.is_some() {
+        return Err(ApiError::from(DataSourceError::ParticipantId(id)));
+    }
+
+    Ok(Json(AnonymousParticipant {
+        id: participant.id,
+        in_command: participant.jury_id.is_some(),
+        answers: participant.answers,
+        rate: participant.rates.remove(&jury_id).flatten(),
+    }))
 }
 
 async fn set_participant_rate(

@@ -9,10 +9,13 @@ use tokio::sync::Mutex;
 #[derive(Debug, Error)]
 pub enum DataSourceError {
     #[error("invalid participant id `{0}`")]
-    InvalidParticipantId(ParticipantId),
+    ParticipantId(ParticipantId),
 
     #[error("invalid adult id `{0}`")]
-    InvalidAdultId(AdultId),
+    AdultId(AdultId),
+
+    #[error("adult with name `{0}` is already exists")]
+    AdultName(String),
 }
 
 pub struct DataSource {
@@ -90,6 +93,15 @@ impl DataSource {
         self.participants.lock().await.values().cloned().collect()
     }
 
+    pub async fn participant(&self, id: ParticipantId) -> Result<Participant, DataSourceError> {
+        self.participants
+            .lock()
+            .await
+            .get(&id)
+            .cloned()
+            .ok_or(DataSourceError::ParticipantId(id))
+    }
+
     pub async fn set_participant_command(
         &self,
         id: ParticipantId,
@@ -98,7 +110,7 @@ impl DataSource {
         let mut participants = self.participants.lock().await;
 
         let Some(participant) = participants.get_mut(&id) else {
-            return Err(DataSourceError::InvalidParticipantId(id));
+            return Err(DataSourceError::ParticipantId(id));
         };
 
         participant.jury_id = jury_id;
@@ -115,10 +127,14 @@ impl DataSource {
         let mut participants = self.participants.lock().await;
 
         let Some(participant) = participants.get_mut(&id) else {
-            return Err(DataSourceError::InvalidParticipantId(id));
+            return Err(DataSourceError::ParticipantId(id));
         };
 
-        *participant.rates.get_mut(&jury_id).unwrap() = rate;
+        let Some(jury_rate) = participant.rates.get_mut(&jury_id) else {
+            return Err(DataSourceError::AdultId(jury_id));
+        };
+
+        *jury_rate = rate;
 
         Ok(())
     }
@@ -127,12 +143,30 @@ impl DataSource {
         self.adults.lock().await.values().cloned().collect()
     }
 
-    pub async fn new_adult(&self, name: String, password: String, role: AdultRole) {
+    pub async fn new_adult(
+        &self,
+        name: String,
+        password: String,
+        role: AdultRole,
+    ) -> Result<(), DataSourceError> {
+        let mut adults = self.adults.lock().await;
+
+        for adult in adults.values() {
+            if adult.name == name {
+                return Err(DataSourceError::AdultName(name));
+            }
+        }
+
         let adult_id = self.adult_id.load(Ordering::Relaxed);
-        self.adults
-            .lock()
-            .await
-            .insert(AdultId(adult_id), Adult { id: AdultId(adult_id), name, password, role });
+        adults.insert(
+            AdultId(adult_id),
+            Adult {
+                id: AdultId(adult_id),
+                name,
+                password,
+                role,
+            },
+        );
         self.adult_id.store(adult_id + 1, Ordering::Relaxed);
 
         if matches!(role, AdultRole::Jury) {
@@ -141,5 +175,7 @@ impl DataSource {
                 participant.rates.insert(AdultId(adult_id), None);
             }
         }
+
+        Ok(())
     }
 }

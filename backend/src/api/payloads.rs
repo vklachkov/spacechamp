@@ -20,7 +20,6 @@ impl From<LoginPayload> for auth::Credentials {
 
 #[derive(Deserialize)]
 pub struct SetParticipantCommandPayload {
-    pub participant_id: ParticipantId,
     pub jury_id: Option<AdultId>,
 }
 
@@ -28,4 +27,11 @@ pub struct SetParticipantCommandPayload {
 pub struct SetParticipantRate {
     pub id: ParticipantId,
     pub rate: Option<ParticipantRate>,
+}
+
+#[derive(Deserialize)]
+pub struct NewAdultPayload {
+    pub name: String,
+    pub password: String,
+    pub role: AdultRole,
 }

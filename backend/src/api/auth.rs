@@ -51,7 +51,7 @@ impl AuthnBackend for Backend {
                 id: AdultId(100),
                 name: "Ян Трояновский".to_owned(),
                 password: "12345678".to_owned(),
-                role: AdultRole::Jury,
+                role: AdultRole::Org,
             })))
         } else if creds.name == "Илья Овчинников" && creds.password == "87654321" {
             Ok(Some(User(Adult {
@@ -71,7 +71,7 @@ impl AuthnBackend for Backend {
                 id: AdultId(100),
                 name: "Ян Трояновский".to_owned(),
                 password: "12345678".to_owned(),
-                role: AdultRole::Jury,
+                role: AdultRole::Org,
             })))
         } else if *user_id == AdultId(101) {
             Ok(Some(User(Adult {
