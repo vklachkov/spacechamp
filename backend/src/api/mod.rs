@@ -1,3 +1,4 @@
+pub mod auth;
 mod error;
 mod payloads;
 
@@ -6,9 +7,11 @@ use crate::{data::DataSource, domain::*};
 use axum::{
     extract::State,
     http::StatusCode,
+    response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
+use serde_json::json;
 use std::sync::Arc;
 
 struct BackendState {
@@ -39,8 +42,23 @@ pub fn v1() -> Router {
         .with_state(Arc::new(state))
 }
 
-async fn login() -> Result<()> {
-    Ok(())
+async fn login(
+    mut auth_session: auth::AuthSession,
+    Json(payload): Json<LoginPayload>,
+) -> impl IntoResponse {
+    let creds = payload.clone().into();
+    let user = match auth_session.authenticate(creds).await {
+        Ok(Some(user)) => user,
+        Ok(None) => return StatusCode::UNAUTHORIZED.into_response(),
+        Err(_) => return StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+    };
+
+    if let Err(err) = auth_session.login(&user).await {
+        tracing::error!("Failed to login user {user}: {err}", user = user.0.name);
+        return StatusCode::INTERNAL_SERVER_ERROR.into_response();
+    }
+
+    Json(json!({ "role": user.0.role })).into_response()
 }
 
 async fn all_participants(

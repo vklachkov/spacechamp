@@ -5,7 +5,9 @@ edition = "2021"
 
 [dependencies]
 argh = "0.1.12"
+async-trait = "0.1.82"
 axum = "0.7.5"
+axum-login = "0.16.0"
 derive_more = { version = "1.0.0", features = ["full"] }
 rand = "0.8.5"
 serde = { version = "1.0.210", features = ["derive"] }
