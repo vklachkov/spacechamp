@@ -1,3 +1,7 @@
+mod error;
+mod payloads;
+
+use self::{error::*, payloads::*};
 use crate::{data::DataSource, domain::*};
 use axum::{
     extract::State,
@@ -5,7 +9,6 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use serde::Deserialize;
 use std::sync::Arc;
 
 struct BackendState {
@@ -36,58 +39,48 @@ pub fn v1() -> Router {
         .with_state(Arc::new(state))
 }
 
-async fn login() {}
-
-async fn all_participants(State(state): State<Arc<BackendState>>) -> Json<Vec<Participant>> {
-    Json(state.datasource.participants().await)
+async fn login() -> Result<()> {
+    Ok(())
 }
 
-#[derive(Deserialize)]
-struct SetParticipantCommandPayload {
-    participant_id: ParticipantId,
-    jury_id: Option<AdultId>,
+async fn all_participants(
+    State(state): State<Arc<BackendState>>,
+) -> Result<Json<Vec<Participant>>> {
+    Ok(Json(state.datasource.participants().await))
 }
 
 async fn set_participant_command(
     State(state): State<Arc<BackendState>>,
     Json(payload): Json<SetParticipantCommandPayload>,
-) {
+) -> Result<()> {
     state
         .datasource
         .set_participant_command(payload.participant_id, payload.jury_id)
         .await
-        .unwrap();
+        .map_err(Into::into)
 }
 
-async fn adults(State(state): State<Arc<BackendState>>) -> Json<Vec<Adult>> {
-    Json(state.datasource.adults().await)
+async fn adults(State(state): State<Arc<BackendState>>) -> Result<Json<Vec<Adult>>> {
+    Ok(Json(state.datasource.adults().await))
 }
 
-#[derive(Deserialize)]
-pub struct CreateAdultPayload {
-    pub name: String,
-    pub password: String,
-    pub role: AdultRole,
-}
-
-async fn create_adult(State(state): State<Arc<BackendState>>, Json(adult): Json<CreateAdultPayload>) {
-    state.datasource.new_adult(adult.name, adult.password, adult.role).await;
+async fn create_adult(
+    State(state): State<Arc<BackendState>>,
+    Json(adult): Json<Adult>,
+) -> Result<()> {
+    state.datasource.new_adult(adult).await;
+    Ok(())
 }
 
 async fn delete_adult() -> StatusCode {
     StatusCode::INTERNAL_SERVER_ERROR
 }
 
-#[derive(Deserialize)]
-struct JuryParticipantsPayload {
-    jury_id: AdultId,
-}
-
 async fn jury_participants(
     State(state): State<Arc<BackendState>>,
     Json(hack): Json<JuryParticipantsPayload>,
-) -> Json<Vec<AnonymousParticipant>> {
-    Json(
+) -> Result<Json<Vec<AnonymousParticipant>>> {
+    Ok(Json(
         state
             .datasource
             .participants()
@@ -101,23 +94,16 @@ async fn jury_participants(
                 rate: p.rates.remove(&hack.jury_id).flatten(),
             })
             .collect(),
-    )
-}
-
-#[derive(Deserialize)]
-struct SetParticipantRate {
-    jury_id: AdultId,
-    id: ParticipantId,
-    rate: Option<ParticipantRate>,
+    ))
 }
 
 async fn set_participant_rate(
     State(state): State<Arc<BackendState>>,
     Json(payload): Json<SetParticipantRate>,
-) {
+) -> Result<()> {
     state
         .datasource
         .set_participant_rate(payload.id, payload.jury_id, payload.rate)
         .await
-        .unwrap();
+        .map_err(Into::into)
 }
