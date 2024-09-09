@@ -31,13 +31,21 @@ pub fn v1() -> Router {
                 .route("/participants", get(all_participants))
                 .route("/participants/command", post(set_participant_command))
                 .route("/adults", get(adults))
-                .route("/adult", post(create_adult).delete(delete_adult)),
+                .route("/adult", post(create_adult).delete(delete_adult))
+                .route_layer(axum_login::permission_required!(
+                    auth::Backend,
+                    AdultRole::Org,
+                )),
         )
         .nest(
             "/jury",
             Router::new()
                 .route("/participants", get(jury_participants))
-                .route("/participant/rate", post(set_participant_rate)),
+                .route("/participant/rate", post(set_participant_rate))
+                .route_layer(axum_login::permission_required!(
+                    auth::Backend,
+                    AdultRole::Jury,
+                )),
         )
         .with_state(Arc::new(state))
 }

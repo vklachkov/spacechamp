@@ -1,7 +1,8 @@
 use crate::{data::DataSourceError, domain::*};
 use axum::async_trait;
-use axum_login::{AuthUser, AuthnBackend, UserId};
+use axum_login::{AuthUser, AuthnBackend, AuthzBackend, UserId};
 use serde::Deserialize;
+use std::collections::HashSet;
 
 #[derive(Clone, Debug, Deserialize)]
 #[repr(transparent)]
@@ -81,6 +82,24 @@ impl AuthnBackend for Backend {
             })))
         } else {
             Ok(None)
+        }
+    }
+}
+
+#[async_trait]
+impl AuthzBackend for Backend {
+    type Permission = AdultRole;
+
+    async fn get_group_permissions(
+        &self,
+        user: &Self::User,
+    ) -> Result<HashSet<Self::Permission>, Self::Error> {
+        if user.0.name == "Ян Трояновский" {
+            Ok(HashSet::from([AdultRole::Org]))
+        } else if user.0.name == "Илья Овчинников" {
+            Ok(HashSet::from([AdultRole::Jury]))
+        } else {
+            unimplemented!()
         }
     }
 }

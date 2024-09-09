@@ -68,7 +68,7 @@ fn hello(args: &Args) {
 
 async fn run(addr: SocketAddr) {
     let session_store = MemoryStore::default();
-    let session_layer = SessionManagerLayer::new(session_store);
+    let session_layer = SessionManagerLayer::new(session_store).with_secure(false);
 
     let auth_backend = api::auth::Backend::new();
     let auth_layer = AuthManagerLayerBuilder::new(auth_backend, session_layer).build();
