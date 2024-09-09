@@ -25,6 +25,7 @@ pub fn v1() -> Router {
 
     Router::new()
         .route("/login", post(login))
+        .route("/logout", get(logout))
         .nest(
             "/org",
             Router::new()
@@ -69,6 +70,14 @@ async fn login(
     Json(json!({ "role": user.0.role })).into_response()
 }
 
+async fn logout(mut auth_session: auth::AuthSession) -> StatusCode {
+    match auth_session.logout().await {
+        Ok(Some(_)) => StatusCode::OK,
+        Ok(None) => StatusCode::UNAUTHORIZED,
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
+
 async fn all_participants(
     State(state): State<Arc<BackendState>>,
 ) -> Result<Json<Vec<Participant>>> {
@@ -103,33 +112,38 @@ async fn delete_adult() -> StatusCode {
 }
 
 async fn jury_participants(
+    auth_session: auth::AuthSession,
     State(state): State<Arc<BackendState>>,
-    Json(hack): Json<JuryParticipantsPayload>,
 ) -> Result<Json<Vec<AnonymousParticipant>>> {
+    let jury_id = auth_session.user.as_ref().unwrap().0.id;
+
     Ok(Json(
         state
             .datasource
             .participants()
             .await
             .into_iter()
-            .filter(|p| p.jury_id == Some(hack.jury_id) || p.jury_id.is_none())
+            .filter(|p| p.jury_id == Some(jury_id) || p.jury_id.is_none())
             .map(|mut p| AnonymousParticipant {
                 id: p.id,
                 in_command: p.jury_id.is_some(),
                 answers: p.answers,
-                rate: p.rates.remove(&hack.jury_id).flatten(),
+                rate: p.rates.remove(&jury_id).flatten(),
             })
             .collect(),
     ))
 }
 
 async fn set_participant_rate(
+    auth_session: auth::AuthSession,
     State(state): State<Arc<BackendState>>,
     Json(payload): Json<SetParticipantRate>,
 ) -> Result<()> {
+    let jury_id = auth_session.user.as_ref().unwrap().0.id;
+
     state
         .datasource
-        .set_participant_rate(payload.id, payload.jury_id, payload.rate)
+        .set_participant_rate(payload.id, jury_id, payload.rate)
         .await
         .map_err(Into::into)
 }

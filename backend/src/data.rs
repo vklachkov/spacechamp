@@ -40,16 +40,7 @@ impl DataSource {
                             edu_org: "edu_org".to_owned(),
                         },
                         answers: HashMap::from([("Вы кот?".to_owned(), "Нет".to_owned())]),
-                        rates: HashMap::from([
-                            (AdultId(1), None),
-                            (
-                                AdultId(2),
-                                Some(ParticipantRate {
-                                    salary: 50000,
-                                    comment: "Хватит и ветки".to_owned(),
-                                }),
-                            ),
-                        ]),
+                        rates: HashMap::from([(AdultId(100), None), (AdultId(101), None)]),
                     },
                 ),
                 (
@@ -67,46 +58,31 @@ impl DataSource {
                             edu_org: "edu_org".to_owned(),
                         },
                         answers: HashMap::from([("Вы кот?".to_owned(), "КОНЕЧНО".to_owned())]),
-                        rates: HashMap::from([
-                            (
-                                AdultId(1),
-                                Some(ParticipantRate {
-                                    salary: 100000,
-                                    comment: "Какой молодец!".to_owned(),
-                                }),
-                            ),
-                            (
-                                AdultId(2),
-                                Some(ParticipantRate {
-                                    salary: 50000,
-                                    comment: "Хватит и ветки".to_owned(),
-                                }),
-                            ),
-                        ]),
+                        rates: HashMap::from([(AdultId(100), None), (AdultId(101), None)]),
                     },
                 ),
             ])),
             adults: Mutex::new(HashMap::from([
                 (
-                    AdultId(1),
+                    AdultId(100),
                     Adult {
-                        id: AdultId(1),
-                        name: "Жюри Крутой".to_owned(),
-                        password: "123123".to_owned(),
-                        role: AdultRole::Jury,
-                    },
-                ),
-                (
-                    AdultId(2),
-                    Adult {
-                        id: AdultId(2),
-                        name: "Орг Орг".to_owned(),
-                        password: "987987".to_owned(),
+                        id: AdultId(100),
+                        name: "Ян Трояновский".to_owned(),
+                        password: "12345678".to_owned(),
                         role: AdultRole::Org,
                     },
                 ),
+                (
+                    AdultId(101),
+                    Adult {
+                        id: AdultId(101),
+                        name: "Илья Овчинников".to_owned(),
+                        password: "87654321".to_owned(),
+                        role: AdultRole::Jury,
+                    },
+                ),
             ])),
-            adult_id: AtomicUsize::new(3),
+            adult_id: AtomicUsize::new(102),
         }
     }
 
