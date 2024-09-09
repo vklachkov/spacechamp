@@ -4,6 +4,10 @@ mod domain;
 
 use argh::FromArgs;
 use axum::Router;
+use axum_login::{
+    tower_sessions::{MemoryStore, SessionManagerLayer},
+    AuthManagerLayerBuilder,
+};
 use std::net::SocketAddr;
 
 #[derive(FromArgs)]
@@ -63,7 +67,15 @@ fn hello(args: &Args) {
 }
 
 async fn run(addr: SocketAddr) {
-    let app = Router::new().nest("/api/v1", api::v1());
+    let session_store = MemoryStore::default();
+    let session_layer = SessionManagerLayer::new(session_store).with_secure(false);
+
+    let auth_backend = api::auth::Backend::new();
+    let auth_layer = AuthManagerLayerBuilder::new(auth_backend, session_layer).build();
+
+    let app = Router::new().nest("/api/v1", api::v1()).layer(auth_layer);
+
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+
     axum::serve(listener, app).await.unwrap();
 }

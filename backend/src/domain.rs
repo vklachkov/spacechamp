@@ -16,7 +16,7 @@ pub struct Adult {
 #[serde(transparent)]
 pub struct AdultId(pub usize);
 
-#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum AdultRole {
     Org,
