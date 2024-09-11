@@ -11,7 +11,7 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    routing::{get, post},
+    routing::{delete, get, post},
     Json, Router,
 };
 use std::sync::Arc;
@@ -35,7 +35,8 @@ pub fn v1() -> Router {
                 .route("/participant/:id", get(get_participant))
                 .route("/participant/:id/command", post(set_participant_command))
                 .route("/adults", get(adults))
-                .route("/adult", post(create_adult).delete(delete_adult))
+                .route("/adult", post(create_adult))
+                .route("/adult/:id", delete(delete_adult))
                 .route_layer(axum_login::permission_required!(
                     auth::Backend,
                     AdultRole::Org,
@@ -126,8 +127,19 @@ async fn create_adult(
         .map_err(Into::into)
 }
 
-async fn delete_adult() -> StatusCode {
-    StatusCode::INTERNAL_SERVER_ERROR
+async fn delete_adult(
+    auth_session: auth::AuthSession,
+    State(state): State<Arc<BackendState>>,
+    Path(id): Path<AdultId>,
+) -> Result<()> {
+    let authed_user_id = auth_session.user.unwrap().0.id;
+    if authed_user_id == id {
+        return Err(ApiError::InvalidParameter(
+            "can not delete yourself".to_owned(),
+        ));
+    }
+
+    state.datasource.delete_adult(id).await.map_err(Into::into)
 }
 
 async fn jury_participants(

@@ -188,4 +188,27 @@ impl DataSource {
 
         Ok(())
     }
+
+    pub async fn delete_adult(&self, id: AdultId) -> Result<(), DataSourceError> {
+        let mut adults = self.adults.lock().await;
+        let mut participants = self.participants.lock().await;
+
+        if !adults.contains_key(&id) {
+            return Err(DataSourceError::AdultId(id));
+        }
+
+        for participant in participants.values_mut() {
+            participant.rates.remove(&id).unwrap_or_else(|| {
+                panic!(
+                    "adult #{adult_id} does not present in participant #{participant_id} rates",
+                    adult_id = id,
+                    participant_id = participant.id
+                )
+            });
+        }
+
+        adults.remove(&id).unwrap();
+
+        Ok(())
+    }
 }
