@@ -16,6 +16,7 @@ import { AddJuryModalComponent } from '../../../../components/add-jury-modal/add
 import { BaseComponent } from '../../../../components/base/base.component';
 import { OrganizerService } from '../../../../services/organizer.service';
 import { AuthService } from '../../../../services/auth.service';
+import { LocalStorageService } from '../../../../services/local-storage.service';
 
 // TODO: название не jury, а adult
 @Component({
@@ -41,6 +42,7 @@ export class OrganizerJuryPage extends BaseComponent implements OnInit {
  
   private readonly router: Router = inject(Router);
   private readonly modalService: NzModalService = inject(NzModalService);
+  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
   private readonly authService: AuthService = inject(AuthService);
 
@@ -71,6 +73,7 @@ export class OrganizerJuryPage extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+          this.localStorageService.clearAuthData();
           this.router.navigate([ROOT_ROUTE_PATHS.Login]);
         },
         error: (err: HttpErrorResponse) => {

@@ -1,4 +1,4 @@
-<nz-card class="jury-card" [nzBodyStyle]="{'padding': '0'}" [class.current]="currentUserId === adult.id">
+<nz-card class="jury-card" [nzBodyStyle]="{'padding': '0'}" [class.current]="userId === adult.id">
     <div class="jury">
         <div class="jury__info">
             <span nz-typography>{{ adult.name }}</span>
@@ -24,6 +24,7 @@
                 nzCancelText="Закрыть"
                 nzOkType="danger"
                 nzOkText="Подтвердить"
+                [disabled]="userId === adult.id"
                 [nzPopconfirmOverlayStyle]="{ 'width': '24em' }"
                 (nzOnConfirm)="remove()"
             >

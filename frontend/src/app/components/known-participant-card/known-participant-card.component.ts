@@ -25,7 +25,7 @@ export class KnownParticipantCardComponent implements OnInit {
   View = View;
 
   private getStatus(): ParticipantStatus {
-    if (this.participant.jury_id) {
+    if (this.participant.jury?.id) {
       return ParticipantStatus.InTeam;
     }
 

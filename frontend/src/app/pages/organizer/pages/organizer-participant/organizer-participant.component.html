@@ -16,7 +16,7 @@
                     <nz-tab nzTitle="Анкета">
                         <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
                             <div class="participant">
-                                <nz-avatar id="avatar" [nzSize]="150" [nzSrc]="participant.info.photoUrl"></nz-avatar>
+                                <nz-avatar id="avatar" [nzSize]="150" [nzSrc]="participant.info.photo_url"></nz-avatar>
                                 
                                 <div id="card-info">
                                     <p nz-typography>
@@ -28,7 +28,7 @@
                                     </p>
 
                                     <p nz-typography>
-                                        <span nz-typography><strong>Телефон:</strong></span> {{ participant.info.phoneNumber }}
+                                        <span nz-typography><strong>Телефон:</strong></span> {{ participant.info.phone_number }}
                                     </p>
 
                                     <p nz-typography>

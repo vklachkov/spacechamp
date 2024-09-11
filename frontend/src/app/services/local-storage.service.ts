@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LoginOutput } from '../models/api/login-output.interface';
 import { ROLE_KEY } from '../models/role-key.constant';
 import { Role } from '../models/api/role.enum';
+import { Adult } from '../models/api/adult.interface';
+import { USER_ID_KEY } from '../models/user-id-key.constant';
+import { NAME_KEY } from '../models/name-key.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -19,12 +21,22 @@ export class LocalStorageService {
     localStorage.clear();
   }
 
-  setAuthData(data: LoginOutput): void {
+  setAuthData(data: Adult): void {
+    this.setItem<number>(USER_ID_KEY, data.id);
+    this.setItem<string>(NAME_KEY, data.name);
     this.setItem<string>(ROLE_KEY, data.role);
   }
 
   getRole(): Role {
     return this.getItem<Role>(ROLE_KEY);
+  }
+
+  getName(): string {
+    return this.getItem<string>(NAME_KEY);
+  }
+
+  getUserId(): number {
+    return this.getItem<number>(USER_ID_KEY);
   }
 
   clearAuthData(): void {

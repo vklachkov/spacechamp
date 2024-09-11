@@ -21,6 +21,7 @@ import { Adult } from '../../../../models/api/adult.interface';
 import { AdultRole } from '../../../../models/api/adult-role.enum';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
+import { LocalStorageService } from '../../../../services/local-storage.service';
 
 interface TableData {
   name: string, 
@@ -63,6 +64,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
 
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
   private readonly authService: AuthService = inject(AuthService);
 
@@ -124,7 +126,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
           this.juries = juries;
           this.participant = participant;
 
-          this.teamControl.setValue(this.participant?.jury_id ?? null, { emitEvent: false });
+          this.teamControl.setValue(this.participant?.jury?.id ?? null, { emitEvent: false });
           this.initTableData();
 
           this.isDataLoading = false;
@@ -178,6 +180,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+          this.localStorageService.clearAuthData();
           this.router.navigate([ROOT_ROUTE_PATHS.Login]);
         },
         error: (err: HttpErrorResponse) => {

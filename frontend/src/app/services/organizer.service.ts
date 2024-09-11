@@ -33,10 +33,6 @@ export class OrganizerService {
   }
 
   deleteAdult(id: number): Observable<void> {
-    return this.http.delete<void>('/api/v1/org/adult', {
-      body: {
-        id,
-      },
-    });
+    return this.http.delete<void>(`/api/v1/org/adult/${id}`);
   }
 }

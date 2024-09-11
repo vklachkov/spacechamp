@@ -10,12 +10,12 @@
         <nz-form-item>
             <nz-form-label nzFor="comment">Комментарий</nz-form-label>
             <nz-form-control>
-                <textarea formControlName="comment" id="comment" nz-input rows="2" placeholder="Комментарий"></textarea>
+                <textarea formControlName="comment" id="comment" nz-input rows="2"></textarea>
             </nz-form-control>
         </nz-form-item>
     </form>
 </div>
 <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="close()">Отмена</button>
-    <button nz-button nzType="primary" [disabled]="form.invalid" (click)="evaluate()">Оценить</button>
+    <button nz-button nzType="default" (click)="close()" [disabled]="form.disabled">Отмена</button>
+    <button nz-button nzType="primary" [disabled]="form.invalid || form.disabled" (click)="evaluate()">Оценить</button>
 </div>

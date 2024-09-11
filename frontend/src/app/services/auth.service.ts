@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LoginInput } from '../models/api/login-input.interface';
-import { LoginOutput } from '../models/api/login-output.interface';
+import { Adult } from '../models/api/adult.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +10,8 @@ import { LoginOutput } from '../models/api/login-output.interface';
 export class AuthService {
   private readonly http: HttpClient = inject(HttpClient);
 
-  login(data: LoginInput): Observable<LoginOutput> {
-    return this.http.post<LoginOutput>('api/v1/login', data);
+  login(data: LoginInput): Observable<Adult> {
+    return this.http.post<Adult>('api/v1/login', data);
   }
 
   logout(): Observable<void> {

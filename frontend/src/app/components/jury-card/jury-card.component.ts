@@ -6,6 +6,7 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
 import { Adult } from '../../models/api/adult.interface';
 import { AdultRole } from '../../models/api/adult-role.enum';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'app-jury-card',
@@ -24,13 +25,14 @@ export class JuryCardComponent implements OnInit {
   @Input({ required: true }) public adult!: Adult;
   AdultRole = AdultRole;
 
-  currentUserId!: number;
+  userId: number = 0;
 
   @Output() public readonly removed: EventEmitter<void> = new EventEmitter<void>();
 
+  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
+
   ngOnInit(): void {
-    // Сделать в зависимости от бэка
-    this.currentUserId = 0;
+    this.userId = this.localStorageService.getUserId();
   }
 
   remove(): void {

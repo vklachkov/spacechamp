@@ -190,7 +190,7 @@ async fn get_jury_participant(
         id: participant.id,
         in_command: participant.jury.is_some(),
         answers: participant.answers,
-        rate: participant.rates.remove(&jury_id).flatten(),
+        rate: participant.rates.get(&jury_id).cloned().unwrap(),
     }))
 }
 

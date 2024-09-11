@@ -21,6 +21,11 @@ nz-header {
   justify-content: space-between;
 }
 
+nz-spin,
+::ng-deep .ant-spin-container,
+nz-content {
+  height: 100%;
+}
 
 #search-panel {
   display: flex;

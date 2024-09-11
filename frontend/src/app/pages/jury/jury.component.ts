@@ -17,6 +17,8 @@ import { AuthService } from '../../services/auth.service';
 import { BaseComponent } from '../../components/base/base.component';
 import { takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'app-jury-page',
@@ -38,22 +40,45 @@ import { HttpErrorResponse } from '@angular/common/http';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JuryPage extends BaseComponent implements OnInit {
-  juriId: number = 1;
-  View = View;
-
-  participants: Participant[] = [];
-
-  inTeamParticipants: Participant[] = [];
-  notEvaluatedParticipants: Participant[] = [];
-  evaluatedParticipants: Participant[] = [];
+  userName: string = '';
+  
+  isParticipantsLoading: boolean = false;
+  inTeamParticipants: AnonymousParticipant[] = [];
+  notRatedParticipants: AnonymousParticipant[] = [];
+  ratedParticipants: AnonymousParticipant[] = [];
 
   private readonly router: Router = inject(Router);
   private readonly authService: AuthService = inject(AuthService);
+  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
+  private readonly juryService: JuryService = inject(JuryService);
+
+  private loadParticipants(): void {
+    this.isParticipantsLoading = true;
+    this.juryService.getParticipants()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: AnonymousParticipant[]) => {
+          this.inTeamParticipants = data.filter((item: AnonymousParticipant) => item.in_command);
+          const inTeamIds: number[] = this.inTeamParticipants.map((item: AnonymousParticipant) => item.id);
+
+          this.ratedParticipants = data.filter((item: AnonymousParticipant) => !inTeamIds.includes(item.id) && item.rate);
+          this.notRatedParticipants = data.filter((item: AnonymousParticipant) => !inTeamIds.includes(item.id) && !item.rate);
+
+          this.isParticipantsLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isParticipantsLoading = false;
+          this.cdr.markForCheck();
+          this.showErrorNotification('Ошибка при получении участников', err);
+        }
+      });
+  }
 
   ngOnInit(): void {
-    // this.inTeamParticipants = this.participants;
-    // this.notEvaluatedParticipants = this.participants.filter((participant: Participant) => participant.scores[this.juriId] === undefined);
-    // this.evaluatedParticipants = this.participants.filter((participant: Participant) => participant.scores[this.juriId] !== undefined);
+    this.loadParticipants();
+
+    this.userName = this.localStorageService.getName();
   }
 
   goToLogin(): void {
@@ -61,6 +86,7 @@ export class JuryPage extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+          this.localStorageService.clearAuthData();
           this.router.navigate([ROOT_ROUTE_PATHS.Login]);
         },
         error: (err: HttpErrorResponse) => {

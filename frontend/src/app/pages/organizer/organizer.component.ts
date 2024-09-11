@@ -20,6 +20,7 @@ import { BaseComponent } from '../../components/base/base.component';
 import { View } from '../../models/view.enum';
 import { ParticipantStatus } from '../../models/participant-status.enum';
 import { AuthService } from '../../services/auth.service';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -74,6 +75,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
+  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly authService: AuthService = inject(AuthService);
 
   private loadParticipants(): void {
@@ -113,7 +115,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
         if (value.status) {
           switch (value.status) {
             case ParticipantStatus.InTeam: {
-              initialData = initialData.filter((item: Participant) => item.jury_id);
+              initialData = initialData.filter((item: Participant) => item.jury?.id);
               break;
             }
             case ParticipantStatus.NotRated: {
@@ -151,6 +153,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+          this.localStorageService.clearAuthData();
           this.router.navigate([ROOT_ROUTE_PATHS.Login]);
         },
         error: (err: HttpErrorResponse) => {

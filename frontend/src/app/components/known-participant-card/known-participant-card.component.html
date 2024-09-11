@@ -1,7 +1,7 @@
 <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
     <div id="card-content" [class]="view === View.Grid ? 'tile' : 'item'">
         @if (participant.info) {
-            <nz-avatar id="avatar" [nzSize]="72" [nzSrc]="participant.info.photoUrl"></nz-avatar>
+            <nz-avatar id="avatar" [nzSize]="72" [nzSrc]="participant.info.photo_url"></nz-avatar>
     
             <div id="info">
                 <h3 id="name">{{ participant.info.name }}</h3>
@@ -14,7 +14,7 @@
                 @switch (status) {
                     @case (ParticipantStatus.InTeam) {
                         <p id="status" class="in-team">
-                            Находится в команде
+                            Находится в команде "{{ participant.jury?.name ?? '' }}"
                         </p>
                     }
                     @case (ParticipantStatus.NotRated) {

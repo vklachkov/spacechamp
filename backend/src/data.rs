@@ -45,7 +45,7 @@ impl DataSource {
                             edu_org: "edu_org".to_owned(),
                         },
                         answers: HashMap::from([("Вы кот?".to_owned(), "Нет".to_owned())]),
-                        rates: HashMap::from([(AdultId(100), None), (AdultId(101), None)]),
+                        rates: HashMap::from([(AdultId(101), None)]),
                     },
                 ),
                 (
@@ -63,7 +63,7 @@ impl DataSource {
                             edu_org: "edu_org".to_owned(),
                         },
                         answers: HashMap::from([("Вы кот?".to_owned(), "КОНЕЧНО".to_owned())]),
-                        rates: HashMap::from([(AdultId(100), None), (AdultId(101), None)]),
+                        rates: HashMap::from([(AdultId(101), None)]),
                     },
                 ),
             ])),
@@ -206,6 +206,8 @@ impl DataSource {
             }
         }
 
+
+
         Ok(())
     }
 
@@ -217,14 +219,16 @@ impl DataSource {
             return Err(DataSourceError::AdultId(id));
         }
 
-        for participant in participants.values_mut() {
-            participant.rates.remove(&id).unwrap_or_else(|| {
-                panic!(
-                    "adult #{adult_id} does not present in participant #{participant_id} rates",
-                    adult_id = id,
-                    participant_id = participant.id
-                )
-            });
+        if matches!(adults[&id].role, AdultRole::Jury) {
+            for participant in participants.values_mut() {
+                participant.rates.remove(&id).unwrap_or_else(|| {
+                    panic!(
+                        "adult #{adult_id} does not present in participant #{participant_id} rates",
+                        adult_id = id,
+                        participant_id = participant.id
+                    )
+                });
+            }
         }
 
         adults.remove(&id).unwrap();

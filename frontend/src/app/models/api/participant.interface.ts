@@ -1,9 +1,11 @@
+import { Adult } from './adult.interface';
+
 // Участник
 export interface Participant {
   // Идентификатор
   id: number;
-  // Идентификатор жюри (если есть, значит он в команде)
-  jury_id: number | null;
+  // Жюри (если есть, значит он в команде)
+  jury: Adult | null,
   // Базовая информация
   info: ParticipantInfo;
   // Ответы
@@ -23,13 +25,13 @@ export interface ParticipantInfo {
   // Имя
   name: string;
   // Фотография
-  photoUrl: string;
+  photo_url: string;
   // Город
   city: string;
   // Район
   district: string;
   // Номер телефона
-  phoneNumber: string;
+  phone_number: string;
   // Адрес электронной почты
   email: string;
   // Образовательная организация
