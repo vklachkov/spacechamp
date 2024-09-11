@@ -1,7 +1,7 @@
 <nz-layout class="app-layout">
     <nz-header>
         <header class="header">
-            <h3 nz-typography>Космический фестиваль // Имя Фамилия</h3>
+            <h3 nz-typography>Космический фестиваль // {{ userName }}</h3>
 
             <button nz-button class="header__button" (click)="goToLogin()">
                 <span nz-icon nzType="logout" nzTheme="outline"></span>
@@ -15,35 +15,29 @@
             <h5 nz-typography>В команде</h5>
             
             @for (participant of inTeamParticipants; track participant.id) {
-                <app-known-participant-card 
-                    [participant]="participant" 
-                    [viewType]="ViewType.List"
-                    (click)="goToApplication(participant.id)"
-                ></app-known-participant-card>   
+                <p class="application" (click)="goToApplication(participant.id)">
+                    Заявка #{{ participant.id }}
+                </p>
             }
         }
 
-        @if (notEvaluatedParticipants.length > 0) {
+        @if (notRatedParticipants.length > 0) {
             <h5 nz-typography>Заявки без оценки</h5>
             
-            @for (participant of notEvaluatedParticipants; track participant.id) {
-                <app-known-participant-card 
-                    [participant]="participant" 
-                    [viewType]="ViewType.List"
-                    (click)="goToApplication(participant.id)"
-                ></app-known-participant-card>
+            @for (participant of notRatedParticipants; track participant.id) {
+                <p class="application" (click)="goToApplication(participant.id)">
+                    Заявка #{{ participant.id }}
+                </p>
             }
         }
             
-        @if (evaluatedParticipants.length > 0) {
+        @if (ratedParticipants.length > 0) {
             <h5 nz-typography>Оценённые заявки</h5>
             
-            @for (participant of evaluatedParticipants; track participant.id) {
-                <app-known-participant-card 
-                    [participant]="participant" 
-                    [viewType]="ViewType.List"
-                    (click)="goToApplication(participant.id)"
-                ></app-known-participant-card>
+            @for (participant of ratedParticipants; track participant.id) {
+                <p class="application" (click)="goToApplication(participant.id)">
+                    Заявка #{{ participant.id }}
+                </p>
             }
         }
     </nz-content>

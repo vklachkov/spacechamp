@@ -24,6 +24,12 @@ nz-header {
   }
 }
 
+nz-spin,
+::ng-deep .ant-spin-container,
+nz-content {
+  height: 100%;
+}
+
 .info {
   overflow-y: auto;
   padding: 2em;

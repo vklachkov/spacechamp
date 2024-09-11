@@ -5,9 +5,11 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzModalFooterDirective, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
-import { NzCheckboxComponent } from 'ng-zorro-antd/checkbox';
 import { FormGroupType, FormGroupValue } from './add-jury-modal';
-import { Jury } from '../../models/jury';
+import { Adult } from '../../models/api/adult.interface';
+import { NzSwitchComponent } from 'ng-zorro-antd/switch';
+import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import { AdultRole } from '../../models/api/adult-role.enum';
 
 @Component({
   selector: 'app-add-jury-modal',
@@ -21,7 +23,8 @@ import { Jury } from '../../models/jury';
     NzFormItemComponent,
     NzFormLabelComponent,
     NzFormControlComponent,
-    NzCheckboxComponent,
+    NzSwitchComponent,
+    NzTypographyComponent,
     FormsModule,
     ReactiveFormsModule
   ],
@@ -31,17 +34,29 @@ import { Jury } from '../../models/jury';
 export class AddJuryModalComponent {
   form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null, [Validators.required]),
-    email: new FormControl<string | null>(null, [Validators.required, Validators.email]),
+    password: new FormControl<string | null>({
+      value: this.generatePassword(),
+      disabled: true
+    }, [Validators.required]),
     isOrganizer: new FormControl<boolean | null>(false),
   });
 
-  private readonly modalRef: NzModalRef<undefined, Omit<Jury, 'id'>> = inject(NzModalRef);
+  private readonly modalRef: NzModalRef<undefined, Omit<Adult, 'id'>> = inject(NzModalRef);
 
-  close(data?: Omit<Jury, 'id'>): void {
+  private generatePassword(): string {
+    return Math.random().toString(36).slice(-8);
+  }
+
+  close(data?: Omit<Adult, 'id'>): void {
     this.modalRef.close(data);
   }
 
   add(): void {
-    this.close(<FormGroupValue>this.form.value);
+    const { isOrganizer, ...model } = {
+      ...(<FormGroupValue>this.form.getRawValue()),
+      role: this.form.value.isOrganizer ? AdultRole.Organizer : AdultRole.Jury
+    }
+
+    this.close(model);
   }
 }

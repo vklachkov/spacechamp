@@ -7,5 +7,5 @@ export type FormGroupType = {
 
 export type FormGroupValue = {
   salary: number,
-  comment: string
+  comment: string | null
 }

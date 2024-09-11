@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LoginOutput } from '../models/api/login-output.interface';
-import { TOKEN_KEY } from '../models/token-key.constant';
 import { ROLE_KEY } from '../models/role-key.constant';
 import { Role } from '../models/api/role.enum';
+import { Adult } from '../models/api/adult.interface';
+import { USER_ID_KEY } from '../models/user-id-key.constant';
+import { NAME_KEY } from '../models/name-key.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -13,24 +14,29 @@ export class LocalStorageService {
   }
 
   private getItem<T>(key: string): T {
-    return <T>localStorage.getItem(key);
+    return <T>JSON.parse(<string>localStorage.getItem(key));
   }
 
   private clear(): void {
     localStorage.clear();
   }
 
-  setAuthData(data: LoginOutput): void {
-    this.setItem<string>(TOKEN_KEY, data.token);
+  setAuthData(data: Adult): void {
+    this.setItem<number>(USER_ID_KEY, data.id);
+    this.setItem<string>(NAME_KEY, data.name);
     this.setItem<string>(ROLE_KEY, data.role);
-  }
-
-  getToken(): string {
-    return this.getItem<string>(TOKEN_KEY);
   }
 
   getRole(): Role {
     return this.getItem<Role>(ROLE_KEY);
+  }
+
+  getName(): string {
+    return this.getItem<string>(NAME_KEY);
+  }
+
+  getUserId(): number {
+    return this.getItem<number>(USER_ID_KEY);
   }
 
   clearAuthData(): void {

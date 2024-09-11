@@ -6,12 +6,18 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Observable, of, switchMap, takeUntil } from 'rxjs';
-import { JuriScore, Participant } from '../../../../models/participant';
-import { mockData } from './jury-application';
+import { EMPTY, Observable, of, switchMap, takeUntil } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../../../components/base/base.component';
 import { EvaluateApplicationModalComponent } from '../../../../components/evaluate-application-modal/evaluate-application-modal.component';
+import { AnonymousParticipant } from '../../../../models/api/anonymous-participant.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../../../services/auth.service';
+import { JuryService } from '../../../../services/jury.service';
+import { OrganizerService } from '../../../../services/organizer.service';
+import { JuryRate, Participant } from '../../../../models/api/participant.interface';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
+import { LocalStorageService } from '../../../../services/local-storage.service';
 
 @Component({
   standalone: true,
@@ -21,6 +27,7 @@ import { EvaluateApplicationModalComponent } from '../../../../components/evalua
     NzTypographyComponent,
     NzButtonComponent,
     NzIconModule,
+    NzSpinComponent,
     AsyncPipe,
   ],
   providers: [NzModalService],
@@ -32,49 +39,90 @@ export class JuryApplicationPage extends BaseComponent {
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly modalService: NzModalService = inject(NzModalService);
-  private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly juryService: JuryService = inject(JuryService);
 
-  application$!: Observable<Participant | null>;
+  participant: AnonymousParticipant | null = null;
+  isParticipantLoading: boolean = false;
 
-  evaluated: boolean = false;
+  private loadParticipant(): void {
+    this.activatedRoute.paramMap
+    .pipe(
+      switchMap((params: ParamMap) => {
+        const id: string | null = params.get('id');
+
+        if (!id) {
+          return of(null);
+        }
+
+
+        this.isParticipantLoading = true;
+        this.cdr.markForCheck();
+
+        return this.juryService.getParticipantById(+id);
+      })
+    )
+    .subscribe({
+      next: (data: AnonymousParticipant | null) => {
+        this.participant = data;
+        this.isParticipantLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isParticipantLoading = false;
+        this.cdr.markForCheck();
+        this.showErrorNotification('Ошибка при получении заявки', err);
+      }
+    });
+  }
 
   ngOnInit(): void {
-    this.application$ = this.activatedRoute.paramMap
-      .pipe(
-        switchMap((params: ParamMap) => {
-          const id: string | null = params.get('id');
-
-          if (!id) {
-            return of(null);
-          }
-
-          return of(mockData);
-        })
-      );
+    this.loadParticipant();
   }
 
   goToLogin(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Login]);
-  }
-
-  openEvaluateModal(): void {
-    this.modalService.create<EvaluateApplicationModalComponent, undefined, JuriScore>({
-      nzTitle: 'Оценка',
-      nzContent: EvaluateApplicationModalComponent,
-    }).afterClose
+    this.authService.logout()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(data => {
-        if (!data) {
-          return;
+      .subscribe({
+        next: () => {
+          this.localStorageService.clearAuthData();
+          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.showErrorNotification('Ошибка при выходе', err);
         }
-        
-        this.changeEvaluated();
-        this.cdr.markForCheck();
-        console.warn(data, 'data');
       });
   }
 
-  changeEvaluated(): void {
-    this.evaluated = !this.evaluated;
+  openEvaluateModal(): void {
+    this.modalService.create<EvaluateApplicationModalComponent, AnonymousParticipant | null, JuryRate>({
+      nzTitle: 'Оценка',
+      nzContent: EvaluateApplicationModalComponent,
+      nzData: this.participant
+    }).afterClose
+      .pipe(
+        switchMap((data: JuryRate | undefined) => {
+          if (!data) {
+            return EMPTY;
+          }
+
+          this.isParticipantLoading = true;
+          this.cdr.markForCheck();
+          return this.juryService.rateParticipant((<AnonymousParticipant>this.participant).id, data);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          this.loadParticipant();
+          this.messageService.success('Участник успешно оценен');
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isParticipantLoading = false;
+          this.cdr.markForCheck();
+          this.showErrorNotification('Ошибка при оценке участника', err);
+        }
+      });
   }
 }

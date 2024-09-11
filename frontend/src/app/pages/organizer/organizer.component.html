@@ -13,7 +13,7 @@
     
             <button 
                 nz-button
-                id="filter-options" 
+                id="filter-button" 
                 nz-popover
                 nzPopoverTrigger="click"
                 nzPopoverPlacement="bottom"
@@ -26,16 +26,17 @@
             </button>
 
             <ng-template #contentTemplate>
-                <nz-radio-group formControlName="status">
+                <nz-radio-group class="filter-options" formControlName="status">
                     <label nz-radio [nzValue]="null">Все</label>
-                    <label nz-radio [nzValue]="ParticipantStatus.NotEvaluated">Без оценок</label>
-                    <label nz-radio [nzValue]="ParticipantStatus.Evaluated">Оценненые</label>
+                    <label nz-radio [nzValue]="ParticipantStatus.NotRated">Без оценок</label>
+                    <label nz-radio [nzValue]="ParticipantStatus.PartiallyRated">Частично оценненые</label>
+                    <label nz-radio [nzValue]="ParticipantStatus.FullRated">Полностью оценненые</label>
                     <label nz-radio [nzValue]="ParticipantStatus.InTeam">В команде</label>
                 </nz-radio-group>
               </ng-template>
 
             <button nz-button nzType="dashed" id="view-button" (click)="changeViewType()">
-                <span nz-icon [nzType]="viewType === ViewType.Grid ? 'bars' : 'appstore'" nzTheme="outline"></span>
+                <span nz-icon [nzType]="view === View.Grid ? 'bars' : 'appstore'" nzTheme="outline"></span>
             </button>
         </div>
 
@@ -52,13 +53,15 @@
         </div>
     </nz-header>
 
-    <nz-content [class]="viewType">
-        @for (participant of participants$ | async; track participant.id) {
-            <app-known-participant-card 
-                [participant]="participant" 
-                [viewType]="viewType"
-                (click)="goToParticipant(participant.id)"
-            ></app-known-participant-card>
-        }
-    </nz-content>
+    <nz-spin [nzSpinning]="isParticipantsLoading">
+        <nz-content [class]="view">
+            @for (participant of participants; track participant.id) {
+                <app-known-participant-card 
+                    [participant]="participant" 
+                    [view]="view"
+                    (click)="goToParticipant(participant.id)"
+                ></app-known-participant-card>
+            }
+        </nz-content>
+    </nz-spin>
 </nz-layout>

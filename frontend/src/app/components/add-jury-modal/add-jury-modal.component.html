@@ -8,26 +8,22 @@
         </nz-form-item>
 
         <nz-form-item>
-            <nz-form-label nzRequired nzFor="email">Почта</nz-form-label>
-            <nz-form-control [nzErrorTip]="errorTpl">
-              <input nz-input formControlName="email" id="email" />
+            <!-- TODO: добавить кнопку копирования -->
+            <nz-form-label nzRequired nzFor="password">Пароль</nz-form-label>
+            <nz-form-control nzErrorTip="Поле является быть обязательным">
+              <input nz-input formControlName="password" id="password" />
             </nz-form-control>
-
-            <ng-template #errorTpl let-control>
-                @if (control.errors?.['required']) {
-                    Поле является быть обязательным
-                }
-                @if (control.errors?.['email']) {
-                    Некорректный адрес почты
-                }
-            </ng-template>
         </nz-form-item>
 
         <nz-form-item>
             <nz-form-control>
-                <label nz-checkbox formControlName="isOrganizer">
-                    <span>Организатор</span>
-                </label>
+                <div class="organizer-control">
+                    <p nz-typography>Жюри</p>   
+
+                    <nz-switch formControlName="isOrganizer"></nz-switch>
+
+                    <p nz-typography>Организатор</p>
+                </div>
             </nz-form-control>
         </nz-form-item>
     </form>    

@@ -24,6 +24,12 @@ nz-header {
   }
 }
 
+nz-spin,
+::ng-deep .ant-spin-container,
+nz-content {
+  height: 100%;
+}
+
 .list {
   display: flex;
   flex-direction: column;

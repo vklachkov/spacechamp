@@ -13,8 +13,7 @@ export function authGuard(): CanActivateFn {
       inject(LocalStorageService);
     const router: Router = inject(Router);
 
-    // TODO: надо валидировать по нормальному
-    if (localStorageService.getRole() && localStorageService.getToken()) {
+    if (localStorageService.getRole()) {
       return true;
     }
 

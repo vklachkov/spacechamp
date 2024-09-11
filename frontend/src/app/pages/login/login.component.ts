@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -11,10 +11,10 @@ import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { takeUntil } from 'rxjs';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
 import { LoginInput } from '../../models/api/login-input.interface';
-import { LoginOutput } from '../../models/api/login-output.interface';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { BaseComponent } from '../../components/base/base.component';
+import { Adult } from '../../models/api/adult.interface';
 
 @Component({
   standalone: true,
@@ -51,16 +51,17 @@ export class LoginPage extends BaseComponent {
     this.authService.login(data)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (loginData: LoginOutput) => {
-          this.localStorageService.setAuthData(loginData);
-
+        next: (data: Adult) => {
+          this.localStorageService.setAuthData(data);
           this.router.navigate([ROOT_ROUTE_PATHS.Index]);
           this.isLoginLoading = false;
+          this.cdr.markForCheck();
         },
         error: (err: HttpErrorResponse) => {
           this.isLoginLoading = false;
           this.notificationService.error('Ошибка', err.message ?? 'Ошибка при логине');
           console.error('Ошибка при логине: ', err);
+          this.cdr.markForCheck();
         }
       })
 

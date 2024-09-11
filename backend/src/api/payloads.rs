@@ -25,6 +25,7 @@ pub struct SetParticipantCommandPayload {
 
 #[derive(Deserialize)]
 pub struct SetParticipantRate {
+    #[serde(flatten)]
     pub rate: Option<ParticipantRate>,
 }
 
