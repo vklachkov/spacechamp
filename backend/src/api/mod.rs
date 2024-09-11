@@ -17,13 +17,11 @@ use axum::{
 use std::sync::Arc;
 
 struct BackendState {
-    datasource: DataSource,
+    datasource: Arc<DataSource>,
 }
 
-pub fn v1() -> Router {
-    let state = BackendState {
-        datasource: DataSource::new(),
-    };
+pub fn v1(datasource: Arc<DataSource>) -> Router {
+    let state = BackendState { datasource };
 
     Router::new()
         .route("/login", post(login))
@@ -86,7 +84,7 @@ async fn logout(mut auth_session: auth::AuthSession) -> StatusCode {
 async fn all_participants(
     State(state): State<Arc<BackendState>>,
 ) -> Result<Json<Vec<Participant>>> {
-    Ok(Json(state.datasource.participants().await))
+    Ok(Json(state.datasource.participants().await?))
 }
 
 async fn get_participant(
@@ -109,7 +107,7 @@ async fn set_participant_command(
 }
 
 async fn adults(State(state): State<Arc<BackendState>>) -> Result<Json<Vec<Adult>>> {
-    Ok(Json(state.datasource.adults().await))
+    Ok(Json(state.datasource.adults().await?))
 }
 
 async fn create_adult(
@@ -152,7 +150,7 @@ async fn jury_participants(
         state
             .datasource
             .participants()
-            .await
+            .await?
             .into_iter()
             .filter(|p| {
                 p.jury

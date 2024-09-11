@@ -6,6 +6,8 @@ use std::{
 use thiserror::Error;
 use tokio::sync::Mutex;
 
+type Result<T, E = DataSourceError> = ::core::result::Result<T, E>;
+
 #[derive(Debug, Error)]
 pub enum DataSourceError {
     #[error("invalid participant id `{0}`")]
@@ -89,11 +91,11 @@ impl DataSource {
         }
     }
 
-    pub async fn participants(&self) -> Vec<Participant> {
-        self.participants.lock().await.values().cloned().collect()
+    pub async fn participants(&self) -> Result<Vec<Participant>> {
+        Ok(self.participants.lock().await.values().cloned().collect())
     }
 
-    pub async fn participant(&self, id: ParticipantId) -> Result<Participant, DataSourceError> {
+    pub async fn participant(&self, id: ParticipantId) -> Result<Participant> {
         self.participants
             .lock()
             .await
@@ -106,7 +108,7 @@ impl DataSource {
         &self,
         id: ParticipantId,
         jury_id: Option<AdultId>,
-    ) -> Result<(), DataSourceError> {
+    ) -> Result<()> {
         let mut participants = self.participants.lock().await;
         let adults = self.adults.lock().await;
 
@@ -133,7 +135,7 @@ impl DataSource {
         id: ParticipantId,
         jury_id: AdultId,
         rate: Option<ParticipantRate>,
-    ) -> Result<(), DataSourceError> {
+    ) -> Result<()> {
         let mut participants = self.participants.lock().await;
 
         let Some(participant) = participants.get_mut(&id) else {
@@ -149,16 +151,34 @@ impl DataSource {
         Ok(())
     }
 
-    pub async fn adults(&self) -> Vec<Adult> {
-        self.adults.lock().await.values().cloned().collect()
+    pub async fn adults(&self) -> Result<Vec<Adult>> {
+        Ok(self.adults.lock().await.values().cloned().collect())
     }
 
-    pub async fn new_adult(
-        &self,
-        name: String,
-        password: String,
-        role: AdultRole,
-    ) -> Result<(), DataSourceError> {
+    pub async fn adult(&self, id: AdultId) -> Result<Option<Adult>> {
+        Ok(self.adults.lock().await.get(&id).cloned())
+    }
+
+    pub async fn find_adult(&self, name: &str, password: &str) -> Result<Option<Adult>> {
+        let adults = self.adults.lock().await;
+
+        let adult = adults
+            .values()
+            .find(|adult| adult.name == name && adult.password == password)
+            .cloned();
+
+        Ok(adult)
+    }
+
+    pub async fn adult_role(&self, id: AdultId) -> Result<Option<AdultRole>> {
+        let adults = self.adults.lock().await;
+
+        let role = adults.get(&id).map(|adult| adult.role);
+
+        Ok(role)
+    }
+
+    pub async fn new_adult(&self, name: String, password: String, role: AdultRole) -> Result<()> {
         let mut adults = self.adults.lock().await;
 
         for adult in adults.values() {
@@ -189,7 +209,7 @@ impl DataSource {
         Ok(())
     }
 
-    pub async fn delete_adult(&self, id: AdultId) -> Result<(), DataSourceError> {
+    pub async fn delete_adult(&self, id: AdultId) -> Result<()> {
         let mut adults = self.adults.lock().await;
         let mut participants = self.participants.lock().await;
 

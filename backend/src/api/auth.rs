@@ -1,8 +1,11 @@
-use crate::{data::DataSourceError, domain::*};
+use crate::{
+    data::{DataSource, DataSourceError},
+    domain::*,
+};
 use axum::async_trait;
 use axum_login::{AuthUser, AuthnBackend, AuthzBackend, UserId};
 use serde::Deserialize;
-use std::collections::HashSet;
+use std::{collections::HashSet, sync::Arc};
 
 #[derive(Clone, Debug, Deserialize)]
 #[repr(transparent)]
@@ -27,12 +30,14 @@ pub struct Credentials {
     pub password: String,
 }
 
-#[derive(Clone, Copy)]
-pub struct Backend {}
+#[derive(Clone)]
+pub struct Backend {
+    datasource: Arc<DataSource>,
+}
 
 impl Backend {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(datasource: Arc<DataSource>) -> Self {
+        Self { datasource }
     }
 }
 
@@ -46,43 +51,17 @@ impl AuthnBackend for Backend {
         &self,
         creds: Self::Credentials,
     ) -> Result<Option<Self::User>, Self::Error> {
-        if creds.name == "Ян Трояновский" && creds.password == "12345678" {
-            Ok(Some(User(Adult {
-                id: AdultId(100),
-                name: "Ян Трояновский".to_owned(),
-                password: "12345678".to_owned(),
-                role: AdultRole::Org,
-            })))
-        } else if creds.name == "Илья Овчинников" && creds.password == "87654321" {
-            Ok(Some(User(Adult {
-                id: AdultId(101),
-                name: "Илья Овчинников".to_owned(),
-                password: "87654321".to_owned(),
-                role: AdultRole::Jury,
-            })))
-        } else {
-            Ok(None)
-        }
+        self.datasource
+            .find_adult(&creds.name, &creds.password)
+            .await
+            .map(|adult| adult.map(User))
     }
 
     async fn get_user(&self, user_id: &UserId<Self>) -> Result<Option<Self::User>, Self::Error> {
-        if *user_id == AdultId(100) {
-            Ok(Some(User(Adult {
-                id: AdultId(100),
-                name: "Ян Трояновский".to_owned(),
-                password: "12345678".to_owned(),
-                role: AdultRole::Org,
-            })))
-        } else if *user_id == AdultId(101) {
-            Ok(Some(User(Adult {
-                id: AdultId(101),
-                name: "Илья Овчинников".to_owned(),
-                password: "87654321".to_owned(),
-                role: AdultRole::Jury,
-            })))
-        } else {
-            Ok(None)
-        }
+        self.datasource
+            .adult(*user_id)
+            .await
+            .map(|adult| adult.map(User))
     }
 }
 
@@ -94,12 +73,11 @@ impl AuthzBackend for Backend {
         &self,
         user: &Self::User,
     ) -> Result<HashSet<Self::Permission>, Self::Error> {
-        if user.0.name == "Ян Трояновский" {
-            Ok(HashSet::from([AdultRole::Org]))
-        } else if user.0.name == "Илья Овчинников" {
-            Ok(HashSet::from([AdultRole::Jury]))
+        let role = self.datasource.adult_role(user.id()).await?;
+        if let Some(role) = role {
+            Ok(HashSet::from([role]))
         } else {
-            unimplemented!()
+            Err(DataSourceError::AdultId(user.id()))
         }
     }
 }

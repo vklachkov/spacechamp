@@ -8,7 +8,8 @@ use axum_login::{
     tower_sessions::{MemoryStore, SessionManagerLayer},
     AuthManagerLayerBuilder,
 };
-use std::net::SocketAddr;
+use data::DataSource;
+use std::{net::SocketAddr, sync::Arc};
 
 #[derive(FromArgs)]
 /// Backend of Space Championship Admin Panel
@@ -67,13 +68,17 @@ fn hello(args: &Args) {
 }
 
 async fn run(addr: SocketAddr) {
+    let datasource = Arc::new(DataSource::new());
+
     let session_store = MemoryStore::default();
     let session_layer = SessionManagerLayer::new(session_store).with_secure(false);
 
-    let auth_backend = api::auth::Backend::new();
+    let auth_backend = api::auth::Backend::new(datasource.clone());
     let auth_layer = AuthManagerLayerBuilder::new(auth_backend, session_layer).build();
 
-    let app = Router::new().nest("/api/v1", api::v1()).layer(auth_layer);
+    let app = Router::new()
+        .nest("/api/v1", api::v1(datasource))
+        .layer(auth_layer);
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 

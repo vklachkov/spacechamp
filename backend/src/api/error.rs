@@ -11,9 +11,6 @@ pub enum ApiError {
 
     #[error("data error: {0}")]
     DataSource(#[from] DataSourceError),
-
-    #[error("internal error: {0}")]
-    InternalError(Box<ApiError>),
 }
 
 impl IntoResponse for ApiError {
@@ -25,10 +22,6 @@ impl IntoResponse for ApiError {
             Self::DataSource(err) => {
                 // TODO: check error type
                 (StatusCode::BAD_REQUEST, err.to_string()).into_response()
-            }
-            Self::InternalError(err) => {
-                tracing::error!("Internal server error: {err}");
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error").into_response()
             }
         }
     }
