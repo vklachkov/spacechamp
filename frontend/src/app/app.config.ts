@@ -7,7 +7,7 @@ import { registerLocaleData } from '@angular/common';
 import ru from '@angular/common/locales/ru';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   FilterOutline,
   LogoutOutline,
@@ -21,6 +21,7 @@ import {
   LockOutline,
   DollarOutline
 } from '@ant-design/icons-angular/icons';
+import { unauthorizedInterceptor } from './interceptors/unauthorized.interceptor';
 
 registerLocaleData(ru);
 
@@ -45,6 +46,6 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(ru_RU),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([unauthorizedInterceptor]),),
   ],
 };

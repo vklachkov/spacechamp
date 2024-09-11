@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -53,14 +53,15 @@ export class LoginPage extends BaseComponent {
       .subscribe({
         next: (loginData: LoginOutput) => {
           this.localStorageService.setAuthData(loginData);
-
           this.router.navigate([ROOT_ROUTE_PATHS.Index]);
           this.isLoginLoading = false;
+          this.cdr.markForCheck();
         },
         error: (err: HttpErrorResponse) => {
           this.isLoginLoading = false;
           this.notificationService.error('Ошибка', err.message ?? 'Ошибка при логине');
           console.error('Ошибка при логине: ', err);
+          this.cdr.markForCheck();
         }
       })
 

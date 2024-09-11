@@ -1,32 +1,23 @@
-<nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
+<nz-card class="jury-card" [nzBodyStyle]="{'padding': '0'}" [class.current]="currentUserId === adult.id">
     <div class="jury">
         <div class="jury__info">
-            <span nz-typography>{{ jury.name }}</span>
-            <span nz-typography nzType="secondary">{{ jury.email }}</span>
+            <span nz-typography>{{ adult.name }}</span>
+            <span nz-typography nzType="secondary">Пароль: {{ adult.password }}</span>
         </div>
 
         <div class="jury__actions">
-            <button 
-                nz-button   
-                nz-popconfirm
-                [class.evaluated]="evaluated"
-                [nzPopconfirmTitle]="evaluated 
-                    ? 'Вы уверены, что хотите превратить организатора в простого жюри? Аккаунт потеряет доступ до всех оценок' 
-                    : 'Вы уверены, что хотите сделать жюри организатором? Организаторы могут видеть информацию обо всех участниках'"
-                nzPopconfirmPlacement="bottom"
-                nzCancelText="Отмена"
-                nzOkText="Подтвердить"
-                nzOkType="danger"
-                [nzPopconfirmOverlayStyle]="{ 'width': '24em' }"
-                (nzOnConfirm)="changeEvaluated()"
-            >
-                <span class="star" nz-icon nzType="star" [nzTheme]="evaluated ? 'fill' : 'outline'"></span>
-            </button>
+            <span 
+                class="star" 
+                [class.org]="adult.role === AdultRole.Organizer" 
+                nz-icon 
+                nzType="star" 
+                [nzTheme]="adult.role === AdultRole.Organizer ? 'fill' : 'outline'">
+            </span>
 
             <button 
                 nz-button
                 nz-popconfirm
-                [nzPopconfirmTitle]="evaluated 
+                [nzPopconfirmTitle]="adult.role === AdultRole.Organizer 
                     ? 'Вы уверены, что хотите удалить организатора? Его нельзя будет восстановить' 
                     : 'Вы уверены, что хотите удалить жюри? Его нельзя будет восстановить'"
                 nzPopconfirmPlacement="bottom"

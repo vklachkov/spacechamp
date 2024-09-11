@@ -14,11 +14,7 @@ export function organizerGuard(): CanActivateFn {
       inject(LocalStorageService);
     const router: Router = inject(Router);
 
-    // TODO: надо валидировать токен по нормальному
-    if (
-      localStorageService.getToken() &&
-      localStorageService.getRole() === Role.Organizer
-    ) {
+    if (localStorageService.getRole() === Role.Organizer) {
       return true;
     }
 

@@ -1,5 +1,6 @@
 <nz-layout class="app-layout">
     <nz-header>
+        <!-- TODO: вынести шапку -->
         <h3 nz-typography>Аккаунты</h3>
 
         <button nz-button (click)="goToLogin()">
@@ -8,18 +9,20 @@
         </button>
     </nz-header>
 
-    <nz-content class="list">
-        <button nz-button nzType="primary" class="add-button" (click)="openAddModal()">
-            <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
-            Добавить
-        </button>
+    <nz-spin [nzSpinning]="isAdultsLoading">
+        <nz-content class="list">
+            <button nz-button nzType="primary" class="add-button" (click)="openAddModal()">
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Добавить
+            </button>
 
-        <p nz-typography class="note">
-            <span class="star" nz-icon nzType="star" nzTheme="fill"></span> является организатором
-        </p>
+            <p nz-typography class="note">
+                <span class="star" nz-icon nzType="star" nzTheme="fill"></span> является организатором
+            </p>
 
-        @for (jury of jury$ | async; track jury.id) {
-            <app-jury-card [jury]="jury" (removed)="removeJury(jury.id)"></app-jury-card>
-        }
-    </nz-content>
+            @for (adult of adults; track adult.id) {
+                <app-jury-card [adult]="adult" (removed)="removeAdult(adult.id)"></app-jury-card>
+            }
+        </nz-content>
+    </nz-spin>
 </nz-layout>

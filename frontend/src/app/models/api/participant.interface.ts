@@ -16,7 +16,7 @@ export interface Participant {
 export type Answers = Record<string, string>;
 
 // Оценки (ключ - идентификатор жюри, значение - оценка жюри)
-export type Rates = Record<number, JuryRate>;
+export type Rates = Record<number, JuryRate | null>;
 
 // Информация об участнике
 export interface ParticipantInfo {
@@ -24,14 +24,16 @@ export interface ParticipantInfo {
   name: string;
   // Фотография
   photoUrl: string;
-  // Город, регион
-  location: string;
+  // Город
+  city: string;
+  // Район
+  district: string;
   // Номер телефона
   phoneNumber: string;
   // Адрес электронной почты
   email: string;
   // Образовательная организация
-  org: string;
+  edu_org: string;
 }
 
 // Оценка жюри

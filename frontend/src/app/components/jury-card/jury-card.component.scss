@@ -6,6 +6,16 @@
     justify-content: space-between;
     align-items: center;
 
+    &-card {
+        &.current {
+            pointer-events: none;
+
+            .jury {
+                background-color: var(--blue-background);
+            }
+        }
+    }
+
     &__info {
         display: flex;
         flex-direction: column;
@@ -14,14 +24,12 @@
 
     &__actions {
         display: flex;
-        gap: .5em;
+        gap: 1em;
 
-        button {
-            &.evaluated {
-                .star {
-                    color: var(--star-color);
-                }
-            }   
+        .star {
+            &.org {
+                color: var(--star-color);
+            }
         }
     } 
 }

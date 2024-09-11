@@ -6,8 +6,7 @@ import { NzModalFooterDirective, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
 import { FormGroupType, FormGroupValue } from './evaluate-application-modal';
-import { Jury } from '../../models/jury';
-import { JuriScore } from '../../models/participant';
+import { JuryRate } from '../../models/api/participant.interface';
 
 @Component({
   selector: 'app-evaluate-application-modal',
@@ -33,9 +32,9 @@ export class EvaluateApplicationModalComponent {
     comment: new FormControl<string | null>(null)
   });
 
-  private readonly modalRef: NzModalRef<undefined, JuriScore> = inject(NzModalRef);
+  private readonly modalRef: NzModalRef<undefined, JuryRate> = inject(NzModalRef);
 
-  close(data?: JuriScore): void {
+  close(data?: JuryRate): void {
     this.modalRef.close(data);
   }
 

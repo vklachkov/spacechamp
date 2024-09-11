@@ -1,18 +1,38 @@
 <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
-    <div id="card-content" [class]="viewType === ViewType.Grid ? 'tile' : 'item'">
+    <div id="card-content" [class]="view === View.Grid ? 'tile' : 'item'">
         @if (participant.info) {
-            <nz-avatar id="avatar" [nzSize]="72" [nzSrc]="participant.info!.photoUrl"></nz-avatar>
+            <nz-avatar id="avatar" [nzSize]="72" [nzSrc]="participant.info.photoUrl"></nz-avatar>
     
             <div id="info">
-                <h3 id="name">{{ participant.info!.name }}</h3>
+                <h3 id="name">{{ participant.info.name }}</h3>
             
                 <p id="location">
-                    {{ participant.info!.org }}, {{ participant.info!.location }}
+                    {{ participant.info.edu_org }}, {{ participant.info.city }}, {{ participant.info.district }}
                 </p>
             
-                <p id="status" class="{{ participant.scores[1] !== undefined ? 'have-scores' : 'no-scores' }}">
-                    {{ participant.scores[1] !== undefined ? "Часть жюри оценили" : "Нет оценок жюри" }}
-                </p>
+
+                @switch (status) {
+                    @case (ParticipantStatus.InTeam) {
+                        <p id="status" class="in-team">
+                            Находится в команде
+                        </p>
+                    }
+                    @case (ParticipantStatus.NotRated) {
+                        <p id="status" class="not-rated">
+                            Без оценок
+                        </p>
+                    }
+                    @case (ParticipantStatus.PartiallyRated) {
+                        <p id="status" class="partially-rated">
+                            Частично оценен
+                        </p>
+                    }
+                    @case (ParticipantStatus.FullRated) {
+                        <p id="status" class="full-rated">
+                            Полностью оценен
+                        </p>
+                    }
+                }
             </div>
         }
         @else {

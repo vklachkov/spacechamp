@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { LoginOutput } from '../models/api/login-output.interface';
-import { TOKEN_KEY } from '../models/token-key.constant';
 import { ROLE_KEY } from '../models/role-key.constant';
 import { Role } from '../models/api/role.enum';
 
@@ -13,7 +12,7 @@ export class LocalStorageService {
   }
 
   private getItem<T>(key: string): T {
-    return <T>localStorage.getItem(key);
+    return <T>JSON.parse(<string>localStorage.getItem(key));
   }
 
   private clear(): void {
@@ -21,12 +20,7 @@ export class LocalStorageService {
   }
 
   setAuthData(data: LoginOutput): void {
-    this.setItem<string>(TOKEN_KEY, data.token);
     this.setItem<string>(ROLE_KEY, data.role);
-  }
-
-  getToken(): string {
-    return this.getItem<string>(TOKEN_KEY);
   }
 
   getRole(): Role {

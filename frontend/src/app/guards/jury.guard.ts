@@ -14,11 +14,7 @@ export function juryGuard(): CanActivateFn {
       inject(LocalStorageService);
     const router: Router = inject(Router);
 
-    // TODO: надо валидировать токен по нормальному
-    if (
-      localStorageService.getToken() &&
-      localStorageService.getRole() === Role.Jury
-    ) {
+    if (localStorageService.getRole() === Role.Jury) {
       return true;
     }
 

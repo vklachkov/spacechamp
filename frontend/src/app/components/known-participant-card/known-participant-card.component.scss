@@ -45,12 +45,20 @@ p, h3 {
     font-size: small;
 }
 
-// TODO: Вынести цвета в переменные.
-#status.no-scores {
-    color: #ff2400;
-}
+#status {
+    &.in-team {
+        color: var(--in-team-color);
+    }
 
-// TODO: Вынести цвета в переменные.
-#status.have-scores {
-    color: blueviolet;
+    &.not-rated {
+        color: var(--not-rated-color);
+    }
+
+    &.partially-rated {
+        color: var(--partially-rated-color);
+    }
+
+    &.full-rated {
+        color: var(--full-rated-color);
+    }
 }

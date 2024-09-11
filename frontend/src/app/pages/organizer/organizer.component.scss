@@ -28,8 +28,13 @@ nz-header {
   align-items: center;
 }
 
-#filter-options {
+#filter-button {
   margin-left: 1em;
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
 }
 
 #view-button {
@@ -52,6 +57,7 @@ nz-content {
 nz-content.grid {
   display: flex;
   justify-content: center;
+  align-items: baseline;
   gap: 1em;
   flex-wrap: wrap;
   overflow-y: scroll;
