@@ -26,7 +26,7 @@ pub enum AdultRole {
 #[derive(Clone, Debug, Serialize)]
 pub struct Participant {
     pub id: ParticipantId,
-    pub jury_id: Option<AdultId>,
+    pub jury: Option<Adult>,
     pub info: ParticipantInfo,
     pub answers: HashMap<String, String>,
     pub rates: HashMap<AdultId, Option<ParticipantRate>>,

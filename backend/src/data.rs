@@ -32,10 +32,10 @@ impl DataSource {
                     ParticipantId(1),
                     Participant {
                         id: ParticipantId(1),
-                        jury_id: None,
+                        jury: None,
                         info: ParticipantInfo {
                             name: "name".to_owned(),
-                            photo_url: "photo_url".to_owned(),
+                            photo_url: "https://http.cat/images/102.jpg".to_owned(),
                             city: "city".to_owned(),
                             district: "district".to_owned(),
                             phone_number: "phone_number".to_owned(),
@@ -50,10 +50,10 @@ impl DataSource {
                     ParticipantId(2),
                     Participant {
                         id: ParticipantId(2),
-                        jury_id: None,
+                        jury: None,
                         info: ParticipantInfo {
                             name: "eman".to_owned(),
-                            photo_url: "photo_url".to_owned(),
+                            photo_url: "https://http.cat/images/102.jpg".to_owned(),
                             city: "city".to_owned(),
                             district: "district".to_owned(),
                             phone_number: "phone_number".to_owned(),
@@ -108,12 +108,22 @@ impl DataSource {
         jury_id: Option<AdultId>,
     ) -> Result<(), DataSourceError> {
         let mut participants = self.participants.lock().await;
+        let adults = self.adults.lock().await;
 
         let Some(participant) = participants.get_mut(&id) else {
             return Err(DataSourceError::ParticipantId(id));
         };
 
-        participant.jury_id = jury_id;
+        let Some(jury_id) = jury_id else {
+            participant.jury = None;
+            return Ok(());
+        };
+
+        let Some(adult) = adults.get(&jury_id).cloned() else {
+            return Err(DataSourceError::AdultId(jury_id));
+        };
+
+        participant.jury = Some(adult);
 
         Ok(())
     }

@@ -25,7 +25,6 @@ pub struct SetParticipantCommandPayload {
 
 #[derive(Deserialize)]
 pub struct SetParticipantRate {
-    pub id: ParticipantId,
     pub rate: Option<ParticipantRate>,
 }
 

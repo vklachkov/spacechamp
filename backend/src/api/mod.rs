@@ -14,7 +14,6 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use serde_json::json;
 use std::sync::Arc;
 
 struct BackendState {
@@ -28,7 +27,7 @@ pub fn v1() -> Router {
 
     Router::new()
         .route("/login", post(login))
-        .route("/logout", get(logout))
+        .route("/logout", post(logout))
         .nest(
             "/org",
             Router::new()
@@ -72,7 +71,7 @@ async fn login(
         return StatusCode::INTERNAL_SERVER_ERROR.into_response();
     }
 
-    Json(json!({ "role": user.0.role })).into_response()
+    Json(user.0).into_response()
 }
 
 async fn logout(mut auth_session: auth::AuthSession) -> StatusCode {
@@ -143,10 +142,15 @@ async fn jury_participants(
             .participants()
             .await
             .into_iter()
-            .filter(|p| p.jury_id == Some(jury_id) || p.jury_id.is_none())
+            .filter(|p| {
+                p.jury
+                    .as_ref()
+                    .map(|jury| jury.id == jury_id)
+                    .unwrap_or(true)
+            })
             .map(|mut p| AnonymousParticipant {
                 id: p.id,
-                in_command: p.jury_id.is_some(),
+                in_command: p.jury.is_some(),
                 answers: p.answers,
                 rate: p.rates.remove(&jury_id).flatten(),
             })
@@ -163,13 +167,17 @@ async fn get_jury_participant(
 
     let mut participant = state.datasource.participant(id).await?;
 
-    if participant.jury_id != Some(jury_id) && participant.jury_id.is_some() {
+    if participant
+        .jury
+        .as_ref()
+        .is_some_and(|jury| jury.id != jury_id)
+    {
         return Err(ApiError::from(DataSourceError::ParticipantId(id)));
     }
 
     Ok(Json(AnonymousParticipant {
         id: participant.id,
-        in_command: participant.jury_id.is_some(),
+        in_command: participant.jury.is_some(),
         answers: participant.answers,
         rate: participant.rates.remove(&jury_id).flatten(),
     }))
@@ -178,13 +186,14 @@ async fn get_jury_participant(
 async fn set_participant_rate(
     auth_session: auth::AuthSession,
     State(state): State<Arc<BackendState>>,
+    Path(id): Path<ParticipantId>,
     Json(payload): Json<SetParticipantRate>,
 ) -> Result<()> {
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
     state
         .datasource
-        .set_participant_rate(payload.id, jury_id, payload.rate)
+        .set_participant_rate(id, jury_id, payload.rate)
         .await
         .map_err(Into::into)
 }
