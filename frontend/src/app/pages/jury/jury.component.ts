@@ -13,6 +13,10 @@ import { JuryService } from '../../services/jury.service';
 import { OrganizerService } from '../../services/organizer.service';
 import { Participant } from '../../models/api/participant.interface';
 import { View } from '../../models/view.enum';
+import { AuthService } from '../../services/auth.service';
+import { BaseComponent } from '../../components/base/base.component';
+import { takeUntil } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-jury-page',
@@ -33,7 +37,7 @@ import { View } from '../../models/view.enum';
   styleUrls: ['./jury.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class JuryPage implements OnInit {
+export class JuryPage extends BaseComponent implements OnInit {
   juriId: number = 1;
   View = View;
 
@@ -44,6 +48,7 @@ export class JuryPage implements OnInit {
   evaluatedParticipants: Participant[] = [];
 
   private readonly router: Router = inject(Router);
+  private readonly authService: AuthService = inject(AuthService);
 
   ngOnInit(): void {
     // this.inTeamParticipants = this.participants;
@@ -52,7 +57,16 @@ export class JuryPage implements OnInit {
   }
 
   goToLogin(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+    this.authService.logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.showErrorNotification('Ошибка при выходе', err);
+        }
+      });
   }
 
   goToApplication(id: number): void {

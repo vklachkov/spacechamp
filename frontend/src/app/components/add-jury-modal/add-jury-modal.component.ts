@@ -34,11 +34,18 @@ import { AdultRole } from '../../models/api/adult-role.enum';
 export class AddJuryModalComponent {
   form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null, [Validators.required]),
-    password: new FormControl<string | null>(null, [Validators.required]),
+    password: new FormControl<string | null>({
+      value: this.generatePassword(),
+      disabled: true
+    }, [Validators.required]),
     isOrganizer: new FormControl<boolean | null>(false),
   });
 
   private readonly modalRef: NzModalRef<undefined, Omit<Adult, 'id'>> = inject(NzModalRef);
+
+  private generatePassword(): string {
+    return Math.random().toString(36).slice(-8);
+  }
 
   close(data?: Omit<Adult, 'id'>): void {
     this.modalRef.close(data);
@@ -46,7 +53,7 @@ export class AddJuryModalComponent {
 
   add(): void {
     const { isOrganizer, ...model } = {
-      ...(<FormGroupValue>this.form.value),
+      ...(<FormGroupValue>this.form.getRawValue()),
       role: this.form.value.isOrganizer ? AdultRole.Organizer : AdultRole.Jury
     }
 

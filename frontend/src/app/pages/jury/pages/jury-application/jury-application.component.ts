@@ -11,6 +11,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../../../components/base/base.component';
 import { EvaluateApplicationModalComponent } from '../../../../components/evaluate-application-modal/evaluate-application-modal.component';
 import { AnonymousParticipant } from '../../../../models/api/anonymous-participant.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   standalone: true,
@@ -31,6 +33,7 @@ export class JuryApplicationPage extends BaseComponent {
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly modalService: NzModalService = inject(NzModalService);
+  private readonly authService: AuthService = inject(AuthService);
 
   application$!: Observable<AnonymousParticipant | null>;
 
@@ -52,7 +55,16 @@ export class JuryApplicationPage extends BaseComponent {
   }
 
   goToLogin(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+    this.authService.logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.showErrorNotification('Ошибка при выходе', err);
+        }
+      });
   }
 
   openEvaluateModal(): void {

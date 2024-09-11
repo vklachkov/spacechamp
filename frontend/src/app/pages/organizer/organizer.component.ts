@@ -19,6 +19,7 @@ import { OrganizerService } from '../../services/organizer.service';
 import { BaseComponent } from '../../components/base/base.component';
 import { View } from '../../models/view.enum';
 import { ParticipantStatus } from '../../models/participant-status.enum';
+import { AuthService } from '../../services/auth.service';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -73,6 +74,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
+  private readonly authService: AuthService = inject(AuthService);
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
@@ -145,7 +147,16 @@ export class OrganizerPage extends BaseComponent implements OnInit {
   }
 
   goToLogin(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+    this.authService.logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.showErrorNotification('Ошибка при выходе', err);
+        }
+      });
   }
 
   goToParticipant(id: number): void {

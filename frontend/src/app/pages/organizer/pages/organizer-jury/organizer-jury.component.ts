@@ -15,6 +15,7 @@ import { JuryCardComponent } from '../../../../components/jury-card/jury-card.co
 import { AddJuryModalComponent } from '../../../../components/add-jury-modal/add-jury-modal.component';
 import { BaseComponent } from '../../../../components/base/base.component';
 import { OrganizerService } from '../../../../services/organizer.service';
+import { AuthService } from '../../../../services/auth.service';
 
 // TODO: название не jury, а adult
 @Component({
@@ -41,6 +42,7 @@ export class OrganizerJuryPage extends BaseComponent implements OnInit {
   private readonly router: Router = inject(Router);
   private readonly modalService: NzModalService = inject(NzModalService);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
+  private readonly authService: AuthService = inject(AuthService);
 
   private loadAdults(): void {
     this.isAdultsLoading = true;
@@ -65,7 +67,16 @@ export class OrganizerJuryPage extends BaseComponent implements OnInit {
   }
 
   goToLogin(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+    this.authService.logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.showErrorNotification('Ошибка при выходе', err);
+        }
+      });
   }
 
   // TODO: проверить после доработки бэка

@@ -20,6 +20,7 @@ import { BaseComponent } from '../../../../components/base/base.component';
 import { Adult } from '../../../../models/api/adult.interface';
 import { AdultRole } from '../../../../models/api/adult-role.enum';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../../../services/auth.service';
 
 interface TableData {
   name: string, 
@@ -63,6 +64,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
+  private readonly authService: AuthService = inject(AuthService);
 
   private initTableData(): void {
     if (this.participant) {
@@ -172,6 +174,15 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
   }
 
   goToLogin(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+    this.authService.logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.showErrorNotification('Ошибка при выходе', err);
+        }
+      });
   }
 }
