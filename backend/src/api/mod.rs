@@ -1,6 +1,7 @@
 pub mod auth;
 mod error;
 mod payloads;
+pub mod session_store;
 
 use self::{error::*, payloads::*};
 use crate::{

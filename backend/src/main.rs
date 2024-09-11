@@ -4,12 +4,9 @@ mod domain;
 
 use argh::FromArgs;
 use axum::Router;
-use axum_login::{
-    tower_sessions::{MemoryStore, SessionManagerLayer},
-    AuthManagerLayerBuilder,
-};
+use axum_login::{tower_sessions::SessionManagerLayer, AuthManagerLayerBuilder};
 use data::DataSource;
-use std::{net::SocketAddr, sync::Arc};
+use std::{net::SocketAddr, path::PathBuf, sync::Arc};
 
 #[derive(FromArgs)]
 /// Backend of Space Championship Admin Panel
@@ -17,6 +14,10 @@ struct Args {
     #[argh(option)]
     /// bind address
     addr: SocketAddr,
+
+    #[argh(option)]
+    /// path to sessions store
+    sessions_path: PathBuf,
 
     /// enable extra logs
     #[argh(switch)]
@@ -34,7 +35,7 @@ async fn main() {
     setup_log(&args);
     hello(&args);
 
-    run(args.addr).await;
+    run(args.addr, args.sessions_path).await;
 }
 
 fn setup_log(args: &Args) {
@@ -53,10 +54,11 @@ fn setup_log(args: &Args) {
 
 fn hello(args: &Args) {
     tracing::info!(
-        "{bin} version {version}, address {address}, {verbose}",
+        "{bin} version {version}, address {address}, sessions path {sessions_path}, {verbose}",
         bin = env!("CARGO_PKG_NAME"),
         version = env!("CARGO_PKG_VERSION"),
         address = args.addr,
+        sessions_path = args.sessions_path.display(),
         verbose = if args.trace {
             "trace enabled"
         } else if args.verbose {
@@ -67,10 +69,10 @@ fn hello(args: &Args) {
     );
 }
 
-async fn run(addr: SocketAddr) {
+async fn run(addr: SocketAddr, sessions_path: PathBuf) {
     let datasource = Arc::new(DataSource::new());
 
-    let session_store = MemoryStore::default();
+    let session_store = api::session_store::JsonSessionStore::new(sessions_path).await;
     let session_layer = SessionManagerLayer::new(session_store).with_secure(false);
 
     let auth_backend = api::auth::Backend::new(datasource.clone());
