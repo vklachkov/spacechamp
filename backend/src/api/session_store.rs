@@ -42,30 +42,36 @@ impl JsonSessionStore {
     }
 
     async fn dump(&self) -> session_store::Result<()> {
-        fs::write(
-            &self.path,
-            serde_json::to_vec(&*self.store.lock().await).unwrap(),
-        )
-        .await
-        .map_err(|err| session_store::Error::Backend(err.to_string()))
+        let sessions_json = serde_json::to_vec(&*self.store.lock().await).unwrap();
+
+        fs::write(&self.path, sessions_json)
+            .await
+            .map_err(|err| session_store::Error::Backend(err.to_string()))
     }
 }
 
 #[async_trait]
 impl SessionStore for JsonSessionStore {
     async fn create(&self, record: &mut Record) -> session_store::Result<()> {
-        let mut store_guard = self.store.lock().await;
-        // Session ID collision mitigation.
-        while store_guard.contains_key(&record.id) {
-            record.id = Id::default();
+        {
+            let mut store_guard = self.store.lock().await;
+
+            // Session ID collision mitigation.
+            while store_guard.contains_key(&record.id) {
+                record.id = Id::default();
+            }
+
+            store_guard.insert(record.id, record.clone());
         }
-        store_guard.insert(record.id, record.clone());
 
         self.dump().await
     }
 
     async fn save(&self, record: &Record) -> session_store::Result<()> {
-        self.store.lock().await.insert(record.id, record.clone());
+        {
+            self.store.lock().await.insert(record.id, record.clone());
+        }
+
         self.dump().await
     }
 
@@ -80,7 +86,10 @@ impl SessionStore for JsonSessionStore {
     }
 
     async fn delete(&self, session_id: &Id) -> session_store::Result<()> {
-        self.store.lock().await.remove(session_id);
+        {
+            self.store.lock().await.remove(session_id);
+        }
+
         self.dump().await
     }
 }
