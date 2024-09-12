@@ -16,7 +16,7 @@ services:
       - backend
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.spacefest_frontend.rule=Host(`spacefest.localhost`)"
+      - "traefik.http.routers.spacefest_frontend.rule=Host(`spacechamp-org.ru`)"
       - "traefik.http.services.spacefest_frontend.loadBalancer.server.port=80"
 
   backend:
@@ -27,7 +27,7 @@ services:
       - "backend-data:/var/lib/backend"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.spacefest_backend.rule=Host(`api.spacefest.localhost`)"
+      - "traefik.http.routers.spacefest_backend.rule=Host(`api.spacechamp-org.ru`)"
       - "traefik.http.services.spacefest_backend.loadBalancer.server.port=80"
 
 volumes:
