@@ -3,10 +3,11 @@ mod data;
 mod domain;
 
 use argh::FromArgs;
-use axum::Router;
+use axum::{http::Method, Router};
 use axum_login::{tower_sessions::SessionManagerLayer, AuthManagerLayerBuilder};
 use data::DataSource;
 use std::{net::SocketAddr, path::PathBuf, sync::Arc};
+use tower_http::cors::{self, CorsLayer};
 
 #[derive(FromArgs)]
 /// Backend of Space Championship Admin Panel
@@ -78,9 +79,12 @@ async fn run(addr: SocketAddr, sessions_path: PathBuf) {
     let auth_backend = api::auth::Backend::new(datasource.clone());
     let auth_layer = AuthManagerLayerBuilder::new(auth_backend, session_layer).build();
 
+    let cors_layer = CorsLayer::very_permissive();
+
     let app = Router::new()
         .nest("/api/v1", api::v1(datasource))
-        .layer(auth_layer);
+        .layer(auth_layer)
+        .layer(cors_layer);
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
