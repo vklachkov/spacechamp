@@ -15,7 +15,7 @@ export const enum ROOT_ROUTE_PATHS {
 } 
 
 export const enum ORGANIZER_ROOT_PATHS {
-    Jury = 'jury',
+    Adults = 'adults',
     Participant = 'participant'
 }
 
@@ -36,7 +36,7 @@ export const routes: Routes = [
     },
     // Роуты для организатора
     {
-        path: ORGANIZER_ROOT_PATHS.Jury,
+        path: ORGANIZER_ROOT_PATHS.Adults,
         component: OrganizerJuryPage,
         canActivate: [organizerGuard()]
     },
@@ -51,4 +51,9 @@ export const routes: Routes = [
         component: JuryApplicationPage,
         canActivate: [juryGuard()]
     },
+    // Роуты для неизвестных путей
+    {
+        path: '**',
+        redirectTo: ROOT_ROUTE_PATHS.Index
+    }
 ];

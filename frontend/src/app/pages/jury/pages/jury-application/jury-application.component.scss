@@ -30,6 +30,15 @@ nz-header {
     display: flex;
     gap: 1em;
     align-items: center;
+
+    // Странный хак, чтобы выровнять иконки
+    nz-spin {
+      height: 32px;
+
+      button {
+        position: absolute;
+      }
+    }
   }
 
   &__name {

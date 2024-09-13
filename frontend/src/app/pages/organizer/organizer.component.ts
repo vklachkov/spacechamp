@@ -147,7 +147,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
   }
 
   goToJuryPanel(): void {
-    this.router.navigate([ORGANIZER_ROOT_PATHS.Jury]);
+    this.router.navigate([ORGANIZER_ROOT_PATHS.Adults]);
   }
 
   goToLogin(): void {
