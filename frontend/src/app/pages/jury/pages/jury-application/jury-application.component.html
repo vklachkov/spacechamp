@@ -2,11 +2,10 @@
     <nz-header>
         <header class="header">
             <div class="info">
-                <h4 nz-typography class="header__name">
-                    <strong>
-                        Заявка #{{ participant?.id ?? '' }}
-                    </strong>
-                </h4>
+                <button nz-button (click)="goToApplications()">
+                    <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+                    На главную
+                </button>
 
                 <nz-spin [nzSpinning]="isParticipantLoading">
                     @if (participant?.in_command) {
@@ -31,9 +30,15 @@
         </header>
     </nz-header>
 
-    <nz-content>    
+    <nz-content>
         @if (participant) {
-            <h4 nz-typography>Ответы</h4>
+            <h2 nz-typography class="header__name">
+                <strong>
+                    Заявка #{{ participant.id }}
+                </strong>
+            </h2>
+
+            <h3 nz-typography>Анкета</h3>
             
             <ul class="answers">
                 @for (answer of participant.answers | keyvalue; track $index) {

@@ -28,7 +28,7 @@ nz-header {
 
   .info {
     display: flex;
-    gap: 2em;
+    gap: 1em;
     align-items: center;
   }
 
@@ -58,6 +58,6 @@ nz-content {
   }
 }
 
-h4 {
-  margin-top: 1em;
+h3 {
+  margin-top: .5em!important;
 }
