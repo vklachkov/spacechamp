@@ -129,4 +129,8 @@ export class OrganizerJuryPage extends BaseComponent implements OnInit {
         }
       });
   }
+
+  goToParticipants(): void {
+    this.router.navigate([ROOT_ROUTE_PATHS.Index]);
+  }
 }

@@ -8,8 +8,6 @@
 
     &-card {
         &.current {
-            pointer-events: none;
-
             .jury {
                 border: 2px solid var(--primary-ng-zorro);
             }
@@ -20,16 +18,15 @@
         display: flex;
         flex-direction: column;
         gap: .1em;
+
+        .star {
+            color: var(--star-color);
+            margin-left: 0.3em;
+        }
     }
 
     &__actions {
         display: flex;
         gap: 1em;
-
-        .star {
-            &.org {
-                color: var(--star-color);
-            }
-        }
     } 
 }

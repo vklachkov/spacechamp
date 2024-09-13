@@ -1,7 +1,16 @@
 <nz-layout class="app-layout">
     <nz-header>
-        <!-- TODO: вынести шапку -->
-        <h3 nz-typography>Аккаунты</h3>
+        <div class="left">
+            <button nz-button (click)="goToParticipants()">
+                <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+                На главную
+            </button>
+
+            <button nz-button nzType="primary" class="add-button" (click)="openAddModal()">
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Добавить аккаунт
+            </button>
+        </div>
 
         <button nz-button (click)="goToLogin()">
             <span nz-icon nzType="logout" nzTheme="outline"></span>
@@ -11,15 +20,6 @@
 
     <nz-spin [nzSpinning]="isAdultsLoading">
         <nz-content class="list">
-            <button nz-button nzType="primary" class="add-button" (click)="openAddModal()">
-                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
-                Добавить
-            </button>
-
-            <p nz-typography class="note">
-                <span class="star" nz-icon nzType="star" nzTheme="fill"></span> является организатором
-            </p>
-
             @for (adult of adults; track adult.id) {
                 <app-jury-card [adult]="adult" (removed)="removeAdult(adult.id)"></app-jury-card>
             }

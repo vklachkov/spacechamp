@@ -57,6 +57,15 @@ nz-content {
 
 nz-content {
   background-color: var(--primary-background);
+
+  & > app-known-participant-card {
+    transition: box-shadow .15s ease-in-out;
+
+    &:hover {
+      box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
+      cursor: pointer;
+    }
+  }
 }
 
 nz-content.grid {
@@ -71,13 +80,6 @@ nz-content.grid {
 
 nz-content.grid > app-known-participant-card {
   width: 24em;
-
-  transition: box-shadow .15s ease-in-out;
-
-  &:hover {
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
-    cursor: pointer;
-  }
 }
 
 nz-content.list {

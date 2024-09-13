@@ -7,7 +7,7 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { combineLatest, delay, EMPTY, forkJoin, map, Observable, of, switchMap, take, takeUntil } from 'rxjs';
-import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
+import { ORGANIZER_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../../../app.routes';
 import { NzTabComponent, NzTabSetComponent } from 'ng-zorro-antd/tabs';
 import { NzCardComponent } from 'ng-zorro-antd/card';
 import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
@@ -45,6 +45,8 @@ interface TableData {
     NzOptionComponent,
     NzTableModule,
     NzSpinComponent,
+    NzButtonComponent,
+    NzIconModule,
     FormsModule,
     ReactiveFormsModule,
     AsyncPipe,
@@ -187,5 +189,9 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
           this.showErrorNotification('Ошибка при выходе', err);
         }
       });
+  }
+
+  goToParticipants(): void {
+    this.router.navigate([ROOT_ROUTE_PATHS.Index]);
   }
 }

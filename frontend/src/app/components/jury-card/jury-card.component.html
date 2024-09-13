@@ -1,19 +1,26 @@
 <nz-card class="jury-card" [nzBodyStyle]="{'padding': '0'}" [class.current]="userId === adult.id">
     <div class="jury">
         <div class="jury__info">
-            <span nz-typography>{{ adult.name }}</span>
+            <span nz-typography>
+                {{ adult.name }}
+
+                @if (adult.role === AdultRole.Organizer) {
+                    <span
+                        class="star"
+                        nz-icon 
+                        nzType="star" 
+                        nzTheme="fill"
+                        nz-popover
+                        nzPopoverContent="Является организатором"
+                    >
+                    </span>
+                }
+                
+            </span>
             <span nz-typography nzType="secondary">Пароль: {{ adult.password }}</span>
         </div>
 
         <div class="jury__actions">
-            <span 
-                class="star" 
-                [class.org]="adult.role === AdultRole.Organizer" 
-                nz-icon 
-                nzType="star" 
-                [nzTheme]="adult.role === AdultRole.Organizer ? 'fill' : 'outline'">
-            </span>
-
             <button 
                 nz-button
                 nz-popconfirm
