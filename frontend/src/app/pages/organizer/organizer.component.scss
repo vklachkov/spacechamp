@@ -62,7 +62,7 @@ nz-content {
     transition: box-shadow .15s ease-in-out;
 
     &:hover {
-      box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
+      box-shadow: var(--hover-box-shadow);
       cursor: pointer;
     }
   }

@@ -7,11 +7,14 @@
 :root {
     --primary-background: #f6f7f8;
     --primary-ng-zorro: #6c5994;
+    --primary-ng-zorro-rgb: 108, 89, 148;
     --star-color: #ffdd2d;
     --white: #fff;
     --red: #e9202a;
 
     --logo-width: 256px;
+
+    --hover-box-shadow: 0 0 0 2px rgba(var(--primary-ng-zorro-rgb), .6);
 
     --in-team-color: #062ffa;
     --not-rated-color: #ff2400;

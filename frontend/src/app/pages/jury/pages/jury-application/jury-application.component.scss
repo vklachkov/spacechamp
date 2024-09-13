@@ -52,6 +52,12 @@ nz-content {
     background-color: var(--white);
     padding: 1em;
 
+    p {
+      &:last-child {
+        margin-bottom: 0;
+      }  
+    }
+
     &:not(:last-child) {
       margin-bottom: 0.5em;
     }
