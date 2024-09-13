@@ -38,9 +38,11 @@ pub struct ParticipantInfo {
     pub photo_url: String,
     pub city: String,
     pub district: String,
+    pub edu_org: String,
     pub phone_number: String,
     pub email: String,
-    pub edu_org: String,
+    pub responsible_adult_name: String,
+    pub responsible_adult_phone_number: String,
 }
 
 #[derive(Clone, Debug, Serialize)]

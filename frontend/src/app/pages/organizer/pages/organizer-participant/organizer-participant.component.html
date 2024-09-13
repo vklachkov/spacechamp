@@ -5,7 +5,7 @@
             На главную
         </button>
 
-        <h3 nz-typography>{{ participant?.info?.name ?? '' }}</h3>
+        <h3 nz-typography>{{ participant?.info?.name?.split(' ')?.slice(0,2)?.join(' ') ?? '' }}</h3>
 
         <button nz-button (click)="goToLogin()">
             <span nz-icon nzType="logout" nzTheme="outline"></span>
@@ -25,23 +25,33 @@
                                 
                                 <div id="card-info">
                                     <p nz-typography>
-                                        <span nz-typography><strong>Имя:</strong></span> {{ participant.info.name }}
+                                        <span nz-typography><strong>ФИО:</strong></span>
+                                        {{ participant.info.name }}
                                     </p>
 
                                     <p nz-typography>
-                                        <span nz-typography><strong>Город:</strong></span> {{ participant.info.city }}
+                                        <span nz-typography><strong>Откуда:</strong></span>
+                                        {{ participant.info.city }}, {{ participant.info.district }}
                                     </p>
 
                                     <p nz-typography>
-                                        <span nz-typography><strong>Телефон:</strong></span> {{ participant.info.phone_number }}
+                                        <span nz-typography><strong>Организация:</strong></span>
+                                        {{ participant.info.edu_org }}
                                     </p>
 
                                     <p nz-typography>
-                                        <span nz-typography><strong>Почта:</strong></span> {{ participant.info.email }}
+                                        <span nz-typography><strong>Контакты участника:</strong></span>
+                                        {{ participant.info.phone_number }}, {{ participant.info.email }}
                                     </p>
 
                                     <p nz-typography>
-                                        <span nz-typography><strong>Организация:</strong></span> {{ participant.info.edu_org }}
+                                        <span nz-typography><strong>ФИО родителя / наставника:</strong></span>
+                                        {{ participant.info.responsible_adult_name }}
+                                    </p>
+
+                                    <p nz-typography>
+                                        <span nz-typography><strong>Номер телефона родителя / наставника:</strong></span>
+                                        {{ participant.info.responsible_adult_phone_number }}
                                     </p>
                                 </div>
                             </div>

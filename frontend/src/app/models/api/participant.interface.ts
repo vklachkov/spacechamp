@@ -22,20 +22,24 @@ export type Rates = Record<number, JuryRate | null>;
 
 // Информация об участнике
 export interface ParticipantInfo {
-  // Имя
+  // ФИО
   name: string;
-  // Фотография
+  // Ссылка на фотографию
   photo_url: string;
   // Город
   city: string;
-  // Район
+  // Регион
   district: string;
+  // Образовательная организация
+  edu_org: string;
   // Номер телефона
   phone_number: string;
   // Адрес электронной почты
   email: string;
-  // Образовательная организация
-  edu_org: string;
+  // ФИО родителя / наставника
+  responsible_adult_name: string,
+  // Номер телефона родителя / наставника
+  responsible_adult_phone_number: string,
 }
 
 // Оценка жюри
