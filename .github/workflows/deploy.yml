@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [ "develop" ]
-    types: [closed]
+    # types: [closed]
     paths:
       - "frontend/**"
       - ".github/workflows/**"
@@ -38,15 +38,23 @@ jobs:
       uses: ASzc/change-string-case-action@v5
       with:
         string: ${{ github.repository }}
-    - name: Build and push Docker image
+    - name: Build and push Frontend Docker image
       uses: docker/build-push-action@v5
       with:
         context: ./frontend
         file: ./frontend/Dockerfile
         push: true
-        tags: ${{ steps.meta.outputs.tags }},${{ env.REGISTRY }}/${{ steps.formatting.outputs.lowercase }}:latest
+        tags: ${{ steps.meta.outputs.tags }},${{ env.REGISTRY }}/${{ steps.formatting.outputs.lowercase }}-frontend:${{env.IMAGE_TAG}}
         labels: ${{ steps.meta.outputs.labels }}
-        
+    - name: Build and push Backend Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        file: ./backend/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }},${{ env.REGISTRY }}/${{ steps.formatting.outputs.lowercase }}-backend:${{env.IMAGE_TAG}}
+        labels: ${{ steps.meta.outputs.labels }}
+  # TODO: убрать хардкоды из путей и тд
   deploy:
     needs: [publish-image]
     runs-on: ubuntu-latest
@@ -60,17 +68,32 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: docker stop $(docker ps -a -q)
-      - name: Pull latest image version
+      - name: Pull latest frontend image version
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          script: docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{env.IMAGE_TAG}}
+          script: docker pull ${{ env.REGISTRY }}/${{ github.repository }}-frontend:${{env.IMAGE_TAG}}
+      - name: Pull latest backend image version
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: docker pull ${{ env.REGISTRY }}/${{ github.repository }}-backend:${{env.IMAGE_TAG}}
+      - name: Copy docker compose config to remote server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          source: "docker-compose.prod.yml"
+          target: /tmp
       - name: Run container
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          script: docker run -d --network host ${{ env.REGISTRY }}/${{ github.repository }}:${{env.IMAGE_TAG}}
+          script: docker compose -f /tmp/docker-compose.prod.yml up -d

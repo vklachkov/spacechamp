@@ -1,0 +1,31 @@
+services:
+  reverse-proxy:
+    image: traefik:v3.1
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "80:80"
+      - "4080:8080"
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+
+  # TODO: убрать хардкод на образ 
+  frontend:
+    image: ghcr.io/vklachkov/space-fest-ui-frontend:latest
+    depends_on:
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spacefest_frontend.rule=Host(`spacechamp-org.ru`)"
+      - "traefik.http.services.spacefest_frontend.loadBalancer.server.port=80"
+
+  backend:
+    image: ghcr.io/vklachkov/space-fest-ui-backend:latest
+    volumes:
+      - "backend-data:/var/lib/backend"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spacefest_backend.rule=Host(`api.spacechamp-org.ru`)"
+      - "traefik.http.services.spacefest_backend.loadBalancer.server.port=80"
+
+volumes:
+  backend-data:
