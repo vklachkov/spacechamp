@@ -6,14 +6,40 @@
 
 :root {
     --primary-background: #f6f7f8;
-    --primary-ng-zorro: #1890ff;
+    --primary-ng-zorro: #6c5994;
+    --primary-ng-zorro-rgb: 108, 89, 148;
     --star-color: #ffdd2d;
     --white: #fff;
+    --red: #e9202a;
 
     --logo-width: 256px;
+
+    --hover-box-shadow: 0 0 0 2px rgba(var(--primary-ng-zorro-rgb), .6);
 
     --in-team-color: #062ffa;
     --not-rated-color: #ff2400;
     --partially-rated-color: #ffa500;
     --full-rated-color: #419d48;
+}
+
+@font-face {
+    font-family: 'TTOctosquares';
+    font-style: normal;
+    font-weight: 600;
+    src: url(https://static.tildacdn.com/tild3066-6139-4933-a230-356266346333/TTOctosquares-Medium.woff) format('woff');
+}
+
+h1, h2, h3, h4, h5, h6, button {
+    font-family: 'TTOctosquares', sans-serif!important;
+    font-weight: 600;
+}
+
+// Патч для кнопок с иконками (чтобы иконки были по центру)
+
+button[nz-button] {
+    line-height: 1;
+
+    span[nz-icon] {
+        height: 14px;
+    }
 }

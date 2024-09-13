@@ -22,7 +22,8 @@ import {
   DollarOutline,
   EyeOutline,
   EyeInvisibleOutline,
-  ArrowLeftOutline
+  ArrowLeftOutline,
+  RocketOutline
 } from '@ant-design/icons-angular/icons';
 import { unauthorizedInterceptor } from './interceptors/unauthorized.interceptor';
 
@@ -47,7 +48,8 @@ export const appConfig: ApplicationConfig = {
       DollarOutline,
       EyeOutline,
       EyeInvisibleOutline,
-      ArrowLeftOutline
+      ArrowLeftOutline,
+      RocketOutline
     ]),
     provideNzI18n(ru_RU),
     importProvidersFrom(FormsModule),

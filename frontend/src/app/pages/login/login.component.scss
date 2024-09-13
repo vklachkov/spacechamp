@@ -1,6 +1,6 @@
 .login {
   height: 100vh;
-  background-color: var(--primary-background);
+  background-color: var(--primary-ng-zorro);
 
   display: flex;
   flex-direction: column;
@@ -21,6 +21,15 @@
       margin: 0 auto;
       display: block;
       width: 10em;
+
+      span[nz-icon] {
+        transform: rotate(45deg);
+      }
+
+      &:not([disabled]) {
+        background: var(--red);
+        border-color: var(--red);
+      }
     }
   }
 }
