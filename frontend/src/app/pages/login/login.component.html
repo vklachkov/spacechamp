@@ -1,5 +1,7 @@
 <div class="login">
-  <h1 nz-typography>Космический Чемпионат 2024</h1>
+  <div class="logo">
+    <img src="/logo.png" alt="logo">
+  </div>
 
   <nz-spin [nzSpinning]="isLoginLoading">
     <form nz-form [formGroup]="form" class="login-form" (ngSubmit)="login()">
@@ -10,21 +12,29 @@
               type="text"
               nz-input
               formControlName="name"
-              placeholder="Name"
+              placeholder="Имя"
             />
           </nz-input-group>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-control nzErrorTip="Поле является быть обязательным">
-          <nz-input-group nzPrefixIcon="lock">
+          <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate">
             <input
-              type="password"
+              [type]="isPasswordVisible ? 'text' : 'password'"
               nz-input
               formControlName="password"
-              placeholder="Password"
+              placeholder="Пароль"
             />
           </nz-input-group>
+          <ng-template #suffixTemplate>
+            <span
+              class="password-visible-icon"
+              nz-icon
+              [nzType]="isPasswordVisible ? 'eye-invisible' : 'eye'"
+              (click)="isPasswordVisible = !isPasswordVisible"
+            ></span>
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
 
