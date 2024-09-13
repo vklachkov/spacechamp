@@ -58,7 +58,7 @@ type FilterFormValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerPage extends BaseComponent implements OnInit {
-  view: View = View.Grid;
+  view!: View;
   View = View;
 
   ParticipantStatus = ParticipantStatus;
@@ -140,6 +140,8 @@ export class OrganizerPage extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.view = this.localStorageService.getView() ?? View.List;
+
     this.loadParticipants();
     this.initFilter();
   }
@@ -168,6 +170,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   changeViewType(): void {
     this.view = this.view === View.Grid ? View.List : View.Grid;
+    this.localStorageService.setView(this.view);
   }
 
   changeFilterVisible(value: boolean): void {

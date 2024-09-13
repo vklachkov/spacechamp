@@ -7,6 +7,7 @@ import { juryGuard } from './guards/jury.guard';
 import { OrganizerJuryPage } from './pages/organizer/pages/organizer-jury/organizer-jury.component';
 import { OrganizerParticipantPage } from './pages/organizer/pages/organizer-participant/organizer-participant.component';
 import { JuryApplicationPage } from './pages/jury/pages/jury-application/jury-application.component';
+import { sessionGuard } from './guards/session.guard';
 
 export const enum ROOT_ROUTE_PATHS {
     Index = '',
@@ -30,7 +31,8 @@ export const routes: Routes = [
     },
     {
         path: ROOT_ROUTE_PATHS.Login,
-        component: LoginPage
+        component: LoginPage,
+        canActivate: [sessionGuard()],
     },
     // Роуты для организатора
     {

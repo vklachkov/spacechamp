@@ -7,6 +7,7 @@ import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
 import { Adult } from '../../models/api/adult.interface';
 import { AdultRole } from '../../models/api/adult-role.enum';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { NzPopoverComponent, NzPopoverDirective } from 'ng-zorro-antd/popover';
 
 @Component({
   selector: 'app-jury-card',
@@ -16,7 +17,9 @@ import { LocalStorageService } from '../../services/local-storage.service';
     NzButtonComponent,
     NzIconModule,
     NzTypographyComponent,
-    NzPopconfirmDirective
+    NzPopconfirmDirective,
+    NzPopoverDirective,
+    NzPopoverComponent
   ],
   templateUrl: './jury-card.component.html',
   styleUrl: './jury-card.component.scss'

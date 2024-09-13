@@ -125,4 +125,8 @@ export class JuryApplicationPage extends BaseComponent {
         }
       });
   }
+
+  goToApplications(): void {
+    this.router.navigate([ROOT_ROUTE_PATHS.Index]);
+  }
 }

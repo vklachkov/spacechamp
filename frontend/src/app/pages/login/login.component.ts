@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -15,6 +15,7 @@ import { AuthService } from '../../services/auth.service';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { BaseComponent } from '../../components/base/base.component';
 import { Adult } from '../../models/api/adult.interface';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   standalone: true,
@@ -27,6 +28,7 @@ import { Adult } from '../../models/api/adult.interface';
     NzInputGroupComponent,
     NzButtonComponent,
     NzTypographyComponent,
+    NzIconModule,
     NzSpinComponent
   ],
   templateUrl: './login.component.html',
@@ -39,13 +41,19 @@ export class LoginPage extends BaseComponent {
     password: new FormControl<string | null>(null, [Validators.required])
   });
   isLoginLoading: boolean = false;
+  isPasswordVisible: boolean = false;
 
   private readonly authService: AuthService = inject(AuthService);
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly router: Router = inject(Router);
 
   login(): void {
-    const data: LoginInput = <LoginInput>this.form.value;
+    const formValue: LoginInput = <LoginInput>this.form.value;
+
+    const data: LoginInput = {
+      ...formValue,
+      name: formValue.name.trim() ?? ''
+    };
 
     this.isLoginLoading = true;
     this.authService.login(data)
@@ -59,7 +67,12 @@ export class LoginPage extends BaseComponent {
         },
         error: (err: HttpErrorResponse) => {
           this.isLoginLoading = false;
-          this.notificationService.error('Ошибка', err.message ?? 'Ошибка при логине');
+
+          const errorMessage: string = err.status === HttpStatusCode.Unauthorized
+            ? 'Неправильный логин или пароль'
+            :  err.message ?? 'Ошибка при логине';
+
+          this.notificationService.error('Ошибка', errorMessage);
           console.error('Ошибка при логине: ', err);
           this.cdr.markForCheck();
         }

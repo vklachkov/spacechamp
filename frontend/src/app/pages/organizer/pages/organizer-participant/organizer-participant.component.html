@@ -1,6 +1,11 @@
 <nz-layout class="app-layout">
     <nz-header>
-        <h3 nz-typography>Участник</h3>
+        <button nz-button (click)="goToParticipants()">
+            <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+            На главную
+        </button>
+
+        <h3 nz-typography>{{ participant?.info?.name ?? '' }}</h3>
 
         <button nz-button (click)="goToLogin()">
             <span nz-icon nzType="logout" nzTheme="outline"></span>
@@ -12,7 +17,7 @@
     <nz-spin [nzSpinning]="isDataLoading">
         @if (participant) {
             <nz-content class="info">
-                <nz-tabset nzCentered>
+                <nz-tabset>
                     <nz-tab nzTitle="Анкета">
                         <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
                             <div class="participant">
