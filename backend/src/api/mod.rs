@@ -176,7 +176,7 @@ async fn get_jury_participant(
 ) -> Result<Json<AnonymousParticipant>> {
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
-    let mut participant = state.datasource.participant(id).await?;
+    let participant = state.datasource.participant(id).await?;
 
     if participant
         .jury

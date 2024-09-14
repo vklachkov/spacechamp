@@ -1,3 +1,3 @@
 export const environment = {
-  API_URL: 'http://spacechamp-org.ru/api/v1'
+  API_URL: 'https://spacechamp-org.ru/api/v1'
 }

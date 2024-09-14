@@ -3,11 +3,12 @@ mod data;
 mod domain;
 
 use argh::FromArgs;
-use axum::{http::Method, Router};
+use axum::Router;
 use axum_login::{tower_sessions::SessionManagerLayer, AuthManagerLayerBuilder};
 use data::DataSource;
 use std::{net::SocketAddr, path::PathBuf, sync::Arc};
-use tower_http::cors::{self, CorsLayer};
+use tokio::signal;
+use tower_http::cors::CorsLayer;
 
 #[derive(FromArgs)]
 /// Backend of Space Championship Admin Panel
@@ -88,5 +89,34 @@ async fn run(addr: SocketAddr, sessions_path: PathBuf) {
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown())
+        .await
+        .unwrap();
+}
+
+async fn shutdown() {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    };
+
+    tracing::info!("Shutdown server...");
 }
