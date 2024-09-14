@@ -1,5 +1,5 @@
 use crate::{
-    data::{DataSource, DataSourceError},
+    datasource::{DataSource, DataSourceError},
     domain::*,
 };
 use axum::async_trait;
@@ -59,7 +59,7 @@ impl AuthnBackend for Backend {
 
     async fn get_user(&self, user_id: &UserId<Self>) -> Result<Option<Self::User>, Self::Error> {
         self.datasource
-            .adult(*user_id)
+            .get_adult(*user_id)
             .await
             .map(|adult| adult.map(User))
     }
@@ -73,7 +73,7 @@ impl AuthzBackend for Backend {
         &self,
         user: &Self::User,
     ) -> Result<HashSet<Self::Permission>, Self::Error> {
-        let role = self.datasource.adult_role(user.id()).await?;
+        let role = self.datasource.get_adult_role(user.id()).await?;
         if let Some(role) = role {
             Ok(HashSet::from([role]))
         } else {

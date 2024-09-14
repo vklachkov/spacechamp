@@ -1,14 +1,14 @@
 mod api;
-mod data;
+mod datasource;
 mod domain;
 
 use argh::FromArgs;
 use axum::Router;
 use axum_login::{tower_sessions::SessionManagerLayer, AuthManagerLayerBuilder};
-use data::DataSource;
+use datasource::DataSource;
 use std::{net::SocketAddr, path::PathBuf, sync::Arc};
 use tokio::signal;
-use tower_http::cors::CorsLayer;
+use tower_http::cors::{self, CorsLayer};
 
 #[derive(FromArgs)]
 /// Backend of Space Championship Admin Panel

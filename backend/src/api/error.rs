@@ -1,4 +1,4 @@
-use crate::data::DataSourceError;
+use crate::datasource::DataSourceError;
 use axum::{http::StatusCode, response::IntoResponse};
 use thiserror::Error;
 

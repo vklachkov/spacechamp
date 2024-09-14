@@ -5,7 +5,7 @@ pub mod session_store;
 
 use self::{error::*, payloads::*};
 use crate::{
-    data::{DataSource, DataSourceError},
+    datasource::{DataSource, DataSourceError},
     domain::*,
 };
 use axum::{
@@ -85,14 +85,18 @@ async fn logout(mut auth_session: auth::AuthSession) -> StatusCode {
 async fn all_participants(
     State(state): State<Arc<BackendState>>,
 ) -> Result<Json<Vec<Participant>>> {
-    Ok(Json(state.datasource.participants().await?))
+    Ok(Json(state.datasource.get_all_participants().await?))
 }
 
 async fn get_participant(
     State(state): State<Arc<BackendState>>,
     Path(id): Path<ParticipantId>,
 ) -> Result<Json<Participant>> {
-    Ok(Json(state.datasource.participant(id).await?))
+    if let Some(participant) = state.datasource.get_participant(id).await? {
+        Ok(Json(participant))
+    } else {
+        Err(ApiError::DataSource(DataSourceError::ParticipantId(id)))
+    }
 }
 
 async fn set_participant_command(
@@ -108,7 +112,7 @@ async fn set_participant_command(
 }
 
 async fn adults(State(state): State<Arc<BackendState>>) -> Result<Json<Vec<Adult>>> {
-    Ok(Json(state.datasource.adults().await?))
+    Ok(Json(state.datasource.get_all_adults().await?))
 }
 
 async fn create_adult(
@@ -150,7 +154,7 @@ async fn jury_participants(
     Ok(Json(
         state
             .datasource
-            .participants()
+            .get_all_participants()
             .await?
             .into_iter()
             .filter(|p| {
@@ -176,7 +180,9 @@ async fn get_jury_participant(
 ) -> Result<Json<AnonymousParticipant>> {
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
-    let participant = state.datasource.participant(id).await?;
+    let Some(participant) = state.datasource.get_participant(id).await? else {
+        return Err(ApiError::DataSource(DataSourceError::ParticipantId(id)));
+    };
 
     if participant
         .jury
