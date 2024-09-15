@@ -34,10 +34,6 @@
                     <label nz-radio [nzValue]="ParticipantStatus.InTeam">В команде</label>
                 </nz-radio-group>
               </ng-template>
-
-            <button nz-button nzType="dashed" id="view-button" (click)="changeViewType()">
-                <span nz-icon [nzType]="view === View.Grid ? 'bars' : 'appstore'" nzTheme="outline"></span>
-            </button>
         </div>
 
         <div id="actions-bar">
@@ -54,11 +50,10 @@
     </nz-header>
 
     <nz-spin [nzSpinning]="isParticipantsLoading">
-        <nz-content [class]="view">
+        <nz-content>
             @for (participant of participants; track participant.id) {
                 <app-known-participant-card 
-                    [participant]="participant" 
-                    [view]="view"
+                    [participant]="participant"
                     (click)="goToParticipant(participant.id)"
                 ></app-known-participant-card>
             }

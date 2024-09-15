@@ -56,9 +56,14 @@ nz-content {
 }
 
 nz-content {
+  display: block;
+  overflow-y: scroll;
+  padding: 2em;
   background-color: var(--primary-background);
 
   & > app-known-participant-card {
+    display: block;
+    margin-bottom: .5em;
     transition: box-shadow .15s ease-in-out;
 
     &:hover {
@@ -66,29 +71,4 @@ nz-content {
       cursor: pointer;
     }
   }
-}
-
-nz-content.grid {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 1em;
-  flex-wrap: wrap;
-  overflow-y: scroll;
-  padding: 2em;
-}
-
-nz-content.grid > app-known-participant-card {
-  width: 24em;
-}
-
-nz-content.list {
-  display: block;
-  overflow-y: scroll;
-  padding: 2em;
-}
-
-nz-content.list > app-known-participant-card {
-  display: block;
-  margin-bottom: .5em;
 }

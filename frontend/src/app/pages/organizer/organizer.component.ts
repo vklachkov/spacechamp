@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, map, Observable, of, startWith, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -17,7 +17,6 @@ import { JuryRate, Participant } from '../../models/api/participant.interface';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { OrganizerService } from '../../services/organizer.service';
 import { BaseComponent } from '../../components/base/base.component';
-import { View } from '../../models/view.enum';
 import { ParticipantStatus } from '../../models/participant-status.enum';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService } from '../../services/local-storage.service';
@@ -58,9 +57,6 @@ type FilterFormValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerPage extends BaseComponent implements OnInit {
-  view!: View;
-  View = View;
-
   ParticipantStatus = ParticipantStatus;
   filterForm: FormGroup<FilterForm> = new FormGroup({
     search: new FormControl<string | null>(null),
@@ -140,8 +136,6 @@ export class OrganizerPage extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.view = this.localStorageService.getView() ?? View.List;
-
     this.loadParticipants();
     this.initFilter();
   }
@@ -166,11 +160,6 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   goToParticipant(id: number): void {
     this.router.navigate([ORGANIZER_ROOT_PATHS.Participant, id]);
-  }
-
-  changeViewType(): void {
-    this.view = this.view === View.Grid ? View.List : View.Grid;
-    this.localStorageService.setView(this.view);
   }
 
   changeFilterVisible(value: boolean): void {

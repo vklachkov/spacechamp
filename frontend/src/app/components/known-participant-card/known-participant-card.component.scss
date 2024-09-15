@@ -4,32 +4,6 @@ p, h3 {
     text-align: start;
 }
 
-#card-content.tile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2em;
-
-    #avatar {
-        margin-bottom: 0.5em;
-    }
-
-    #name {
-        margin-bottom: 0.5em;
-        text-align: center;
-        line-height: 1;
-    }
-
-    #location {
-        margin-bottom: 0.5em;
-        text-align: center;
-    }
-
-    #status {
-        text-align: center;
-    }
-}
-
 #card-content.item {
     display: flex;
     flex-direction: row;
