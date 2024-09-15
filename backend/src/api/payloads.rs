@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::domain::*;
 use serde::Deserialize;
 
@@ -16,6 +18,12 @@ impl From<LoginPayload> for auth::Credentials {
             password: payload.password,
         }
     }
+}
+
+#[derive(Deserialize)]
+pub struct NewParticipantPayload {
+    pub info: ParticipantInfo,
+    pub answers: HashMap<String, String>,
 }
 
 #[derive(Deserialize)]

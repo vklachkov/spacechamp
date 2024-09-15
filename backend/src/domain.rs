@@ -54,7 +54,7 @@ pub struct Participant {
     pub rates: HashMap<AdultId, Option<ParticipantRate>>,
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ParticipantInfo {
     pub name: String,
     pub photo_url: String,

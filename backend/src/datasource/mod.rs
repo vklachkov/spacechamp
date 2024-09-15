@@ -10,7 +10,10 @@ use self::{adults::Adults, participants::Participants, result::Result};
 use crate::domain::*;
 use diesel::{Connection, PgConnection};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
-use std::sync::{Arc, Mutex};
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations");
 
@@ -43,12 +46,28 @@ impl DataSource {
         connection
     }
 
+    pub async fn create_participant(
+        &self,
+        info: ParticipantInfo,
+        answers: HashMap<String, String>,
+    ) -> Result<()> {
+        self.participants.create(info, answers).await
+    }
+
     pub async fn get_participant(&self, id: ParticipantId) -> Result<Option<Participant>> {
         self.participants.get(id).await
     }
 
     pub async fn get_all_participants(&self) -> Result<Vec<Participant>> {
         self.participants.get_all().await
+    }
+
+    pub async fn update_participant_info(
+        &self,
+        id: ParticipantId,
+        info: ParticipantInfo,
+    ) -> Result<()> {
+        self.participants.set_info(id, info).await
     }
 
     pub async fn set_participant_command(

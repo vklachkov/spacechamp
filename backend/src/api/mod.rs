@@ -12,7 +12,7 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    routing::{delete, get, post},
+    routing::{delete, get, patch, post},
     Json, Router,
 };
 use std::sync::Arc;
@@ -31,7 +31,9 @@ pub fn v1(datasource: Arc<DataSource>) -> Router {
             "/org",
             Router::new()
                 .route("/participants", get(all_participants))
+                .route("/participant", post(create_participant))
                 .route("/participant/:id", get(get_participant))
+                .route("/participant/:id/info", patch(patch_participant_info))
                 .route("/participant/:id/command", post(set_participant_command))
                 .route("/adults", get(adults))
                 .route("/adult", post(create_adult))
@@ -88,6 +90,17 @@ async fn all_participants(
     Ok(Json(state.datasource.get_all_participants().await?))
 }
 
+async fn create_participant(
+    State(state): State<Arc<BackendState>>,
+    Json(NewParticipantPayload { info, answers }): Json<NewParticipantPayload>,
+) -> Result<()> {
+    state
+        .datasource
+        .create_participant(info, answers)
+        .await
+        .map_err(Into::into)
+}
+
 async fn get_participant(
     State(state): State<Arc<BackendState>>,
     Path(id): Path<ParticipantId>,
@@ -99,6 +112,18 @@ async fn get_participant(
             id,
         )))
     }
+}
+
+async fn patch_participant_info(
+    State(state): State<Arc<BackendState>>,
+    Path(id): Path<ParticipantId>,
+    Json(info): Json<ParticipantInfo>,
+) -> Result<()> {
+    state
+        .datasource
+        .update_participant_info(id, info)
+        .await
+        .map_err(Into::into)
 }
 
 async fn set_participant_command(
