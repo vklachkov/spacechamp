@@ -13,4 +13,7 @@ pub enum DataSourceError {
 
     #[error("adult with name `{0}` is already exists")]
     AdultName(String),
+
+    #[error("db error: {0}")]
+    DbError(#[from] diesel::result::Error),
 }

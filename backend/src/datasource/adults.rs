@@ -1,17 +1,21 @@
-use super::result::{DataSourceError, Result};
+use super::{result::Result, schema};
 use crate::domain::*;
-use std::collections::HashMap;
-use tokio::{sync::Mutex, time::Instant};
+use diesel::{
+    BoolExpressionMethods, ExpressionMethods, OptionalExtension, PgConnection, QueryDsl,
+    RunQueryDsl, SelectableHelper,
+};
+use std::{
+    str::FromStr,
+    sync::{Arc, Mutex},
+};
 
 pub(crate) struct Adults {
-    cache: Mutex<HashMap<AdultId, Adult>>,
+    conn: Arc<Mutex<PgConnection>>,
 }
 
 impl Adults {
-    pub fn new() -> Self {
-        Self {
-            cache: Mutex::new(Default::default()),
-        }
+    pub fn new(conn: Arc<Mutex<PgConnection>>) -> Self {
+        Self { conn }
     }
 
     pub async fn create(&self, name: String, password: String, role: AdultRole) -> Result<()> {

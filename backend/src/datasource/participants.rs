@@ -1,19 +1,15 @@
-use super::result::{DataSourceError, Result};
+use super::result::Result;
 use crate::domain::*;
-use std::collections::HashMap;
-use tokio::{sync::Mutex, time::Instant};
+use diesel::PgConnection;
+use std::sync::{Arc, Mutex};
 
 pub(crate) struct Participants {
-    cache: Mutex<HashMap<ParticipantId, Participant>>,
-    cache_instant: Instant,
+    conn: Arc<Mutex<PgConnection>>,
 }
 
 impl Participants {
-    pub fn new() -> Self {
-        Self {
-            cache: Default::default(),
-            cache_instant: Instant::now(),
-        }
+    pub fn new(conn: Arc<Mutex<PgConnection>>) -> Self {
+        Self { conn }
     }
 
     pub async fn get(&self, id: ParticipantId) -> Result<Option<Participant>> {
