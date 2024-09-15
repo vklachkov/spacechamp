@@ -52,7 +52,7 @@ impl AuthnBackend for Backend {
         creds: Self::Credentials,
     ) -> Result<Option<Self::User>, Self::Error> {
         self.datasource
-            .find_adult(&creds.name, &creds.password)
+            .find_adult(creds.name, creds.password)
             .await
             .map(|adult| adult.map(User))
     }

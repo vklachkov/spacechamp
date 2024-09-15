@@ -1,6 +1,6 @@
 use derive_more::Display;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::{collections::HashMap, str::FromStr};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Adult {
@@ -21,6 +21,27 @@ pub struct AdultId(pub usize);
 pub enum AdultRole {
     Org,
     Jury,
+}
+
+impl Display for AdultRole {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            Self::Org => "org",
+            Self::Jury => "jury",
+        })
+    }
+}
+
+impl FromStr for AdultRole {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "org" => Ok(Self::Org),
+            "jury" => Ok(Self::Jury),
+            _ => Err(format!("invalid adult role {s}")),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize)]

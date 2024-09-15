@@ -76,7 +76,7 @@ impl DataSource {
         self.adults.get_all().await
     }
 
-    pub async fn find_adult(&self, name: &str, password: &str) -> Result<Option<Adult>> {
+    pub async fn find_adult(&self, name: String, password: String) -> Result<Option<Adult>> {
         self.adults.find(name, password).await
     }
 
