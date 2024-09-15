@@ -44,12 +44,25 @@ nz-content {
 
   &-card {
     margin-bottom: 0.5em;
+  }
 
-    #card-info {
-      p {
-        &:last-child {
-          margin-bottom: 0;
-        }
+  &-form {
+    nz-form-item {
+      margin-bottom: .5em;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    nz-form-label {
+      min-width: 8em;
+      text-align: left;
+    }
+
+    nz-form-control {
+      input {
+        min-width: 20em;
       }
     }
   }
