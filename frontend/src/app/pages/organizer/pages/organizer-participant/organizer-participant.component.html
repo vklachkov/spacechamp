@@ -7,7 +7,7 @@
 
         <nz-spin [nzSpinning]="isDataLoading">
             @if (participant) {
-                <h3 nz-typography>{{ participant.info }}</h3>
+                <h3 nz-typography>Участник "{{ participant.code }}"</h3>
             }
         </nz-spin>
 
@@ -93,7 +93,7 @@
                             @for (answer of participant.answers | keyvalue; track $index) {
                                 <li>
                                     <h5 nz-typography>{{ answer.key }}</h5>
-                                    <p nz-typography>{{ answer.value }}</p>
+                                    <p nz-typography [class.empty-answer]="!answer.value">{{ answer.value || 'Нет ответа' }}</p>
                                 </li>
                             }
                         </ul>
