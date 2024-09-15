@@ -192,6 +192,7 @@ async fn jury_participants(
             })
             .map(|mut p| AnonymousParticipant {
                 id: p.id,
+                code: p.code,
                 in_command: p.jury.is_some(),
                 answers: p.answers,
                 rate: p.rates.remove(&jury_id).flatten(),
@@ -223,6 +224,7 @@ async fn get_jury_participant(
 
     Ok(Json(AnonymousParticipant {
         id: participant.id,
+        code: participant.code,
         in_command: participant.jury.is_some(),
         answers: participant.answers,
         rate: participant.rates.get(&jury_id).cloned().unwrap(),
