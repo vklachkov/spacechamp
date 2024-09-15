@@ -94,7 +94,7 @@ impl Participants {
                     .filter(rates::participant_id.eq(id.0))
                     .load(conn)?;
 
-                Self::group_rates(rates).remove(&id).unwrap()
+                Self::group_rates(rates).remove(&id).unwrap_or_default()
             };
 
             Ok(Some(Participant {
@@ -169,7 +169,9 @@ impl Participants {
                                     .into(),
                             ))
                         })?,
-                        rates: rates.remove(&ParticipantId(participant.id)).unwrap(),
+                        rates: rates
+                            .remove(&ParticipantId(participant.id))
+                            .unwrap_or_default(),
                     })
                 })
                 .collect()
