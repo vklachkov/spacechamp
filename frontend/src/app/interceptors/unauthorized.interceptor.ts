@@ -9,11 +9,13 @@ import {
 } from '@angular/common/http';
 import { catchError, EMPTY, Observable } from 'rxjs';
 import { ROOT_ROUTE_PATHS } from '../app.routes';
+import { LocalStorageService } from '../services/local-storage.service';
 
 export function unauthorizedInterceptor(
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> {
+  const localStorageService: LocalStorageService = inject(LocalStorageService);
   const router: Router = inject(Router);
 
   return next(req).pipe(
@@ -26,6 +28,7 @@ export function unauthorizedInterceptor(
       // Для остальных страниц перенаправляем на страницу логина,
       // если пользователь у пользователя некорректные данные в куки
       if (err.status === HttpStatusCode.Forbidden) {
+        localStorageService.clearAuthData();
         router.navigate([ROOT_ROUTE_PATHS.Login]);
         return EMPTY;
       }

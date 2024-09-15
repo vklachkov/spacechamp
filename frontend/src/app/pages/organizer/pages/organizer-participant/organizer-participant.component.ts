@@ -9,7 +9,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzInputDirective } from 'ng-zorro-antd/input';
 import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
-import { combineLatest, debounceTime, delay, map, Observable, of, switchMap, take, takeUntil } from 'rxjs';
+import { combineLatest, debounceTime, delay, EMPTY, map, Observable, of, switchMap, take, takeUntil } from 'rxjs';
 import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
 import { NzTabComponent, NzTabSetComponent } from 'ng-zorro-antd/tabs';
 import { NzCardComponent } from 'ng-zorro-antd/card';
@@ -17,7 +17,7 @@ import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
 import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { JuryRate, Participant } from '../../../../models/api/participant.interface';
+import { JuryRate, Participant, ParticipantInfo } from '../../../../models/api/participant.interface';
 import { OrganizerService } from '../../../../services/organizer.service';
 import { BaseComponent } from '../../../../components/base/base.component';
 import { Adult } from '../../../../models/api/adult.interface';
@@ -34,17 +34,24 @@ interface TableData {
 type FormGroupType = {
   name: FormControl<string | null>,
   city: FormControl<string | null>,
+  district: FormControl<string | null>,
   phone_number: FormControl<string | null>,
   email: FormControl<string | null>,
   edu_org: FormControl<string | null>,
+  responsible_adult_name: FormControl<string | null>,
+  responsible_adult_phone_number: FormControl<string | null>
 }
 
 type FormGroupValue = {
   name?: string | null,
   city?: string | null,
+  district?: string | null,
   phone_number?: string | null,
   email?: string | null,
+  edu_org?: string | null,
   comment?: string | null,
+  responsible_adult_name?: string | null,
+  responsible_adult_phone_number?: string | null
 }
 
 @Component({
@@ -84,9 +91,12 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
   participantInfoForm: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null, [Validators.required]),
     city: new FormControl<string | null>(null, [Validators.required]),
+    district: new FormControl<string | null>(null, [Validators.required]),
     phone_number: new FormControl<string | null>(null, [Validators.required]),
     email: new FormControl<string | null>(null, [Validators.required]),
     edu_org: new FormControl<string | null>(null, [Validators.required]),
+    responsible_adult_name: new FormControl<string | null>(null, [Validators.required]),
+    responsible_adult_phone_number: new FormControl<string | null>(null, [Validators.required]),
   });
 
   isDataLoading: boolean = false;
@@ -206,26 +216,35 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
     this.participantInfoForm.valueChanges
       .pipe(
         debounceTime(300),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (value: FormGroupValue) => {
+        switchMap((value: FormGroupValue) => {
           if (this.participantInfoForm.invalid) {
-            return;
+            return EMPTY;
           }
 
           this.isParticipantInfoUpdating = true;
           this.cdr.markForCheck();
 
-          // TODO: кринге 
-          setTimeout(() => {
-            this.isParticipantInfoUpdating = false;
-            this.cdr.markForCheck();
-          }, 2000);
-
-          console.warn('moya modelka', value);
+          const formValue: Omit<ParticipantInfo, 'photo_url'> = <Omit<ParticipantInfo, 'photo_url'>>value;
+          const newInfo: ParticipantInfo = {
+            ...formValue,
+            photo_url: (<Participant>this.participant).info.photo_url
+          }
+          return this.organizerService.updateParticipantInfo((<Participant>this.participant).id, newInfo);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => {
+          this.isParticipantInfoUpdating = false;
+          this.cdr.markForCheck();
+          this.messageService.success('Данные участника обновлены');
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isParticipantInfoUpdating = false;
+          this.cdr.markForCheck();
+          this.showErrorNotification('Ошибка при обновлении данных об участнике', err);
         }
-      })
+      });
   }
 
   ngOnInit(): void {

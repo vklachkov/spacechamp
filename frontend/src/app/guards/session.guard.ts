@@ -14,7 +14,11 @@ export function sessionGuard(): CanActivateFn {
       inject(LocalStorageService);
     const router: Router = inject(Router);
 
-    if (!localStorageService.getRole() || !localStorageService.getName() || !localStorageService.getUserId()) {
+    if (
+      !localStorageService.getRole() ||
+      !localStorageService.getName() ||
+      !localStorageService.getUserId()
+    ) {
       return true;
     }
 

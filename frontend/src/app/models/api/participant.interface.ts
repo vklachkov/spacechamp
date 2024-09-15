@@ -4,6 +4,8 @@ import { Adult } from './adult.interface';
 export interface Participant {
   // Идентификатор
   id: number;
+  // Шифр
+  code: string,
   // Жюри (если есть, значит он в команде)
   jury: Adult | null,
   // Базовая информация
