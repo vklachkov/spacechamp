@@ -33,6 +33,6 @@ CREATE TABLE participant_rates (
     participant_id INTEGER NOT NULL,
     FOREIGN KEY (participant_id) REFERENCES Participants (id) ON DELETE RESTRICT,
 
-    salary INTEGER NOT NULL,
-    comment VARCHAR NOT NULL
+    salary INTEGER,
+    comment VARCHAR
 );

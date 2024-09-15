@@ -95,7 +95,9 @@ async fn get_participant(
     if let Some(participant) = state.datasource.get_participant(id).await? {
         Ok(Json(participant))
     } else {
-        Err(ApiError::DataSource(DataSourceError::ParticipantId(id)))
+        Err(ApiError::DataSource(DataSourceError::UnknownParticipant(
+            id,
+        )))
     }
 }
 
@@ -181,7 +183,9 @@ async fn get_jury_participant(
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
     let Some(participant) = state.datasource.get_participant(id).await? else {
-        return Err(ApiError::DataSource(DataSourceError::ParticipantId(id)));
+        return Err(ApiError::DataSource(DataSourceError::UnknownParticipant(
+            id,
+        )));
     };
 
     if participant
@@ -189,7 +193,7 @@ async fn get_jury_participant(
         .as_ref()
         .is_some_and(|jury| jury.id != jury_id)
     {
-        return Err(ApiError::from(DataSourceError::ParticipantId(id)));
+        return Err(ApiError::from(DataSourceError::UnknownParticipant(id)));
     }
 
     Ok(Json(AnonymousParticipant {

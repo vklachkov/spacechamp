@@ -77,7 +77,7 @@ impl AuthzBackend for Backend {
         if let Some(role) = role {
             Ok(HashSet::from([role]))
         } else {
-            Err(DataSourceError::AdultId(user.id()))
+            Err(DataSourceError::UnknownAdult(user.id()))
         }
     }
 }

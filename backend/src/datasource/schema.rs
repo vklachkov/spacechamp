@@ -14,8 +14,8 @@ diesel::table! {
         id -> Int4,
         jury_id -> Int4,
         participant_id -> Int4,
-        salary -> Int4,
-        comment -> Varchar,
+        salary -> Nullable<Int4>,
+        comment -> Nullable<Varchar>,
     }
 }
 

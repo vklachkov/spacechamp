@@ -1,9 +1,9 @@
-use super::{result::Result, schema};
-use crate::domain::*;
-use diesel::{
-    BoolExpressionMethods, ExpressionMethods, OptionalExtension, PgConnection, QueryDsl,
-    RunQueryDsl, SelectableHelper,
+use super::{
+    result::{DataSourceError, Result},
+    schema,
 };
+use crate::domain::*;
+use diesel::prelude::*;
 use std::{
     str::FromStr,
     sync::{Arc, Mutex},
@@ -19,38 +19,71 @@ impl Adults {
     }
 
     pub async fn create(&self, name: String, password: String, role: AdultRole) -> Result<()> {
-        self.execute(move |conn| {
-            use schema::adults;
+        self.transact(move |conn| {
+            use diesel::dsl::{exists, select};
+            use schema::{
+                adults::{self, dsl},
+                participant_rates as rates, participants,
+            };
 
-            diesel::insert_into(adults::table)
+            let exists =
+                select(exists(dsl::adults.filter(dsl::name.eq(&name)))).get_result::<bool>(conn)?;
+            if exists {
+                return Err(DataSourceError::AdultAlreadyExists(name));
+            }
+
+            let adult_id: i32 = diesel::insert_into(adults::table)
                 .values(super::models::NewAdult {
                     name,
                     password,
                     role: role.to_string(),
                 })
-                .execute(conn)
-                .map(|_| ())
+                .returning(adults::id)
+                .get_result(conn)?;
+
+            if role == AdultRole::Jury {
+                // TODO: Combine select and insert.
+                let participant_ids: Vec<i32> =
+                    participants::table.select(participants::id).load(conn)?;
+
+                let records = participant_ids
+                    .into_iter()
+                    .map(|participant_id| {
+                        (
+                            rates::participant_id.eq(participant_id),
+                            rates::jury_id.eq(adult_id),
+                        )
+                    })
+                    .collect::<Vec<_>>();
+
+                diesel::insert_into(rates::table)
+                    .values(records)
+                    .execute(conn)?;
+            }
+
+            Ok(())
         })
         .await
     }
 
     pub async fn get(&self, id: AdultId) -> Result<Option<Adult>> {
-        self.execute(move |conn| {
+        self.transact(move |conn| {
             use schema::adults;
 
             adults::table
                 .select(super::models::Adult::as_select())
-                .filter(adults::id.eq(id.0 as i32))
+                .filter(adults::id.eq(id.0))
                 .first(conn)
                 .optional()?
                 .map(TryInto::try_into)
                 .transpose()
+                .map_err(Into::into)
         })
         .await
     }
 
     pub async fn get_all(&self) -> Result<Vec<Adult>> {
-        self.execute(move |conn| {
+        self.transact(move |conn| {
             use schema::adults;
 
             adults::table
@@ -58,13 +91,14 @@ impl Adults {
                 .load(conn)?
                 .into_iter()
                 .map(TryInto::try_into)
-                .collect()
+                .collect::<diesel::QueryResult<_>>()
+                .map_err(Into::into)
         })
         .await
     }
 
     pub async fn find(&self, name: String, password: String) -> Result<Option<Adult>> {
-        self.execute(move |conn| {
+        self.transact(move |conn| {
             use schema::adults;
 
             adults::table
@@ -74,17 +108,18 @@ impl Adults {
                 .optional()?
                 .map(TryInto::try_into)
                 .transpose()
+                .map_err(Into::into)
         })
         .await
     }
 
     pub async fn role(&self, id: AdultId) -> Result<Option<AdultRole>> {
-        self.execute(move |conn| {
+        self.transact(move |conn| {
             use schema::adults;
 
             let role: Option<String> = adults::table
                 .select(adults::role)
-                .filter(adults::id.eq(id.0 as i32))
+                .filter(adults::id.eq(id.0))
                 .first::<String>(conn)
                 .optional()?;
 
@@ -94,8 +129,10 @@ impl Adults {
 
             match AdultRole::from_str(&raw_role) {
                 Ok(role) => Ok(Some(role)),
-                Err(_) => Err(diesel::result::Error::DeserializationError(
-                    format!("invalid role '{raw_role}' from adult {id}").into(),
+                Err(_) => Err(DataSourceError::DbError(
+                    diesel::result::Error::DeserializationError(
+                        format!("invalid role '{raw_role}' at adult id {id}").into(),
+                    ),
                 )),
             }
         })
@@ -103,31 +140,38 @@ impl Adults {
     }
 
     pub async fn delete(&self, id: AdultId) -> Result<()> {
-        self.execute(move |conn| {
-            use schema::adults;
+        self.transact(move |conn| {
+            use diesel::dsl::{exists, select};
+            use schema::adults::{self, dsl};
+
+            let exists: bool =
+                select(exists(dsl::adults.filter(dsl::id.eq(id.0)))).get_result(conn)?;
+            if !exists {
+                return Err(DataSourceError::UnknownAdult(id));
+            }
 
             diesel::delete(adults::table)
-                .filter(adults::id.eq(id.0 as i32))
-                .execute(conn)
-                .map(|_| ())
+                .filter(adults::id.eq(id.0))
+                .execute(conn)?;
+
+            Ok(())
         })
         .await
     }
 
     #[inline(always)]
-    async fn execute<F, R>(&self, f: F) -> Result<R>
+    async fn transact<F, R>(&self, f: F) -> Result<R>
     where
-        F: FnOnce(&mut PgConnection) -> diesel::QueryResult<R> + Send + 'static,
+        F: FnOnce(&mut PgConnection) -> Result<R> + Send + 'static,
         R: Send + 'static,
     {
         let conn = self.conn.clone();
 
         tokio::task::spawn_blocking(move || {
             let mut conn = conn.lock().expect("connection shouldn't be poisoned");
-            f(&mut conn)
+            conn.transaction(move |conn| f(conn))
         })
         .await
         .expect("database queries shouldn't panic")
-        .map_err(Into::into)
     }
 }

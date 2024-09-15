@@ -56,7 +56,7 @@ impl DataSource {
         id: ParticipantId,
         adult_id: Option<AdultId>,
     ) -> Result<()> {
-        self.participants.set_adult(id, adult_id).await
+        self.participants.set_jury(id, adult_id).await
     }
 
     pub async fn set_participant_rate(
@@ -65,7 +65,7 @@ impl DataSource {
         adult_id: AdultId,
         rate: Option<ParticipantRate>,
     ) -> Result<()> {
-        self.participants.set_adult_rate(id, adult_id, rate).await
+        self.participants.set_jury_rate(id, adult_id, rate).await
     }
 
     pub async fn get_adult(&self, id: AdultId) -> Result<Option<Adult>> {

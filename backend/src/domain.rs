@@ -14,7 +14,7 @@ pub struct Adult {
     Clone, Copy, Display, Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash,
 )]
 #[serde(transparent)]
-pub struct AdultId(pub usize);
+pub struct AdultId(pub i32);
 
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
@@ -47,6 +47,7 @@ impl FromStr for AdultRole {
 #[derive(Clone, Debug, Serialize)]
 pub struct Participant {
     pub id: ParticipantId,
+    pub code: String,
     pub jury: Option<Adult>,
     pub info: ParticipantInfo,
     pub answers: HashMap<String, String>,
@@ -78,10 +79,10 @@ pub struct AnonymousParticipant {
     Clone, Copy, Display, Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash,
 )]
 #[serde(transparent)]
-pub struct ParticipantId(pub usize);
+pub struct ParticipantId(pub i32);
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ParticipantRate {
-    pub salary: usize,
+    pub salary: i32,
     pub comment: String,
 }
