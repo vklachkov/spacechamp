@@ -49,14 +49,16 @@
         </div>
     </nz-header>
 
-    <nz-spin [nzSpinning]="isParticipantsLoading">
-        <nz-content>
+    <nz-content>
+        @if (isParticipantsLoading) {
+            <nz-spin></nz-spin>
+        } @else {   
             @for (participant of participants; track participant.id) {
                 <app-known-participant-card 
-                    [participant]="participant"
-                    (click)="goToParticipant(participant.id)"
+                [participant]="participant"
+                (click)="goToParticipant(participant.id)"
                 ></app-known-participant-card>
             }
-        </nz-content>
-    </nz-spin>
+        }
+    </nz-content>
 </nz-layout>

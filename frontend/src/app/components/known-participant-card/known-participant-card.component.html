@@ -4,7 +4,7 @@
             <nz-avatar id="avatar" [nzSize]="72" [nzSrc]="participant.info.photo_url"></nz-avatar>
     
             <div id="info">
-                <h3 id="name">{{ participant.info.name }}</h3>
+                <h3 id="name">{{ participant.info.name }} "{{ participant.code }}"</h3>
             
                 <p id="location">
                     {{ participant.info.edu_org }}, {{ participant.info.city }}, {{ participant.info.district }}

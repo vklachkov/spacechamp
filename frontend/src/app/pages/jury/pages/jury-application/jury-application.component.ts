@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
@@ -6,7 +6,7 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { EMPTY, Observable, of, switchMap, takeUntil } from 'rxjs';
+import { EMPTY, of, switchMap, takeUntil } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../../../components/base/base.component';
 import { EvaluateApplicationModalComponent } from '../../../../components/evaluate-application-modal/evaluate-application-modal.component';
@@ -14,8 +14,7 @@ import { AnonymousParticipant } from '../../../../models/api/anonymous-participa
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../services/auth.service';
 import { JuryService } from '../../../../services/jury.service';
-import { OrganizerService } from '../../../../services/organizer.service';
-import { JuryRate, Participant } from '../../../../models/api/participant.interface';
+import { JuryRate } from '../../../../models/api/participant.interface';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { LocalStorageService } from '../../../../services/local-storage.service';
 
@@ -48,33 +47,32 @@ export class JuryApplicationPage extends BaseComponent {
 
   private loadParticipant(): void {
     this.activatedRoute.paramMap
-    .pipe(
-      switchMap((params: ParamMap) => {
-        const id: string | null = params.get('id');
+      .pipe(
+        switchMap((params: ParamMap) => {
+          const id: string | null = params.get('id');
 
-        if (!id) {
-          return of(null);
+          if (!id) {
+            return of(null);
+          }
+
+          this.isParticipantLoading = true;
+          this.cdr.markForCheck();
+
+          return this.juryService.getParticipantById(+id);
+        }),
+      )
+      .subscribe({
+        next: (data: AnonymousParticipant | null) => {
+          this.participant = data;
+          this.isParticipantLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isParticipantLoading = false;
+          this.cdr.markForCheck();
+          this.showErrorNotification('Ошибка при получении заявки', err);
         }
-
-
-        this.isParticipantLoading = true;
-        this.cdr.markForCheck();
-
-        return this.juryService.getParticipantById(+id);
-      })
-    )
-    .subscribe({
-      next: (data: AnonymousParticipant | null) => {
-        this.participant = data;
-        this.isParticipantLoading = false;
-        this.cdr.markForCheck();
-      },
-      error: (err: HttpErrorResponse) => {
-        this.isParticipantLoading = false;
-        this.cdr.markForCheck();
-        this.showErrorNotification('Ошибка при получении заявки', err);
-      }
-    });
+      });
   }
 
   ngOnInit(): void {

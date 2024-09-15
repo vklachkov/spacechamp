@@ -18,7 +18,9 @@
     </nz-header>
 
 
-    <nz-spin [nzSpinning]="isDataLoading">
+    @if (isDataLoading) {
+        <nz-spin></nz-spin>
+    } @else {
         @if (participant) {
             <nz-content class="info">
                 <nz-tabset>
@@ -136,5 +138,5 @@
                 </nz-tabset>
             </nz-content>
         }
-    </nz-spin>
+    }
 </nz-layout>
