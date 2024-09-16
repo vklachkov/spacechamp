@@ -19,7 +19,7 @@
                 
                 @for (participant of inTeamParticipants; track participant.id) {
                     <p class="application" (click)="goToApplication(participant.id)">
-                        Заявка #{{ participant.id }}
+                        Заявка "{{ participant.code }}"
                     </p>
                 }
         }
@@ -29,7 +29,7 @@
             
             @for (participant of notRatedParticipants; track participant.id) {
                 <p class="application" (click)="goToApplication(participant.id)">
-                    Заявка #{{ participant.id }}
+                    Заявка "{{ participant.code }}"
                 </p>
             }
         }
@@ -39,7 +39,7 @@
             
             @for (participant of ratedParticipants; track participant.id) {
                 <p class="application" (click)="goToApplication(participant.id)">
-                    Заявка #{{ participant.id }}
+                    Заявка "{{ participant.code }}"
                 </p>
             }
         }
