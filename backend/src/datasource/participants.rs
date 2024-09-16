@@ -80,13 +80,17 @@ impl Participants {
                 )));
             };
 
-            let jury = adults::table
-                .select(super::models::Adult::as_select())
-                .filter(adults::id.eq(id.0))
-                .first(conn)
-                .optional()?
-                .map(TryInto::try_into)
-                .transpose()?;
+            let jury: Option<Adult> = if let Some(jury_id) = participant.jury_id {
+                adults::table
+                    .select(super::models::Adult::as_select())
+                    .filter(adults::id.eq(jury_id))
+                    .first(conn)
+                    .optional()?
+                    .map(TryInto::try_into)
+                    .transpose()?
+            } else {
+                None
+            };
 
             let rates = {
                 let rates: Vec<models::ParticipantRate> = rates::table
@@ -187,7 +191,7 @@ impl Participants {
 
         for rate in rates {
             output
-                .entry(ParticipantId(rate.jury_id))
+                .entry(ParticipantId(rate.participant_id))
                 .or_default()
                 .insert(
                     AdultId(rate.jury_id),

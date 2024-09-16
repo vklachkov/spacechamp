@@ -208,10 +208,8 @@ async fn get_jury_participant(
 ) -> Result<Json<AnonymousParticipant>> {
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
-    let Some(participant) = state.datasource.get_participant(id).await? else {
-        return Err(ApiError::DataSource(DataSourceError::UnknownParticipant(
-            id,
-        )));
+    let Some(mut participant) = state.datasource.get_participant(id).await? else {
+        return Err(ApiError::from(DataSourceError::UnknownParticipant(id)));
     };
 
     if participant
@@ -227,7 +225,10 @@ async fn get_jury_participant(
         code: participant.code,
         in_command: participant.jury.is_some(),
         answers: participant.answers,
-        rate: participant.rates.get(&jury_id).cloned().unwrap(),
+        rate: participant
+            .rates
+            .remove(&jury_id)
+            .expect("rates for jury should be presented"),
     }))
 }
 
