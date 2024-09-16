@@ -19,15 +19,19 @@ services:
       - "80:80"
       - "443:443"
       # - "4080:8080"
+    networks:
+      - reverse_proxy
     volumes:
-        - /etc/letsencrypt:/etc/letsencrypt
-        - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
 
   # TODO: убрать хардкод на образ
   frontend:
     image: ghcr.io/vklachkov/space-fest-ui-frontend:latest
     depends_on:
       - backend
+    networks:
+      - reverse_proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.spacefest_frontend.rule=Host(`spacechamp-org.ru`)"
@@ -48,6 +52,7 @@ services:
     volumes:
       - "backend-data:/var/lib/backend"
     networks:
+      - reverse_proxy
       - postgres
     labels:
       - "traefik.enable=true"
@@ -80,6 +85,7 @@ services:
     restart: unless-stopped
 
 networks:
+  reverse_proxy:
   postgres:
 
 volumes:
