@@ -38,6 +38,7 @@ impl Participants {
             // TODO: Combine select and insert.
             let jury_ids: Vec<i32> = adults::table
                 .select(adults::id)
+                .order_by(adults::id.asc())
                 .filter(adults::role.eq(AdultRole::Jury.to_string()))
                 .load(conn)?;
 
@@ -129,6 +130,7 @@ impl Participants {
 
             let adults: HashMap<AdultId, Adult> = adults::table
                 .select(super::models::Adult::as_select())
+                .order_by(adults::id.asc())
                 .load(conn)?
                 .into_iter()
                 .map(|adult| Adult::try_from(adult).map(|adult| (adult.id, adult)))
@@ -144,6 +146,7 @@ impl Participants {
 
             let participants: Vec<models::Participant> = participants::table
                 .select(models::Participant::as_select())
+                .order_by(participants::id.asc())
                 .load(conn)?;
 
             participants

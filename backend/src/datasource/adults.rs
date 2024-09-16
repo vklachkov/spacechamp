@@ -88,6 +88,7 @@ impl Adults {
 
             adults::table
                 .select(super::models::Adult::as_select())
+                .order_by(adults::id.asc())
                 .load(conn)?
                 .into_iter()
                 .map(TryInto::try_into)
