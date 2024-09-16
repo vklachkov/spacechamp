@@ -101,11 +101,14 @@ export class OrganizerPage extends BaseComponent implements OnInit {
         let initialData: Participant[] = this.allParticipants;
 
         if (value.search) {
-          initialData = initialData.filter((item: Participant) => 
-            item.info.city.toLowerCase().includes((<string>value.search).trim().toLowerCase()) ||
-            item.info.district.toLowerCase().includes((<string>value.search).trim().toLowerCase()) ||
-            item.info.name.toLowerCase().includes((<string>value.search).trim().toLowerCase())
-          )
+          initialData = initialData.filter((item: Participant) => {
+            let search = (<string>value.search).trim().toLowerCase();
+            
+            return item.code.toLowerCase().includes(search) ||
+                   item.info.city.toLowerCase().includes(search) ||
+                   item.info.district.toLowerCase().includes(search) ||
+                   item.info.name.toLowerCase().includes(search);
+          });
         }
 
         if (value.status) {
