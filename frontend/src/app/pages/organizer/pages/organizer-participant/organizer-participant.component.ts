@@ -89,14 +89,14 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
   participant: Participant | null = null;
   isParticipantInfoUpdating: boolean = false;
   participantInfoForm: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
-    name: new FormControl<string | null>(null, [Validators.required]),
-    city: new FormControl<string | null>(null, [Validators.required]),
-    district: new FormControl<string | null>(null, [Validators.required]),
-    phone_number: new FormControl<string | null>(null, [Validators.required]),
-    email: new FormControl<string | null>(null, [Validators.required]),
-    edu_org: new FormControl<string | null>(null, [Validators.required]),
-    responsible_adult_name: new FormControl<string | null>(null, [Validators.required]),
-    responsible_adult_phone_number: new FormControl<string | null>(null, [Validators.required]),
+    name: new FormControl<string | null>(null),
+    city: new FormControl<string | null>(null),
+    district: new FormControl<string | null>(null),
+    phone_number: new FormControl<string | null>(null),
+    email: new FormControl<string | null>(null),
+    edu_org: new FormControl<string | null>(null),
+    responsible_adult_name: new FormControl<string | null>(null),
+    responsible_adult_phone_number: new FormControl<string | null>(null),
   });
 
   isDataLoading: boolean = false;
@@ -215,7 +215,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
   private initFormSubscription(): void {
     this.participantInfoForm.valueChanges
       .pipe(
-        debounceTime(300),
+        debounceTime(350),
         switchMap((value: FormGroupValue) => {
           if (this.participantInfoForm.invalid) {
             return EMPTY;
@@ -237,7 +237,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
         next: () => {
           this.isParticipantInfoUpdating = false;
           this.cdr.markForCheck();
-          this.messageService.success('Данные участника обновлены');
+          // this.messageService.success('Данные участника обновлены');
         },
         error: (err: HttpErrorResponse) => {
           this.isParticipantInfoUpdating = false;
