@@ -19,10 +19,13 @@ impl IntoResponse for ApiError {
             Self::InvalidParameter(err) => {
                 (StatusCode::BAD_REQUEST, err.to_string()).into_response()
             }
-            Self::DataSource(err) => {
-                // TODO: check error type
-                (StatusCode::BAD_REQUEST, err.to_string()).into_response()
-            }
+            Self::DataSource(err) => match err {
+                DataSourceError::DbError(err) => {
+                    tracing::error!("Database error: {err}");
+                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                }
+                _ => (StatusCode::BAD_REQUEST, err.to_string()).into_response(),
+            },
         }
     }
 }
