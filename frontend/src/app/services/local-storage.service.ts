@@ -4,8 +4,6 @@ import { Role } from '../models/api/role.enum';
 import { Adult } from '../models/api/adult.interface';
 import { USER_ID_KEY } from '../models/user-id-key.constant';
 import { NAME_KEY } from '../models/name-key.constant';
-import { View } from '../models/view.enum';
-import { VIEW_KEY } from '../models/view-key.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +19,6 @@ export class LocalStorageService {
 
   private clear(): void {
     localStorage.clear();
-  }
-
-  setView(view: View): void {
-    this.setItem<View>(VIEW_KEY, view);
   }
 
   setAuthData(data: Adult): void {
@@ -43,10 +37,6 @@ export class LocalStorageService {
 
   getUserId(): number {
     return this.getItem<number>(USER_ID_KEY);
-  }
-
-  getView(): View {
-    return this.getItem<View>(VIEW_KEY);
   }
 
   clearAuthData(): void {

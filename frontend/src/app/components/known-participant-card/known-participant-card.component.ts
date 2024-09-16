@@ -3,9 +3,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { CommonModule } from '@angular/common';
 import { JuryRate, Participant } from '../../models/api/participant.interface';
-import { View } from '../../models/view.enum';
 import { ParticipantStatus } from '../../models/participant-status.enum';
-import { Adult } from '../../models/api/adult.interface';
 
 
 @Component({
@@ -17,12 +15,9 @@ import { Adult } from '../../models/api/adult.interface';
 })
 export class KnownParticipantCardComponent implements OnInit {
   @Input({ required: true }) public participant!: Participant;
-  @Input({ required: true }) public view!: View;
 
   status!: ParticipantStatus;
   ParticipantStatus = ParticipantStatus;
-
-  View = View;
 
   private getStatus(): ParticipantStatus {
     if (this.participant.jury?.id) {

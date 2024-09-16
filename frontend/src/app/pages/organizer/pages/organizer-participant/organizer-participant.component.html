@@ -5,7 +5,11 @@
             На главную
         </button>
 
-        <h3 nz-typography>{{ participant?.info?.name ?? '' }}</h3>
+        <nz-spin [nzSpinning]="isDataLoading">
+            @if (participant) {
+                <h3 nz-typography>Участник "{{ participant.code }}"</h3>
+            }
+        </nz-spin>
 
         <button nz-button (click)="goToLogin()">
             <span nz-icon nzType="logout" nzTheme="outline"></span>
@@ -14,7 +18,9 @@
     </nz-header>
 
 
-    <nz-spin [nzSpinning]="isDataLoading">
+    @if (isDataLoading) {
+        <nz-spin></nz-spin>
+    } @else {
         @if (participant) {
             <nz-content class="info">
                 <nz-tabset>
@@ -23,27 +29,65 @@
                             <div class="participant">
                                 <nz-avatar id="avatar" [nzSize]="150" [nzSrc]="participant.info.photo_url"></nz-avatar>
                                 
-                                <div id="card-info">
-                                    <p nz-typography>
-                                        <span nz-typography><strong>Имя:</strong></span> {{ participant.info.name }}
-                                    </p>
+                                <nz-spin [nzSpinning]="isParticipantInfoUpdating">
+                                    <form class="participant-form" nz-form [formGroup]="participantInfoForm">
+                                        <nz-form-item>
+                                            <nz-form-label nzFor="name">Имя</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input formControlName="name" id="name" />
+                                            </nz-form-control>
+                                        </nz-form-item>
 
-                                    <p nz-typography>
-                                        <span nz-typography><strong>Город:</strong></span> {{ participant.info.city }}
-                                    </p>
+                                        <nz-form-item>
+                                            <nz-form-label nzFor="city">Город</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input formControlName="city" id="city" />
+                                            </nz-form-control>
+                                        </nz-form-item>
 
-                                    <p nz-typography>
-                                        <span nz-typography><strong>Телефон:</strong></span> {{ participant.info.phone_number }}
-                                    </p>
+                                        <nz-form-item>
+                                            <nz-form-label nzFor="district">Район</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input formControlName="district" id="district" />
+                                            </nz-form-control>
+                                        </nz-form-item>
 
-                                    <p nz-typography>
-                                        <span nz-typography><strong>Почта:</strong></span> {{ participant.info.email }}
-                                    </p>
+                                        <nz-form-item>
+                                            <nz-form-label nzFor="phone_number">Телефон</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input formControlName="phone_number" id="phone_number" />
+                                            </nz-form-control>
+                                        </nz-form-item>
 
-                                    <p nz-typography>
-                                        <span nz-typography><strong>Организация:</strong></span> {{ participant.info.edu_org }}
-                                    </p>
-                                </div>
+                                        <nz-form-item>
+                                            <nz-form-label nzFor="email">Почта</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input formControlName="email" id="email" />
+                                            </nz-form-control>
+                                        </nz-form-item>
+
+                                        <nz-form-item>
+                                            <nz-form-label nzFor="edu_org">Организация</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input formControlName="edu_org" id="edu_org" />
+                                            </nz-form-control>
+                                        </nz-form-item>
+
+                                        <nz-form-item>
+                                            <nz-form-label nzFor="responsible_adult_name">ФИО родителя / наставника</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input formControlName="responsible_adult_name" id="responsible_adult_name" />
+                                            </nz-form-control>
+                                        </nz-form-item>
+
+                                        <nz-form-item>
+                                            <nz-form-label nzFor="responsible_adult_phone_number">Номер телефона родителя / наставника</nz-form-label>
+                                            <nz-form-control>
+                                                <input nz-input formControlName="responsible_adult_phone_number" id="responsible_adult_phone_number" />
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </form>
+                                </nz-spin>
                             </div>
                         </nz-card>
 
@@ -51,12 +95,12 @@
                             @for (answer of participant.answers | keyvalue; track $index) {
                                 <li>
                                     <h5 nz-typography>{{ answer.key }}</h5>
-                                    <p nz-typography>{{ answer.value }}</p>
+                                    <p nz-typography [class.empty-answer]="!answer.value">{{ answer.value || 'Нет ответа' }}</p>
                                 </li>
                             }
                         </ul>
-                    
                     </nz-tab>
+                    
                     <nz-tab nzTitle="Оценки">
                         <div class="team">
                             <p nz-typography class="team__title">Команда участника:</p>
@@ -70,8 +114,8 @@
                             </nz-spin>
                         </div>
 
-                        @if (tableData) {
-                            <nz-table #basicTable [nzData]="tableData" [nzShowPagination]="false">
+                        @if (ratesTableData) {
+                            <nz-table #basicTable [nzData]="ratesTableData" [nzShowPagination]="false">
                                 <thead>
                                     <tr>
                                         <th style="background-color: white; font-weight: 700;" nzWidth="20%">Имя жюри</th>
@@ -94,5 +138,5 @@
                 </nz-tabset>
             </nz-content>
         }
-    </nz-spin>
+    }
 </nz-layout>

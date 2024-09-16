@@ -31,9 +31,11 @@ nz-header {
     gap: 1em;
     align-items: center;
 
-    // Странный хак, чтобы выровнять иконки
     nz-spin {
+      // Странный хак, чтобы выровнять иконки
       height: 32px;
+      
+      margin-left: 1em;
 
       button {
         position: absolute;
@@ -62,6 +64,10 @@ nz-content {
     padding: 1em;
 
     p {
+      &.empty-answer {
+        color: var(--red);
+      }
+
       &:last-child {
         margin-bottom: 0;
       }  

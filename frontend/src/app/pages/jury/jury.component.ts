@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
@@ -7,16 +8,13 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
+import { takeUntil } from 'rxjs';
 import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { JURY_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
 import { JuryService } from '../../services/jury.service';
-import { OrganizerService } from '../../services/organizer.service';
-import { Participant } from '../../models/api/participant.interface';
-import { View } from '../../models/view.enum';
 import { AuthService } from '../../services/auth.service';
 import { BaseComponent } from '../../components/base/base.component';
-import { takeUntil } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
 import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
 
@@ -33,7 +31,8 @@ import { LocalStorageService } from '../../services/local-storage.service';
     NzInputModule,
     NzFlexModule,
     KnownParticipantCardComponent,
-    NzTypographyComponent
+    NzTypographyComponent,
+    NzSpinComponent
   ],
   templateUrl: './jury.component.html',
   styleUrls: ['./jury.component.scss'],

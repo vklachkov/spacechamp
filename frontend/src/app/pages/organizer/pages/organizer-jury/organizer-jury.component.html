@@ -18,11 +18,13 @@
         </button>
     </nz-header>
 
-    <nz-spin [nzSpinning]="isAdultsLoading">
-        <nz-content class="list">
+    <nz-content class="list">
+        @if (isAdultsLoading) {
+            <nz-spin></nz-spin>
+        } @else {
             @for (adult of adults; track adult.id) {
                 <app-jury-card [adult]="adult" (removed)="removeAdult(adult.id)"></app-jury-card>
             }
-        </nz-content>
-    </nz-spin>
+        }
+    </nz-content>
 </nz-layout>

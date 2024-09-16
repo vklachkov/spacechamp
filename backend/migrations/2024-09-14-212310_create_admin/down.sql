@@ -1,0 +1,1 @@
+DELETE FROM adults WHERE "name"="Админ";

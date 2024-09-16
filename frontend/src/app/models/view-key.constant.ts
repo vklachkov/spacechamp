@@ -1,1 +1,0 @@
-export const VIEW_KEY: string = 'view';

@@ -1,11 +1,11 @@
 mod api;
-mod data;
+mod datasource;
 mod domain;
 
 use argh::FromArgs;
 use axum::Router;
 use axum_login::{tower_sessions::SessionManagerLayer, AuthManagerLayerBuilder};
-use data::DataSource;
+use datasource::DataSource;
 use std::{net::SocketAddr, path::PathBuf, sync::Arc};
 use tokio::signal;
 use tower_http::cors::CorsLayer;
@@ -13,6 +13,10 @@ use tower_http::cors::CorsLayer;
 #[derive(FromArgs)]
 /// Backend of Space Championship Admin Panel
 struct Args {
+    #[argh(option)]
+    /// database url
+    db_url: String,
+
     #[argh(option)]
     /// bind address
     addr: SocketAddr,
@@ -37,7 +41,8 @@ async fn main() {
     setup_log(&args);
     hello(&args);
 
-    run(args.addr, args.sessions_path).await;
+    let datasource = DataSource::new(&args.db_url);
+    run(datasource, args.addr, args.sessions_path).await;
 }
 
 fn setup_log(args: &Args) {
@@ -71,8 +76,8 @@ fn hello(args: &Args) {
     );
 }
 
-async fn run(addr: SocketAddr, sessions_path: PathBuf) {
-    let datasource = Arc::new(DataSource::new());
+async fn run(datasource: DataSource, addr: SocketAddr, sessions_path: PathBuf) {
+    let datasource = Arc::new(datasource);
 
     let session_store = api::session_store::JsonSessionStore::new(sessions_path).await;
     let session_layer = SessionManagerLayer::new(session_store).with_secure(false);

@@ -7,7 +7,9 @@
                     На главную
                 </button>
 
-                <nz-spin [nzSpinning]="isParticipantLoading">
+                @if (isParticipantLoading) {
+                    <nz-spin></nz-spin>
+                } @else {
                     @if (participant?.in_command) {
                         <button nz-button nzType="default" (click)="openEvaluateModal()">Посмотреть оценку</button>
                     } @else {
@@ -20,7 +22,7 @@
                             </button>
                         }
                     }
-                </nz-spin>
+                }   
             </div>
 
             <button nz-button class="header__button" (click)="goToLogin()">
@@ -31,23 +33,27 @@
     </nz-header>
 
     <nz-content>
-        @if (participant) {
-            <h2 nz-typography class="header__name">
-                <strong>
-                    Заявка #{{ participant.id }}
-                </strong>
-            </h2>
-
-            <h3 nz-typography>Анкета</h3>
-            
-            <ul class="answers">
-                @for (answer of participant.answers | keyvalue; track $index) {
-                    <li>
-                        <p nz-typography><strong>{{ answer.key }}</strong></p>
-                        <p nz-typography>{{ answer.value }}</p>
-                    </li>
-                }
-            </ul>
+        @if (isParticipantLoading) {
+            <nz-spin></nz-spin>
+        } @else {
+            @if (participant) {
+                <h2 nz-typography class="header__name">
+                    <strong>
+                        Заявка "{{ participant.code }}"
+                    </strong>
+                </h2>
+                
+                <h3 nz-typography>Анкета</h3>
+                
+                <ul class="answers">
+                    @for (answer of participant.answers | keyvalue; track $index) {
+                        <li>
+                            <p nz-typography><strong>{{ answer.key }}</strong></p>
+                            <p nz-typography [class.empty-answer]="!answer.value">{{ answer.value || 'Нет ответа' }}</p>
+                        </li>
+                    }
+                </ul>
+            }
         }
     </nz-content>
 </nz-layout>

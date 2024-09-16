@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Participant } from '../models/api/participant.interface';
+import { Participant, ParticipantInfo } from '../models/api/participant.interface';
 import { Adult } from '../models/api/adult.interface';
 import { environment } from '../environments/environment.local';
 
@@ -23,6 +23,10 @@ export class OrganizerService {
     return this.http.post<void>(`${environment.API_URL}/org/participant/${participantId}/command`, {
       jury_id: juryId
     }, { withCredentials: true });
+  }
+
+  updateParticipantInfo(participantId: number, info: ParticipantInfo): Observable<void> {
+    return this.http.patch<void>(`${environment.API_URL}/org/participant/${participantId}/info`, info, { withCredentials: true });
   }
 
   getAdults(): Observable<Adult[]> {
