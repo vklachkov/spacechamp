@@ -36,12 +36,18 @@ impl DataSource {
     }
 
     fn connect_to_db(db_url: &str) -> PgConnection {
+        tracing::info!("Connecting to {db_url}...");
+
         let mut connection = PgConnection::establish(db_url)
             .unwrap_or_else(|err| panic!("Failed to connect to PG (db url is {db_url}): {err}"));
+
+        tracing::info!("Running migrations on DB...");
 
         connection
             .run_pending_migrations(MIGRATIONS)
             .unwrap_or_else(|err| panic!("Postgres migrations error: {err}"));
+
+        tracing::info!("Postgres is ready!");
 
         connection
     }
