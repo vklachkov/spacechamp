@@ -5,5 +5,9 @@ COPY . /app
 RUN cargo build --release
 
 FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y libpq-dev
+
 COPY --from=builder /app/target/release/backend /bin
-ENTRYPOINT [ "/bin/backend", "--addr", "0.0.0.0:80", "--sessions-path", "/var/lib/backend/sessions.json" ]
+
+ENTRYPOINT ["/bin/backend"]

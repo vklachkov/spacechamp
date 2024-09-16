@@ -1,0 +1,59 @@
+services:
+  reverse-proxy:
+    image: traefik:v3.1
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - "80:80"
+      - "4080:8080"
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spacefest_frontend.rule=Host(`spacechamp.localhost`)"
+      - "traefik.http.services.spacefest_frontend.loadBalancer.server.port=80"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    command:
+      - "--db-url"
+      - "postgresql://postgres:postgres@postgres:5432/spacechamp"
+      - "--addr"
+      - "0.0.0.0:80"
+      - "--sessions-path"
+      - "/var/lib/backend/sessions.json"
+    volumes:
+      - "backend-data:/var/lib/backend"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spacefest_backend.rule=Host(`spacechamp.localhost`) && PathPrefix(`/api/v1`)"
+      - "traefik.http.services.spacefest_backend.loadBalancer.server.port=80"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "spacechamp"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - "spacechamp-postgres-data:/var/lib/postgresql/data"
+    restart: unless-stopped
+
+volumes:
+  backend-data:
+  spacechamp-postgres-data:
+    external: true
