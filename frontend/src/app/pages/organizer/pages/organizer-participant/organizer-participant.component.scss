@@ -73,33 +73,6 @@ nz-content {
   }
 }
 
-.answers {
-  padding-left: 1em;
-  list-style-type: none;
-  padding-left: 0;
-
-  li {
-    background-color: var(--white);
-    padding: 1em;
-    white-space: pre-wrap;
-
-    p {
-      &.empty-answer {
-        color: var(--red);
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }  
-    }
-
-    &:not(:last-child) {
-      margin-bottom: 0.5em;
-    }
-  }
-}
-
-
 .team {
   display: flex;
   align-items: center;

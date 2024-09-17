@@ -24,6 +24,7 @@ import { Adult } from '../../../../models/api/adult.interface';
 import { AdultRole } from '../../../../models/api/adult-role.enum';
 import { AuthService } from '../../../../services/auth.service';
 import { LocalStorageService } from '../../../../services/local-storage.service';
+import { AnswersComponent } from '../../../../components/answers/answers.component';
 
 interface TableData {
   name: string, 
@@ -80,6 +81,7 @@ type FormGroupValue = {
     NzFormItemComponent,
     NzFormLabelComponent,
     NzFormControlComponent,
+    AnswersComponent
   ],
   templateUrl: './organizer-participant.component.html',
   styleUrls: ['./organizer-participant.component.scss'],

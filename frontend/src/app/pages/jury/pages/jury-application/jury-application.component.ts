@@ -17,6 +17,7 @@ import { JuryService } from '../../../../services/jury.service';
 import { JuryRate } from '../../../../models/api/participant.interface';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { LocalStorageService } from '../../../../services/local-storage.service';
+import { AnswersComponent } from '../../../../components/answers/answers.component';
 
 @Component({
   standalone: true,
@@ -28,6 +29,7 @@ import { LocalStorageService } from '../../../../services/local-storage.service'
     NzIconModule,
     NzSpinComponent,
     AsyncPipe,
+    AnswersComponent
   ],
   providers: [NzModalService],
   templateUrl: './jury-application.component.html',

@@ -46,7 +46,7 @@
                                         </nz-form-item>
 
                                         <nz-form-item>
-                                            <nz-form-label nzFor="district">Район</nz-form-label>
+                                            <nz-form-label nzFor="district">Регион</nz-form-label>
                                             <nz-form-control>
                                                 <input nz-input formControlName="district" id="district" />
                                             </nz-form-control>
@@ -91,14 +91,7 @@
                             </div>
                         </nz-card>
 
-                        <ul class="answers">
-                            @for (answer of participant.answers | keyvalue; track $index) {
-                                <li>
-                                    <h5 nz-typography>{{ answer.key }}</h5>
-                                    <p nz-typography [class.empty-answer]="!answer.value">{{ answer.value || 'Нет ответа' }}</p>
-                                </li>
-                            }
-                        </ul>
+                        <app-answers [answers]="participant.answers"></app-answers>
                     </nz-tab>
                     
                     <nz-tab nzTitle="Оценки">
