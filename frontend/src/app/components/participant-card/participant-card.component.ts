@@ -7,13 +7,13 @@ import { ParticipantStatus } from '../../models/participant-status.enum';
 
 
 @Component({
-  selector: 'app-known-participant-card',
+  selector: 'app-participant-card',
   standalone: true,
   imports: [CommonModule, NzCardModule, NzAvatarModule],
-  templateUrl: './known-participant-card.component.html',
-  styleUrl: './known-participant-card.component.scss'
+  templateUrl: './participant-card.component.html',
+  styleUrl: './participant-card.component.scss'
 })
-export class KnownParticipantCardComponent implements OnInit {
+export class ParticipantCardComponent implements OnInit {
   @Input({ required: true }) public participant!: Participant;
 
   status!: ParticipantStatus;

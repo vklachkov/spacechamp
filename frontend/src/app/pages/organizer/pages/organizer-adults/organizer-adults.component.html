@@ -23,7 +23,7 @@
             <nz-spin></nz-spin>
         } @else {
             @for (adult of adults; track adult.id) {
-                <app-jury-card [adult]="adult" (removed)="removeAdult(adult.id)"></app-jury-card>
+                <app-adult-card [adult]="adult" (removed)="removeAdult(adult.id)"></app-adult-card>
             }
         }
     </nz-content>

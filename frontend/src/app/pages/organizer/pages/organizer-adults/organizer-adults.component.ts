@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -11,12 +11,12 @@ import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { EMPTY, switchMap, takeUntil } from 'rxjs';
 import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
 import { Adult } from '../../../../models/api/adult.interface';
-import { JuryCardComponent } from '../../../../components/jury-card/jury-card.component';
-import { AddJuryModalComponent } from '../../../../components/add-jury-modal/add-jury-modal.component';
 import { BaseComponent } from '../../../../components/base/base.component';
 import { OrganizerService } from '../../../../services/organizer.service';
 import { AuthService } from '../../../../services/auth.service';
 import { LocalStorageService } from '../../../../services/local-storage.service';
+import { AddAdultModalComponent } from '../../../../components/add-adult-modal/add-adult-modal.component';
+import { AdultCardComponent } from '../../../../components/adult-card/adult-card.component';
 
 // TODO: название не jury, а adult
 @Component({
@@ -29,14 +29,14 @@ import { LocalStorageService } from '../../../../services/local-storage.service'
     NzIconModule,
     NzSpinComponent,
     AsyncPipe,
-    JuryCardComponent
+    AdultCardComponent
   ],
   providers: [NzModalService],
-  templateUrl: './organizer-jury.component.html',
-  styleUrls: ['./organizer-jury.component.scss'],
+  templateUrl: './organizer-adults.component.html',
+  styleUrls: ['./organizer-adults.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrganizerJuryPage extends BaseComponent implements OnInit {
+export class OrganizerAdultsPage extends BaseComponent implements OnInit {
   adults: Adult[] = []; 
   isAdultsLoading: boolean = false;
  
@@ -82,7 +82,6 @@ export class OrganizerJuryPage extends BaseComponent implements OnInit {
       });
   }
 
-  // TODO: проверить после доработки бэка
   removeAdult(id: number): void {
     this.isAdultsLoading = true;
     this.organizerService.deleteAdult(id)
@@ -102,9 +101,9 @@ export class OrganizerJuryPage extends BaseComponent implements OnInit {
   }
 
   openAddModal(): void {
-    this.modalService.create<AddJuryModalComponent, undefined, Omit<Adult, 'id'>>({
+    this.modalService.create<AddAdultModalComponent, undefined, Omit<Adult, 'id'>>({
       nzTitle: 'Новый аккаунт',
-      nzContent: AddJuryModalComponent,
+      nzContent: AddAdultModalComponent,
     }).afterClose
       .pipe(
         switchMap((data: Omit<Adult, 'id'> | undefined) => {

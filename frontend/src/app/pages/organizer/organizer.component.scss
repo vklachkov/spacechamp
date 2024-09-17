@@ -61,7 +61,7 @@ nz-content {
   padding: 2em;
   background-color: var(--primary-background);
 
-  & > app-known-participant-card {
+  & > app-participant-card {
     display: block;
     margin-bottom: .5em;
     transition: box-shadow .15s ease-in-out;

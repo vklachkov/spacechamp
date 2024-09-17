@@ -5,7 +5,7 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzModalFooterDirective, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
-import { FormGroupType, FormGroupValue } from './add-jury-modal';
+import { FormGroupType, FormGroupValue } from './add-adult-modal';
 import { Adult } from '../../models/api/adult.interface';
 import { NzSwitchComponent } from 'ng-zorro-antd/switch';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
@@ -28,10 +28,10 @@ import { AdultRole } from '../../models/api/adult-role.enum';
     FormsModule,
     ReactiveFormsModule
   ],
-  templateUrl: './add-jury-modal.component.html',
-  styleUrl: './add-jury-modal.component.scss'
+  templateUrl: './add-adult-modal.component.html',
+  styleUrl: './add-adult-modal.component.scss'
 })
-export class AddJuryModalComponent {
+export class AddAdultModalComponent {
   form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null, [Validators.required]),
     password: new FormControl<string | null>({

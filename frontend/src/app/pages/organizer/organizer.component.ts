@@ -14,9 +14,9 @@ import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { ORGANIZER_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
 import { JuryRate, Participant } from '../../models/api/participant.interface';
-import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { OrganizerService } from '../../services/organizer.service';
 import { BaseComponent } from '../../components/base/base.component';
+import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { ParticipantStatus } from '../../models/participant-status.enum';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService } from '../../services/local-storage.service';
@@ -47,7 +47,7 @@ type FilterFormValue = {
     NzRadioComponent,
     NzRadioGroupComponent,
     NzSpinComponent,
-    KnownParticipantCardComponent,
+    ParticipantCardComponent,
     AsyncPipe,
     FormsModule,
     ReactiveFormsModule,

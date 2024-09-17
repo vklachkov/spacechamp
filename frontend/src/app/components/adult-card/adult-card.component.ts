@@ -10,7 +10,7 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { NzPopoverComponent, NzPopoverDirective } from 'ng-zorro-antd/popover';
 
 @Component({
-  selector: 'app-jury-card',
+  selector: 'app-adult-card',
   standalone: true,
   imports: [
     NzCardModule,
@@ -21,10 +21,10 @@ import { NzPopoverComponent, NzPopoverDirective } from 'ng-zorro-antd/popover';
     NzPopoverDirective,
     NzPopoverComponent
   ],
-  templateUrl: './jury-card.component.html',
-  styleUrl: './jury-card.component.scss'
+  templateUrl: './adult-card.component.html',
+  styleUrl: './adult-card.component.scss'
 })
-export class JuryCardComponent implements OnInit {
+export class AdultCardComponent implements OnInit {
   @Input({ required: true }) public adult!: Adult;
   AdultRole = AdultRole;
 

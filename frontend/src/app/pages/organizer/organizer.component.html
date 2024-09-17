@@ -54,10 +54,10 @@
             <nz-spin></nz-spin>
         } @else {   
             @for (participant of participants; track participant.id) {
-                <app-known-participant-card 
-                [participant]="participant"
-                (click)="goToParticipant(participant.id)"
-                ></app-known-participant-card>
+                <app-participant-card 
+                    [participant]="participant"
+                    (click)="goToParticipant(participant.id)"
+                ></app-participant-card>
             }
         }
     </nz-content>

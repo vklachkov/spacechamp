@@ -239,7 +239,6 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
         next: () => {
           this.isParticipantInfoUpdating = false;
           this.cdr.markForCheck();
-          // this.messageService.success('Данные участника обновлены');
         },
         error: (err: HttpErrorResponse) => {
           this.isParticipantInfoUpdating = false;

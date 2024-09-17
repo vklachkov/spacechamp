@@ -10,7 +10,7 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { takeUntil } from 'rxjs';
-import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
+import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { JURY_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
 import { JuryService } from '../../services/jury.service';
 import { AuthService } from '../../services/auth.service';
@@ -30,7 +30,7 @@ import { LocalStorageService } from '../../services/local-storage.service';
     NzIconModule,
     NzInputModule,
     NzFlexModule,
-    KnownParticipantCardComponent,
+    ParticipantCardComponent,
     NzTypographyComponent,
     NzSpinComponent
   ],
