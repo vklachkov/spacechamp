@@ -11,12 +11,12 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { takeUntil } from 'rxjs';
 import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
-import { JURY_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
+import { JURY_ROOT_PATHS } from '../../app.routes';
 import { JuryService } from '../../services/jury.service';
-import { AuthService } from '../../services/auth.service';
 import { BaseComponent } from '../../components/base/base.component';
 import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 
 @Component({
   selector: 'app-jury-page',
@@ -32,8 +32,9 @@ import { LocalStorageService } from '../../services/local-storage.service';
     NzFlexModule,
     ParticipantCardComponent,
     NzTypographyComponent,
-    NzSpinComponent
-  ],
+    NzSpinComponent,
+    BackButtonComponent
+],
   templateUrl: './jury.component.html',
   styleUrls: ['./jury.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -47,7 +48,6 @@ export class JuryPage extends BaseComponent implements OnInit {
   ratedParticipants: AnonymousParticipant[] = [];
 
   private readonly router: Router = inject(Router);
-  private readonly authService: AuthService = inject(AuthService);
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly juryService: JuryService = inject(JuryService);
 
@@ -78,20 +78,6 @@ export class JuryPage extends BaseComponent implements OnInit {
     this.loadParticipants();
 
     this.userName = this.localStorageService.getName();
-  }
-
-  goToLogin(): void {
-    this.authService.logout()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.localStorageService.clearAuthData();
-          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.showErrorNotification('Ошибка при выходе', err);
-        }
-      });
   }
 
   goToApplication(id: number): void {

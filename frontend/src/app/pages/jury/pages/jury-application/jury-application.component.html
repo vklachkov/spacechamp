@@ -2,21 +2,18 @@
     <nz-header>
         <header class="header">
             <div class="info">
-                <button nz-button (click)="goToApplications()">
-                    <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
-                    На главную
-                </button>
+                <app-main-button></app-main-button>
 
                 @if (isParticipantLoading) {
                     <nz-spin></nz-spin>
                 } @else {
                     @if (participant?.in_command) {
-                        <button nz-button nzType="default" (click)="openEvaluateModal()">Посмотреть оценку</button>
+                        <button nz-button nzType="default" (click)="openRateModal()">Посмотреть оценку</button>
                     } @else {
                         @if (participant?.rate) {
-                            <button nz-button nzType="default" (click)="openEvaluateModal()">Изменить оценку</button>
+                            <button nz-button nzType="default" (click)="openRateModal()">Изменить оценку</button>
                         } @else {
-                            <button nz-button nzType="primary" (click)="openEvaluateModal()">
+                            <button nz-button nzType="primary" (click)="openRateModal()">
                                 <span nz-icon nzType="dollar" nzTheme="outline"></span>
                                 Оценить
                             </button>
@@ -25,10 +22,7 @@
                 }   
             </div>
 
-            <button nz-button class="header__button" (click)="goToLogin()">
-                <span nz-icon nzType="logout" nzTheme="outline"></span>
-                Выход
-            </button>
+            <app-back-button></app-back-button>
         </header>
     </nz-header>
 

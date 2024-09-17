@@ -12,14 +12,13 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzPopoverDirective } from 'ng-zorro-antd/popover';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { ORGANIZER_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
+import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
 import { JuryRate, Participant } from '../../models/api/participant.interface';
 import { OrganizerService } from '../../services/organizer.service';
 import { BaseComponent } from '../../components/base/base.component';
 import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { ParticipantStatus } from '../../models/participant-status.enum';
-import { AuthService } from '../../services/auth.service';
-import { LocalStorageService } from '../../services/local-storage.service';
+import { BackButtonComponent } from '../../components/back-button/back-button.component';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -51,6 +50,7 @@ type FilterFormValue = {
     AsyncPipe,
     FormsModule,
     ReactiveFormsModule,
+    BackButtonComponent
   ],
   templateUrl: './organizer.component.html',
   styleUrls: ['./organizer.component.scss'],
@@ -71,8 +71,6 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
-  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
-  private readonly authService: AuthService = inject(AuthService);
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
@@ -145,20 +143,6 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   goToJuryPanel(): void {
     this.router.navigate([ORGANIZER_ROOT_PATHS.Adults]);
-  }
-
-  goToLogin(): void {
-    this.authService.logout()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.localStorageService.clearAuthData();
-          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.showErrorNotification('Ошибка при выходе', err);
-        }
-      });
   }
 
   goToParticipant(id: number): void {

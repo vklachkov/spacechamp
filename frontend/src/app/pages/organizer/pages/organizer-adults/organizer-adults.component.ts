@@ -13,12 +13,11 @@ import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
 import { Adult } from '../../../../models/api/adult.interface';
 import { BaseComponent } from '../../../../components/base/base.component';
 import { OrganizerService } from '../../../../services/organizer.service';
-import { AuthService } from '../../../../services/auth.service';
-import { LocalStorageService } from '../../../../services/local-storage.service';
 import { AddAdultModalComponent } from '../../../../components/add-adult-modal/add-adult-modal.component';
 import { AdultCardComponent } from '../../../../components/adult-card/adult-card.component';
+import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
+import { MainButtonComponent } from '../../../../components/main-button/main-button.component';
 
-// TODO: название не jury, а adult
 @Component({
   standalone: true,
   imports: [
@@ -29,22 +28,22 @@ import { AdultCardComponent } from '../../../../components/adult-card/adult-card
     NzIconModule,
     NzSpinComponent,
     AsyncPipe,
-    AdultCardComponent
-  ],
+    AdultCardComponent,
+    BackButtonComponent,
+    MainButtonComponent
+],
   providers: [NzModalService],
   templateUrl: './organizer-adults.component.html',
   styleUrls: ['./organizer-adults.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerAdultsPage extends BaseComponent implements OnInit {
-  adults: Adult[] = []; 
-  isAdultsLoading: boolean = false;
- 
   private readonly router: Router = inject(Router);
   private readonly modalService: NzModalService = inject(NzModalService);
-  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
-  private readonly authService: AuthService = inject(AuthService);
+
+  adults: Adult[] = []; 
+  isAdultsLoading: boolean = false;
 
   private loadAdults(): void {
     this.isAdultsLoading = true;
@@ -66,20 +65,6 @@ export class OrganizerAdultsPage extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAdults();
-  }
-
-  goToLogin(): void {
-    this.authService.logout()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.localStorageService.clearAuthData();
-          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.showErrorNotification('Ошибка при выходе', err);
-        }
-      });
   }
 
   removeAdult(id: number): void {
@@ -127,9 +112,5 @@ export class OrganizerAdultsPage extends BaseComponent implements OnInit {
           this.cdr.markForCheck();
         }
       });
-  }
-
-  goToParticipants(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Index]);
   }
 }

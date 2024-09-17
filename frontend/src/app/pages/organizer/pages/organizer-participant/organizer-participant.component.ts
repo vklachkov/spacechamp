@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
@@ -22,9 +22,9 @@ import { OrganizerService } from '../../../../services/organizer.service';
 import { BaseComponent } from '../../../../components/base/base.component';
 import { Adult } from '../../../../models/api/adult.interface';
 import { AdultRole } from '../../../../models/api/adult-role.enum';
-import { AuthService } from '../../../../services/auth.service';
-import { LocalStorageService } from '../../../../services/local-storage.service';
 import { AnswersComponent } from '../../../../components/answers/answers.component';
+import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
+import { MainButtonComponent } from '../../../../components/main-button/main-button.component';
 
 interface TableData {
   name: string, 
@@ -81,8 +81,10 @@ type FormGroupValue = {
     NzFormItemComponent,
     NzFormLabelComponent,
     NzFormControlComponent,
-    AnswersComponent
-  ],
+    AnswersComponent,
+    BackButtonComponent,
+    MainButtonComponent
+],
   templateUrl: './organizer-participant.component.html',
   styleUrls: ['./organizer-participant.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -110,9 +112,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
 
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
-  private readonly authService: AuthService = inject(AuthService);
 
   private initRatesTableData(): void {
     if (this.participant) {
@@ -252,23 +252,5 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
     this.loadData();
     this.initTeamControlSubscription();
     this.initFormSubscription();
-  }
-
-  goToLogin(): void {
-    this.authService.logout()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.localStorageService.clearAuthData();
-          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.showErrorNotification('Ошибка при выходе', err);
-        }
-      });
-  }
-
-  goToParticipants(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Index]);
   }
 }
