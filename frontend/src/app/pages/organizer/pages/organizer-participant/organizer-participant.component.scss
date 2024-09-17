@@ -81,6 +81,7 @@ nz-content {
   li {
     background-color: var(--white);
     padding: 1em;
+    white-space: pre-wrap;
 
     p {
       &.empty-answer {
