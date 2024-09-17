@@ -9,7 +9,6 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { EMPTY, of, switchMap, takeUntil } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../../../components/base/base.component';
-import { EvaluateApplicationModalComponent } from '../../../../components/evaluate-application-modal/evaluate-application-modal.component';
 import { AnonymousParticipant } from '../../../../models/api/anonymous-participant.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../services/auth.service';
@@ -18,6 +17,7 @@ import { JuryRate } from '../../../../models/api/participant.interface';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { LocalStorageService } from '../../../../services/local-storage.service';
 import { AnswersComponent } from '../../../../components/answers/answers.component';
+import { RateApplicationModalComponent } from '../../../../components/rate-application-modal/rate-application-modal.component';
 
 @Component({
   standalone: true,
@@ -96,9 +96,9 @@ export class JuryApplicationPage extends BaseComponent {
   }
 
   openEvaluateModal(): void {
-    this.modalService.create<EvaluateApplicationModalComponent, AnonymousParticipant | null, JuryRate>({
+    this.modalService.create<RateApplicationModalComponent, AnonymousParticipant | null, JuryRate>({
       nzTitle: 'Оценка',
-      nzContent: EvaluateApplicationModalComponent,
+      nzContent: RateApplicationModalComponent,
       nzData: this.participant
     }).afterClose
       .pipe(

@@ -9,3 +9,6 @@ export type FormGroupValue = {
   salary: number,
   comment: string | null
 }
+
+export const MIN_SALARY: number = 1;
+export const MAX_SALARY: number = 1300;

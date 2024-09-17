@@ -6,7 +6,7 @@
   <nz-spin [nzSpinning]="isLoginLoading">
     <form nz-form [formGroup]="form" class="login-form" (ngSubmit)="login()">
       <nz-form-item>
-        <nz-form-control nzErrorTip="Поле является быть обязательным">
+        <nz-form-control nzErrorTip="Поле является обязательным">
           <nz-input-group nzPrefixIcon="user">
             <input
               type="text"
@@ -18,7 +18,7 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-control nzErrorTip="Поле является быть обязательным">
+        <nz-form-control nzErrorTip="Поле является обязательным">
           <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate">
             <input
               [type]="isPasswordVisible ? 'text' : 'password'"

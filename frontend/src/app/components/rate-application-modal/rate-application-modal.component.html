@@ -1,0 +1,57 @@
+<form class="form" nz-form [formGroup]="form">
+    <nz-form-item class="form__item">
+        <nz-form-label class="form__item-label" nzRequired nzFor="salary">Зарплата</nz-form-label>
+        <nz-form-control [nzErrorTip]="salaryErrorTpl">
+            <nz-input-number
+                class="form__item-input-number"
+                formControlName="salary"
+                id="salary"
+                [nzStep]="1"
+            ></nz-input-number>
+
+            <ng-template #salaryErrorTpl let-control>
+                @if (control.hasError('required')) { 
+                    Поле является обязательным 
+                } 
+                @if (control.hasError('notInteger')) { 
+                    Значение должно быть целым числом 
+                }
+                @if (control.hasError('incorrectRange')) { 
+                    Значение должно быть между 1 и 1300 
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item class="form__item">
+        <nz-form-label class="form__item-label" nzFor="comment">Комментарий</nz-form-label>
+        <nz-form-control>
+            <textarea
+                class="form__item-textarea"
+                formControlName="comment"
+                id="comment"
+                nz-input
+                rows="2"
+            ></textarea>
+        </nz-form-control>
+    </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button
+    nz-button
+    nzType="default"
+    (click)="close()"
+    [disabled]="form.disabled"
+  >
+    Отмена
+  </button>
+  <button
+    nz-button
+    nzType="primary"
+    [disabled]="form.invalid || form.disabled"
+    (click)="rate()"
+  >
+    Оценить
+  </button>
+</div>
