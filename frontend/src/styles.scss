@@ -20,6 +20,8 @@
     --not-rated-color: #ff2400;
     --partially-rated-color: #ffa500;
     --full-rated-color: #419d48;
+
+    --container-width: 1400px;
 }
 
 @font-face {
@@ -32,6 +34,12 @@
 h1, h2, h3, h4, h5, h6, button {
     font-family: 'TTOctosquares', sans-serif!important;
     font-weight: 600;
+}
+
+.container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
 }
 
 // Патч для кнопок с иконками (чтобы иконки были по центру)

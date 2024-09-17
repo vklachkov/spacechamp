@@ -13,12 +13,14 @@
     </nz-header>
 
     <nz-content class="list">
-        @if (isAdultsLoading) {
-            <nz-spin></nz-spin>
-        } @else {
-            @for (adult of adults; track adult.id) {
-                <app-adult-card [adult]="adult" (removed)="removeAdult(adult.id)"></app-adult-card>
+        <div class="container">
+            @if (isAdultsLoading) {
+                <nz-spin></nz-spin>
+            } @else {
+                @for (adult of adults; track adult.id) {
+                    <app-adult-card [adult]="adult" (removed)="removeAdult(adult.id)"></app-adult-card>
+                }
             }
-        }
+    </div>
     </nz-content>
 </nz-layout>

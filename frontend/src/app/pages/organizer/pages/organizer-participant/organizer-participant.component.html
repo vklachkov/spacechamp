@@ -12,118 +12,120 @@
     </nz-header>
 
 
-    @if (isDataLoading) {
-        <nz-spin></nz-spin>
-    } @else {
-        @if (participant) {
-            <nz-content class="info">
-                <nz-tabset>
-                    <nz-tab nzTitle="Анкета">
-                        <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
-                            <div class="participant">
-                                <nz-avatar id="avatar" [nzSize]="150" [nzSrc]="participant.info.photo_url"></nz-avatar>
-                                
-                                <nz-spin [nzSpinning]="isParticipantInfoUpdating">
-                                    <form class="participant-form" nz-form [formGroup]="participantInfoForm">
-                                        <nz-form-item>
-                                            <nz-form-label nzFor="name">Имя</nz-form-label>
-                                            <nz-form-control>
-                                                <input nz-input formControlName="name" id="name" />
-                                            </nz-form-control>
-                                        </nz-form-item>
+    <nz-content class="info">
+        <div class="container">
+            @if (isDataLoading) {
+                <nz-spin></nz-spin>
+            } @else {
+                @if (participant) {
+                    <nz-tabset>
+                        <nz-tab nzTitle="Анкета">
+                            <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
+                                <div class="participant">
+                                    <nz-avatar id="avatar" [nzSize]="150" [nzSrc]="participant.info.photo_url"></nz-avatar>
+                                    
+                                    <nz-spin [nzSpinning]="isParticipantInfoUpdating">
+                                        <form class="participant-form" nz-form [formGroup]="participantInfoForm">
+                                            <nz-form-item>
+                                                <nz-form-label nzFor="name">Имя</nz-form-label>
+                                                <nz-form-control>
+                                                    <input nz-input formControlName="name" id="name" />
+                                                </nz-form-control>
+                                            </nz-form-item>
 
-                                        <nz-form-item>
-                                            <nz-form-label nzFor="city">Город</nz-form-label>
-                                            <nz-form-control>
-                                                <input nz-input formControlName="city" id="city" />
-                                            </nz-form-control>
-                                        </nz-form-item>
+                                            <nz-form-item>
+                                                <nz-form-label nzFor="city">Город</nz-form-label>
+                                                <nz-form-control>
+                                                    <input nz-input formControlName="city" id="city" />
+                                                </nz-form-control>
+                                            </nz-form-item>
 
-                                        <nz-form-item>
-                                            <nz-form-label nzFor="district">Регион</nz-form-label>
-                                            <nz-form-control>
-                                                <input nz-input formControlName="district" id="district" />
-                                            </nz-form-control>
-                                        </nz-form-item>
+                                            <nz-form-item>
+                                                <nz-form-label nzFor="district">Регион</nz-form-label>
+                                                <nz-form-control>
+                                                    <input nz-input formControlName="district" id="district" />
+                                                </nz-form-control>
+                                            </nz-form-item>
 
-                                        <nz-form-item>
-                                            <nz-form-label nzFor="phone_number">Телефон</nz-form-label>
-                                            <nz-form-control>
-                                                <input nz-input formControlName="phone_number" id="phone_number" />
-                                            </nz-form-control>
-                                        </nz-form-item>
+                                            <nz-form-item>
+                                                <nz-form-label nzFor="phone_number">Телефон</nz-form-label>
+                                                <nz-form-control>
+                                                    <input nz-input formControlName="phone_number" id="phone_number" />
+                                                </nz-form-control>
+                                            </nz-form-item>
 
-                                        <nz-form-item>
-                                            <nz-form-label nzFor="email">Почта</nz-form-label>
-                                            <nz-form-control>
-                                                <input nz-input formControlName="email" id="email" />
-                                            </nz-form-control>
-                                        </nz-form-item>
+                                            <nz-form-item>
+                                                <nz-form-label nzFor="email">Почта</nz-form-label>
+                                                <nz-form-control>
+                                                    <input nz-input formControlName="email" id="email" />
+                                                </nz-form-control>
+                                            </nz-form-item>
 
-                                        <nz-form-item>
-                                            <nz-form-label nzFor="edu_org">Организация</nz-form-label>
-                                            <nz-form-control>
-                                                <input nz-input formControlName="edu_org" id="edu_org" />
-                                            </nz-form-control>
-                                        </nz-form-item>
+                                            <nz-form-item>
+                                                <nz-form-label nzFor="edu_org">Организация</nz-form-label>
+                                                <nz-form-control>
+                                                    <input nz-input formControlName="edu_org" id="edu_org" />
+                                                </nz-form-control>
+                                            </nz-form-item>
 
-                                        <nz-form-item>
-                                            <nz-form-label nzFor="responsible_adult_name">ФИО родителя / наставника</nz-form-label>
-                                            <nz-form-control>
-                                                <input nz-input formControlName="responsible_adult_name" id="responsible_adult_name" />
-                                            </nz-form-control>
-                                        </nz-form-item>
+                                            <nz-form-item>
+                                                <nz-form-label nzFor="responsible_adult_name">ФИО родителя / наставника</nz-form-label>
+                                                <nz-form-control>
+                                                    <input nz-input formControlName="responsible_adult_name" id="responsible_adult_name" />
+                                                </nz-form-control>
+                                            </nz-form-item>
 
-                                        <nz-form-item>
-                                            <nz-form-label nzFor="responsible_adult_phone_number">Номер телефона родителя / наставника</nz-form-label>
-                                            <nz-form-control>
-                                                <input nz-input formControlName="responsible_adult_phone_number" id="responsible_adult_phone_number" />
-                                            </nz-form-control>
-                                        </nz-form-item>
-                                    </form>
+                                            <nz-form-item>
+                                                <nz-form-label nzFor="responsible_adult_phone_number">Номер телефона родителя / наставника</nz-form-label>
+                                                <nz-form-control>
+                                                    <input nz-input formControlName="responsible_adult_phone_number" id="responsible_adult_phone_number" />
+                                                </nz-form-control>
+                                            </nz-form-item>
+                                        </form>
+                                    </nz-spin>
+                                </div>
+                            </nz-card>
+
+                            <app-answers [answers]="participant.answers"></app-answers>
+                        </nz-tab>
+                        
+                        <nz-tab nzTitle="Оценки">
+                            <div class="team">
+                                <p nz-typography class="team__title">Команда участника:</p>
+
+                                <nz-spin [nzSpinning]="isSettingCommandLoading">
+                                    <nz-select class="team__select" nzPlaceHolder="Не выбрано" [nzAllowClear]="true" [formControl]="teamControl">
+                                        @for (jury of juries; track jury.id) {
+                                            <nz-option [nzValue]="jury.id" [nzLabel]="jury.name" [nzDisabled]="!participant.rates[jury.id]"></nz-option>
+                                        }
+                                    </nz-select>
                                 </nz-spin>
                             </div>
-                        </nz-card>
 
-                        <app-answers [answers]="participant.answers"></app-answers>
-                    </nz-tab>
-                    
-                    <nz-tab nzTitle="Оценки">
-                        <div class="team">
-                            <p nz-typography class="team__title">Команда участника:</p>
-
-                            <nz-spin [nzSpinning]="isSettingCommandLoading">
-                                <nz-select class="team__select" nzPlaceHolder="Не выбрано" [nzAllowClear]="true" [formControl]="teamControl">
-                                    @for (jury of juries; track jury.id) {
-                                        <nz-option [nzValue]="jury.id" [nzLabel]="jury.name" [nzDisabled]="!participant.rates[jury.id]"></nz-option>
+                            @if (ratesTableData) {
+                                <nz-table #basicTable [nzData]="ratesTableData" [nzShowPagination]="false">
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: white; font-weight: 700;" nzWidth="20%">Имя жюри</th>
+                                            <th style="background-color: white; font-weight: 700;" nzWidth="10%">Зарплата</th>
+                                            <th style="background-color: white; font-weight: 700;">Комментарий</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @for (data of basicTable.data; track data) {
+                                        <tr>
+                                            <td>{{ data.name }}</td>
+                                            <td>{{ data.salary === '—' ? data.salary : data.salary | number:'1.0-0':'ru' }}</td>
+                                            <td>{{ data.comment }}</td>
+                                        </tr>
                                     }
-                                </nz-select>
-                            </nz-spin>
-                        </div>
-
-                        @if (ratesTableData) {
-                            <nz-table #basicTable [nzData]="ratesTableData" [nzShowPagination]="false">
-                                <thead>
-                                    <tr>
-                                        <th style="background-color: white; font-weight: 700;" nzWidth="20%">Имя жюри</th>
-                                        <th style="background-color: white; font-weight: 700;" nzWidth="10%">Зарплата</th>
-                                        <th style="background-color: white; font-weight: 700;">Комментарий</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                @for (data of basicTable.data; track data) {
-                                    <tr>
-                                        <td>{{ data.name }}</td>
-                                        <td>{{ data.salary === '—' ? data.salary : data.salary | number:'1.0-0':'ru' }}</td>
-                                        <td>{{ data.comment }}</td>
-                                    </tr>
-                                }
-                                </tbody>
-                            </nz-table>
-                        }
-                    </nz-tab>
-                </nz-tabset>
-            </nz-content>
-        }
-    }
+                                    </tbody>
+                                </nz-table>
+                            }
+                        </nz-tab>
+                    </nz-tabset>
+                }
+            }
+        </div>
+    </nz-content>
 </nz-layout>

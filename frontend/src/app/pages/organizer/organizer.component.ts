@@ -19,6 +19,7 @@ import { BaseComponent } from '../../components/base/base.component';
 import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { ParticipantStatus } from '../../models/participant-status.enum';
 import { BackButtonComponent } from '../../components/back-button/back-button.component';
+import { NzColDirective, NzGridModule, NzRowDirective } from 'ng-zorro-antd/grid';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -49,6 +50,9 @@ type FilterFormValue = {
     ParticipantCardComponent,
     AsyncPipe,
     FormsModule,
+    NzRowDirective,
+    NzColDirective,
+    NzGridModule,
     ReactiveFormsModule,
     BackButtonComponent
   ],

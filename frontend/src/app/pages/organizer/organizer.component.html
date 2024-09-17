@@ -47,15 +47,17 @@
     </nz-header>
 
     <nz-content>
-        @if (isParticipantsLoading) {
-            <nz-spin></nz-spin>
-        } @else {   
-            @for (participant of participants; track participant.id) {
-                <app-participant-card 
-                    [participant]="participant"
-                    (click)="goToParticipant(participant.id)"
-                ></app-participant-card>
+        <div class="container">
+            @if (isParticipantsLoading) {
+                <nz-spin></nz-spin>
+            } @else {   
+                @for (participant of participants; track participant.id) {
+                    <app-participant-card 
+                        [participant]="participant"
+                        (click)="goToParticipant(participant.id)"
+                    ></app-participant-card>
+                }
             }
-        }
+        </div>
     </nz-content>
 </nz-layout>

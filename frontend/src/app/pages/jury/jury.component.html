@@ -8,38 +8,40 @@
     </nz-header>
 
     <nz-content>
-        @if (isParticipantsLoading) {
-            <nz-spin></nz-spin>
-        } @else {
-            @if (inTeamParticipants.length > 0) {
-                <h5 nz-typography>В команде</h5>
+        <div class="container">
+            @if (isParticipantsLoading) {
+                <nz-spin></nz-spin>
+            } @else {
+                @if (inTeamParticipants.length > 0) {
+                    <h5 nz-typography>В команде</h5>
+                    
+                    @for (participant of inTeamParticipants; track participant.id) {
+                        <p class="application" (click)="goToApplication(participant.id)">
+                            Заявка "{{ participant.code }}"
+                        </p>
+                    }
+                }
+            }
+            
+            @if (notRatedParticipants.length > 0) {
+                <h5 nz-typography>Заявки без оценки</h5>
                 
-                @for (participant of inTeamParticipants; track participant.id) {
+                @for (participant of notRatedParticipants; track participant.id) {
                     <p class="application" (click)="goToApplication(participant.id)">
                         Заявка "{{ participant.code }}"
                     </p>
                 }
-        }
-        
-        @if (notRatedParticipants.length > 0) {
-            <h5 nz-typography>Заявки без оценки</h5>
-            
-            @for (participant of notRatedParticipants; track participant.id) {
-                <p class="application" (click)="goToApplication(participant.id)">
-                    Заявка "{{ participant.code }}"
-                </p>
             }
-        }
-        
-        @if (ratedParticipants.length > 0) {
-            <h5 nz-typography>Оценённые заявки</h5>
             
-            @for (participant of ratedParticipants; track participant.id) {
-                <p class="application" (click)="goToApplication(participant.id)">
-                    Заявка "{{ participant.code }}"
-                </p>
+            @if (ratedParticipants.length > 0) {
+                <h5 nz-typography>Оценённые заявки</h5>
+                
+                @for (participant of ratedParticipants; track participant.id) {
+                    <p class="application" (click)="goToApplication(participant.id)">
+                        Заявка "{{ participant.code }}"
+                    </p>
+                }
             }
-        }
-    }
+        </div>
     </nz-content>
 </nz-layout>

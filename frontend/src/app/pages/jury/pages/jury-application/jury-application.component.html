@@ -27,20 +27,22 @@
     </nz-header>
 
     <nz-content>
-        @if (isParticipantLoading) {
-            <nz-spin></nz-spin>
-        } @else {
-            @if (participant) {
-                <h2 nz-typography class="header__name">
-                    <strong>
-                        Заявка "{{ participant.code }}"
-                    </strong>
-                </h2>
-                
-                <h3 nz-typography>Анкета</h3>
-                
-                <app-answers [answers]="participant.answers"></app-answers>
+        <div class="container">
+            @if (isParticipantLoading) {
+                <nz-spin></nz-spin>
+            } @else {
+                @if (participant) {
+                    <h2 nz-typography class="header__name">
+                        <strong>
+                            Заявка "{{ participant.code }}"
+                        </strong>
+                    </h2>
+                    
+                    <h3 nz-typography>Анкета</h3>
+                    
+                    <app-answers [answers]="participant.answers"></app-answers>
+                }
             }
-        }
+        </div>
     </nz-content>
 </nz-layout>
