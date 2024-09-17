@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { takeUntil } from 'rxjs';
+import { takeUntil, timer } from 'rxjs';
+import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -19,7 +20,8 @@ import { BaseComponent } from '../../components/base/base.component';
 import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { ParticipantStatus } from '../../models/participant-status.enum';
 import { BackButtonComponent } from '../../components/back-button/back-button.component';
-import { NzColDirective, NzGridModule, NzRowDirective } from 'ng-zorro-antd/grid';
+import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -50,9 +52,9 @@ type FilterFormValue = {
     ParticipantCardComponent,
     AsyncPipe,
     FormsModule,
-    NzRowDirective,
-    NzColDirective,
-    NzGridModule,
+    NzListComponent,
+    NzListItemComponent,
+    ScrollingModule,
     ReactiveFormsModule,
     BackButtonComponent
   ],
@@ -61,6 +63,10 @@ type FilterFormValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerPage extends BaseComponent implements OnInit {
+  @ViewChild(CdkVirtualScrollViewport, { static: false }) public readonly virtualScroll!: CdkVirtualScrollViewport;
+
+  scrolledIndex: number = 0;
+
   ParticipantStatus = ParticipantStatus;
   filterForm: FormGroup<FilterForm> = new FormGroup({
     search: new FormControl<string | null>(null),
@@ -75,6 +81,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
+  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
@@ -86,12 +93,26 @@ export class OrganizerPage extends BaseComponent implements OnInit {
           this.allParticipants = data;
           this.isParticipantsLoading = false;
           this.cdr.markForCheck();
+
+          this.initScrollPosition();
         },
         error: (err: HttpErrorResponse) => {
           this.isParticipantsLoading = false;
           this.cdr.markForCheck();
           this.showErrorNotification('Ошибка при получении данных об участниках', err);
         }
+      });
+  }
+
+  private initScrollPosition(): void {
+    // Хак для иницилизации виртуал скролла
+    timer(300)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        const scrollIndex: number = this.localStorageService.getScrollIndex() ?? 0;
+        this.scrolledIndex = scrollIndex;
+        this.virtualScroll.scrollToIndex(scrollIndex, 'smooth');
+        this.cdr.markForCheck();
       });
   }
 
@@ -107,9 +128,9 @@ export class OrganizerPage extends BaseComponent implements OnInit {
             let search = (<string>value.search).trim().toLowerCase();
             
             return item.code.toLowerCase().includes(search) ||
-                   item.info.city.toLowerCase().includes(search) ||
-                   item.info.district.toLowerCase().includes(search) ||
-                   item.info.name.toLowerCase().includes(search);
+                  item.info.city.toLowerCase().includes(search) ||
+                  item.info.district.toLowerCase().includes(search) ||
+                  item.info.name.toLowerCase().includes(search);
           });
         }
 
@@ -128,7 +149,9 @@ export class OrganizerPage extends BaseComponent implements OnInit {
               break;
             }
             case ParticipantStatus.PartiallyRated: {
-              initialData = initialData.filter((item: Participant) => Object.values(item.rates).some((rate: JuryRate | null) => rate));
+              initialData = initialData.filter((item: Participant) => 
+                Object.values(item.rates).some((rate: JuryRate | null) => !rate) &&
+                Object.values(item.rates).some((rate: JuryRate | null) => rate));
               break;
             }
           }
@@ -149,11 +172,20 @@ export class OrganizerPage extends BaseComponent implements OnInit {
     this.router.navigate([ORGANIZER_ROOT_PATHS.Adults]);
   }
 
+  trackById(index: number, item: Participant): number {
+    return item.id ?? index;
+  }
+
   goToParticipant(id: number): void {
     this.router.navigate([ORGANIZER_ROOT_PATHS.Participant, id]);
   }
 
   changeFilterVisible(value: boolean): void {
     this.filterVisible = value;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.localStorageService.setScrollIndex(this.scrolledIndex);
   }
 }

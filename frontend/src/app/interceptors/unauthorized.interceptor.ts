@@ -28,7 +28,7 @@ export function unauthorizedInterceptor(
       // Для остальных страниц перенаправляем на страницу логина,
       // если пользователь у пользователя некорректные данные в куки
       if (err.status === HttpStatusCode.Forbidden) {
-        localStorageService.clearAuthData();
+        localStorageService.clearData();
         router.navigate([ROOT_ROUTE_PATHS.Login]);
         return EMPTY;
       }

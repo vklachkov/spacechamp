@@ -50,13 +50,14 @@
         <div class="container">
             @if (isParticipantsLoading) {
                 <nz-spin></nz-spin>
-            } @else {   
-                @for (participant of participants; track participant.id) {
-                    <app-participant-card 
+            } @else {
+                <cdk-virtual-scroll-viewport (scrolledIndexChange)="scrolledIndex = $event" itemSize="102" class="virtual-scroll">
+                    <app-participant-card
+                        *cdkVirtualFor="let participant of participants; trackBy: trackById"
                         [participant]="participant"
                         (click)="goToParticipant(participant.id)"
                     ></app-participant-card>
-                }
+                </cdk-virtual-scroll-viewport>
             }
         </div>
     </nz-content>

@@ -26,7 +26,7 @@ export class BackButtonComponent extends BaseComponent {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.localStorageService.clearAuthData();
+          this.localStorageService.clearData();
           this.router.navigate([ROOT_ROUTE_PATHS.Login]);
         },
         error: (err: HttpErrorResponse) => {

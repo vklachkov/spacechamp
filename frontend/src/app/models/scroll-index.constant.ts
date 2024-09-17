@@ -1,0 +1,1 @@
+export const SCROLL_INDEX_KEY: string = 'scroll-index';

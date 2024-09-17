@@ -5,6 +5,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  // Жеский хак, чтобы при наведении везде было видно рамку
+  ::ng-deep {
+    .cdk-virtual-scroll-content-wrapper {
+      padding: 2em;
+    }
+  }
 }
 
 .app-layout {
@@ -58,8 +65,13 @@ nz-content {
 nz-content {
   display: block;
   overflow-y: scroll;
-  padding: 2em;
+  
   background-color: var(--primary-background);
+
+  .virtual-scroll {
+    scrollbar-width: none;
+    height: 100%;
+  }
 
   app-participant-card {
     display: block;

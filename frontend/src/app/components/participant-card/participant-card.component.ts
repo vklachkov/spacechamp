@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { CommonModule } from '@angular/common';
@@ -13,13 +13,13 @@ import { ParticipantStatus } from '../../models/participant-status.enum';
   templateUrl: './participant-card.component.html',
   styleUrl: './participant-card.component.scss'
 })
-export class ParticipantCardComponent implements OnInit {
+export class ParticipantCardComponent implements OnInit, OnChanges {
   @Input({ required: true }) public participant!: Participant;
 
-  status!: ParticipantStatus;
+  status: ParticipantStatus | null = null;
   ParticipantStatus = ParticipantStatus;
 
-  private getStatus(): ParticipantStatus {
+  private getStatus(): ParticipantStatus | null {
     if (this.participant.jury?.id) {
       return ParticipantStatus.InTeam;
     }
@@ -36,7 +36,13 @@ export class ParticipantCardComponent implements OnInit {
       return ParticipantStatus.PartiallyRated;
     }
 
-    return ParticipantStatus.InTeam;
+    return null;
+  }
+
+  ngOnChanges(): void {
+    // Виртуал скролл не переставляет элементы в списке, а подменяет одно на другое, поэтому при каждой такой подмене
+    // нужно переиницилизировать статус
+    this.status = this.getStatus();
   }
 
   ngOnInit(): void {
