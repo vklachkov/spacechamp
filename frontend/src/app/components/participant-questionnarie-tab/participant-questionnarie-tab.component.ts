@@ -11,6 +11,9 @@ import { NzInputDirective } from 'ng-zorro-antd/input';
 import { BaseComponent } from '../base/base.component';
 import { Participant, ParticipantInfo } from '../../models/api/participant.interface';
 import { OrganizerService } from '../../services/organizer.service';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { DownloadService } from '../../services/download.service';
 
 type FormGroupType = {
   name: FormControl<string | null>,
@@ -41,7 +44,9 @@ type FormGroupValue = {
   imports: [
     NzCardComponent, 
     NzAvatarComponent, 
-    NzSpinComponent, 
+    NzSpinComponent,
+    NzIconModule,
+    NzButtonComponent,
     NzFormModule,
     NzInputDirective,
     NzFormItemComponent,
@@ -71,6 +76,7 @@ export class ParticipantQuestionnarieTabComponent extends BaseComponent implemen
   });
 
   private readonly organizerService: OrganizerService = inject(OrganizerService);
+  private readonly downloadService: DownloadService = inject(DownloadService);
 
   ngOnInit(): void {
     this.patchForm()
@@ -111,6 +117,18 @@ export class ParticipantQuestionnarieTabComponent extends BaseComponent implemen
           this.isParticipantInfoUpdating = false;
           this.cdr.markForCheck();
           this.showErrorNotification('Ошибка при обновлении данных об участнике', err);
+        }
+      });
+  }
+
+  downloadPhoto(): void {
+    const url: string = this.participant.info.photo_url;
+    this.downloadService.download(url, `Фото участника ${this.participant.code}`)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        error: (err: object) => {
+          this.notificationService.error('Ошибка', `Ошибка при скачивании файла ${url}`);
+          console.error(`Ошибка при скачивании файла ${url}: `, err);
         }
       });
   }

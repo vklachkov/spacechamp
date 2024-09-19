@@ -10,6 +10,24 @@
   }
 }
 
+.avatar {
+  position: relative;
+
+  &:hover {
+    .avatar__button {
+      display: block;
+    }
+  }
+
+  &__button {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    z-index: 100;
+    display: none;
+  }
+}
+
 .form {
   display: flex;
   flex-direction: column;
