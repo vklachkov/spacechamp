@@ -62,8 +62,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
   juries: Adult[] = [];
 
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly organizerService: OrganizerService =
-    inject(OrganizerService);
+  private readonly organizerService: OrganizerService = inject(OrganizerService);
 
   private loadData(): void {
     const participant$: Observable<Participant | null> =

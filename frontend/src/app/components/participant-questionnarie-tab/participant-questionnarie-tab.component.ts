@@ -56,7 +56,7 @@ type FormGroupValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantQuestionnarieTabComponent extends BaseComponent implements OnInit {
-  @Input({ required: true }) public participant!: Participant;
+  @Input({ required: true }) participant!: Participant;
 
   isParticipantInfoUpdating: boolean = false;
   participantInfoForm: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({

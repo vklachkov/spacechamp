@@ -5,8 +5,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { EMPTY, of, switchMap, takeUntil } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../../../components/base/base.component';
@@ -41,14 +40,12 @@ import { HeaderComponent } from "../../../../components/header/header.component"
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JuryApplicationPage extends BaseComponent {
-  // TODO: снизу в итоге или посередине инжекты?
-  private readonly router: Router = inject(Router);
+  participant: AnonymousParticipant | null = null;
+  isParticipantLoading: boolean = false;
+
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly modalService: NzModalService = inject(NzModalService);
   private readonly juryService: JuryService = inject(JuryService);
-
-  participant: AnonymousParticipant | null = null;
-  isParticipantLoading: boolean = false;
 
   private loadParticipant(): void {
     this.activatedRoute.paramMap

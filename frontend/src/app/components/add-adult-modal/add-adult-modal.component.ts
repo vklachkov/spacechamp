@@ -4,12 +4,23 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzModalFooterDirective, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputDirective } from 'ng-zorro-antd/input';
-import { FormGroupType, FormGroupValue } from './add-adult-modal';
-import { Adult } from '../../models/api/adult.interface';
-import { NzSwitchComponent } from 'ng-zorro-antd/switch';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import { NzSwitchComponent } from 'ng-zorro-antd/switch';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { Adult } from '../../models/api/adult.interface';
 import { AdultRole } from '../../models/api/adult-role.enum';
+
+export type FormGroupType = {
+  name: FormControl<string | null>;
+  password: FormControl<string | null>;
+  isOrganizer: FormControl<boolean | null>;
+};
+
+export type FormGroupValue = {
+  name: string;
+  password: string;
+  isOrganizer: boolean;
+};
 
 @Component({
   selector: 'app-add-adult-modal',

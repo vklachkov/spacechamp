@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
@@ -39,11 +38,11 @@ import { HeaderComponent } from '../../../../components/header/header.component'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerAdultsPage extends BaseComponent implements OnInit {
-  private readonly modalService: NzModalService = inject(NzModalService);
-  private readonly organizerService: OrganizerService = inject(OrganizerService);
-
   adults: Adult[] = []; 
   isAdultsLoading: boolean = false;
+
+  private readonly modalService: NzModalService = inject(NzModalService);
+  private readonly organizerService: OrganizerService = inject(OrganizerService);
 
   private loadAdults(): void {
     this.isAdultsLoading = true;

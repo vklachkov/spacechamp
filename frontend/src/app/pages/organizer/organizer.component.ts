@@ -65,7 +65,8 @@ type FilterFormValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerPage extends BaseComponent implements OnInit {
-  @ViewChild(CdkVirtualScrollViewport, { static: false }) public readonly virtualScroll!: CdkVirtualScrollViewport;
+  @ViewChild(CdkVirtualScrollViewport, { static: false }) 
+  readonly virtualScroll!: CdkVirtualScrollViewport;
 
   scrolledIndex: number = 0;
 

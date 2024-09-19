@@ -37,7 +37,7 @@ interface TableData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantRatesTabComponent extends BaseComponent implements OnInit {
-  @Input({ required: true }) public participant!: Participant;
+  @Input({ required: true }) participant!: Participant;
   @Input({ required: true }) juries: Adult[] = [];
 
   ratesTableData: TableData[] = [];

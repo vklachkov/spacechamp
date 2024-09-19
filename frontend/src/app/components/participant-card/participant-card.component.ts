@@ -15,7 +15,7 @@ import { ParticipantStatus } from '../../models/participant-status.enum';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantCardComponent implements OnInit, OnChanges {
-  @Input({ required: true }) public participant!: Participant;
+  @Input({ required: true }) participant!: Participant;
 
   status: ParticipantStatus | null = null;
   ParticipantStatus = ParticipantStatus;

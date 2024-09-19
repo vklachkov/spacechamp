@@ -21,14 +21,22 @@ import {
 } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
-import {
-  FormGroupType,
-  MAX_SALARY,
-  MIN_SALARY,
-} from './rate-application-modal';
 import { JuryRate } from '../../models/api/participant.interface';
 import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
 import { salaryValidator } from '../../validators/salary.validator';
+
+export type FormGroupType = {
+  salary: FormControl<number | null>,
+  comment: FormControl<string | null>
+}
+
+export type FormGroupValue = {
+  salary: number,
+  comment: string | null
+}
+
+export const MIN_SALARY: number = 1;
+export const MAX_SALARY: number = 1300;
 
 @Component({
   selector: 'app-rate-application-modal',

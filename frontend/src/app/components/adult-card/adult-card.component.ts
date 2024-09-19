@@ -26,12 +26,12 @@ import { NzPopoverComponent, NzPopoverDirective } from 'ng-zorro-antd/popover';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdultCardComponent implements OnInit {
-  @Input({ required: true }) public adult!: Adult;
+  @Input({ required: true }) adult!: Adult;
   AdultRole = AdultRole;
 
   userId: number = 0;
 
-  @Output() public readonly removed: EventEmitter<void> = new EventEmitter<void>();
+  @Output() readonly removed: EventEmitter<void> = new EventEmitter<void>();
 
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
 
