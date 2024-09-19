@@ -5,7 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
@@ -32,6 +32,8 @@ import { LogoutButtonComponent } from '../../../../components/logout-button/logo
 import { HeaderComponent } from '../../../../components/header/header.component';
 import { ParticipantQuestionnarieTabComponent } from '../../../../components/participant-questionnarie-tab/participant-questionnarie-tab.component';
 import { ParticipantRatesTabComponent } from '../../../../components/participant-rates-tab/participant-rates-tab.component';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
 
 @Component({
   standalone: true,
@@ -43,6 +45,7 @@ import { ParticipantRatesTabComponent } from '../../../../components/participant
     NzTabComponent,
     NzSpinComponent,
     NzIconModule,
+    NzButtonComponent,
     AnswersComponent,
     LogoutButtonComponent,
     MainButtonComponent,
@@ -61,6 +64,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
   isDataLoading: boolean = false;
   juries: Adult[] = [];
 
+  private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
 
@@ -109,5 +113,23 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  remove(): void {
+    this.isDataLoading = true;
+    this.organizerService.removeParticipant((<Participant>this.participant).id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate([ROOT_ROUTE_PATHS.Index]);
+          this.isDataLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isDataLoading = false;
+          this.cdr.markForCheck();
+          this.showErrorNotification('Ошибка при удалении участника', err);
+        }
+      });
   }
 }

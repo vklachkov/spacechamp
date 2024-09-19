@@ -4,8 +4,14 @@
     height: 32.4px;
   }
 
-  &__code {
-    margin: 0;
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+
+    &-code {
+      margin: 0;
+    }
   }
 }
 

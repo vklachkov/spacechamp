@@ -5,7 +5,13 @@
 
             <nz-spin class="participant-header__spin" header-center [nzSpinning]="isDataLoading">
                 @if (participant) {
-                    <h3 nz-typography class="participant-header__code">Участник "{{ participant.code }}"</h3>
+                    <div class="participant-header__info">
+                        <h3 nz-typography class="participant-header__info-code">Участник "{{ participant.code }}"</h3>
+
+                        <button nz-button (click)="remove()">
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                        </button>
+                    </div>
                 }
             </nz-spin>
 

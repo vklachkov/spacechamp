@@ -29,6 +29,10 @@ export class OrganizerService {
     return this.http.patch<void>(`${environment.API_URL}/org/participant/${participantId}/info`, info, { withCredentials: true });
   }
 
+  removeParticipant(participantId: number): Observable<void> {
+    return this.http.delete<void>(`${environment.API_URL}/org/participant/${participantId}`, { withCredentials: true });
+  }
+
   getAdults(): Observable<Adult[]> {
     return this.http.get<Adult[]>(`${environment.API_URL}/org/adults`, { withCredentials: true });
   }
