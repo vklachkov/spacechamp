@@ -1,21 +1,21 @@
-<nz-layout class="app-layout">
-    <nz-header>
-        <div class="left">
-            <app-main-button></app-main-button>
+<nz-layout class="nz-layout">
+    <nz-header class="nz-header">
+        <app-header>
+            <app-main-button header-left></app-main-button>
 
-            <button nz-button nzType="primary" class="add-button" (click)="openAddModal()">
+            <button header-left nz-button nzType="primary" (click)="openAddModal()">
                 <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
                 Добавить аккаунт
             </button>
-        </div>
 
-        <app-back-button></app-back-button>
+            <app-logout-button header-right></app-logout-button>
+        </app-header>
     </nz-header>
 
-    <nz-content class="list">
+    <nz-content class="nz-content content">
         <div class="container">
             @if (isAdultsLoading) {
-                <nz-spin></nz-spin>
+                <nz-spin class="spin-height-100"></nz-spin>
             } @else {
                 @for (adult of adults; track adult.id) {
                     <app-adult-card [adult]="adult" (removed)="removeAdult(adult.id)"></app-adult-card>

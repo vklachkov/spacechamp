@@ -25,5 +25,4 @@ export class MainPage extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.role = this.localStorageService.getRole();
   }
-
 }

@@ -1,6 +1,6 @@
-<nz-card class="jury-card" [nzBodyStyle]="{'padding': '0'}" [class.current]="userId === adult.id">
-    <div class="jury">
-        <div class="jury__info">
+<nz-card class="adult" [nzBodyStyle]="{'padding': '0'}" [class.current]="userId === adult.id">
+    <div class="adult__content">
+        <div class="adult__content-info">
             <span nz-typography>
                 {{ adult.name }}
 
@@ -15,28 +15,25 @@
                     >
                     </span>
                 }
-                
             </span>
             <span nz-typography nzType="secondary">Пароль: {{ adult.password }}</span>
         </div>
 
-        <div class="jury__actions">
-            <button 
-                nz-button
-                nz-popconfirm
-                [nzPopconfirmTitle]="adult.role === AdultRole.Organizer 
-                    ? 'Вы уверены, что хотите удалить организатора? Его нельзя будет восстановить' 
-                    : 'Вы уверены, что хотите удалить жюри? Его нельзя будет восстановить'"
-                nzPopconfirmPlacement="bottom"
-                nzCancelText="Закрыть"
-                nzOkType="danger"
-                nzOkText="Подтвердить"
-                [disabled]="userId === adult.id"
-                [nzPopconfirmOverlayStyle]="{ 'width': '24em' }"
-                (nzOnConfirm)="remove()"
-            >
-                <span nz-icon nzType="delete" nzTheme="outline"></span>
-            </button>
-        </div>
+        <button 
+            nz-button
+            nz-popconfirm
+            [nzPopconfirmTitle]="adult.role === AdultRole.Organizer 
+                ? 'Вы уверены, что хотите удалить организатора? Его нельзя будет восстановить' 
+                : 'Вы уверены, что хотите удалить жюри? Его нельзя будет восстановить'"
+            nzPopconfirmPlacement="bottom"
+            nzCancelText="Закрыть"
+            nzOkType="danger"
+            nzOkText="Подтвердить"
+            [disabled]="userId === adult.id"
+            [nzPopconfirmOverlayStyle]="{ 'width': '24em' }"
+            (nzOnConfirm)="remove()"
+        >
+            <span nz-icon nzType="delete" nzTheme="outline"></span>
+        </button>
     </div>
 </nz-card>

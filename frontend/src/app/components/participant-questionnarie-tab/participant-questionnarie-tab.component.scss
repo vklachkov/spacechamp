@@ -1,0 +1,30 @@
+.participant-card {
+  margin-bottom: 0.5em;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+
+    padding: 1em;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+
+  &__item {
+    margin: 0;
+  }
+
+  &__label {
+    min-width: 7em;
+    text-align: left;
+  }
+
+  &__control {
+    min-width: 23em;
+  }
+}

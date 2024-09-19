@@ -1,19 +1,20 @@
-<nz-layout class="app-layout">
-    <nz-header>
-        <header class="header">
-            <div class="info">
-                <app-main-button></app-main-button>
+<nz-layout class="nz-layout">
+    <nz-header class="nz-header jury-application-header">
+        <app-header>
+            <app-main-button header-left></app-main-button>
 
+            <!-- Почему-то без оборачивания во что-либо не работает -->
+            <div header-left class="jury-application-header__wrap">
                 @if (isParticipantLoading) {
-                    <nz-spin></nz-spin>
+                    <nz-spin header-left class="jury-application-header__spin"></nz-spin>
                 } @else {
                     @if (participant?.in_command) {
-                        <button nz-button nzType="default" (click)="openRateModal()">Посмотреть оценку</button>
+                        <button nz-button nzType="default" header-left (click)="openRateModal()">Посмотреть оценку</button>
                     } @else {
                         @if (participant?.rate) {
-                            <button nz-button nzType="default" (click)="openRateModal()">Изменить оценку</button>
+                            <button nz-button nzType="default" header-left (click)="openRateModal()">Изменить оценку</button>
                         } @else {
-                            <button nz-button nzType="primary" (click)="openRateModal()">
+                            <button nz-button nzType="primary" header-left (click)="openRateModal()">
                                 <span nz-icon nzType="dollar" nzTheme="outline"></span>
                                 Оценить
                             </button>
@@ -22,25 +23,27 @@
                 }   
             </div>
 
-            <app-back-button></app-back-button>
-        </header>
+            <app-logout-button header-right></app-logout-button>
+        </app-header>
     </nz-header>
 
-    <nz-content>
+    <nz-content class="nz-content content">
         <div class="container">
             @if (isParticipantLoading) {
-                <nz-spin></nz-spin>
+                <nz-spin class="spin-height-100"></nz-spin>
             } @else {
                 @if (participant) {
-                    <h2 nz-typography class="header__name">
-                        <strong>
-                            Заявка "{{ participant.code }}"
-                        </strong>
-                    </h2>
-                    
-                    <h3 nz-typography>Анкета</h3>
-                    
-                    <app-answers [answers]="participant.answers"></app-answers>
+                    <div class="questionnarie">
+                        <h2 nz-typography class="questionnarie__name">
+                            <strong>
+                                Заявка "{{ participant.code }}"
+                            </strong>
+                        </h2>
+
+                        <h3 nz-typography class="questionnarie__title">Анкета</h3>
+
+                        <app-answers [answers]="participant.answers"></app-answers>
+                    </div>                    
                 }
             }
         </div>

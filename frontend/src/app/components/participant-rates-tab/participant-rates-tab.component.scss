@@ -1,0 +1,17 @@
+.team {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+  margin-bottom: .5em;
+
+  background-color: var(--white);
+  padding: .8em;
+
+  &__title {
+    margin-bottom: 0;
+  }
+
+  &__select {
+    min-width: 14em;
+  }
+}

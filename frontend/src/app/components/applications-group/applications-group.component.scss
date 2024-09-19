@@ -1,0 +1,24 @@
+.application-group {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+
+  &__title {
+    margin: 0;
+  }
+
+  &__item {
+    margin: 0;
+    padding: 1em;
+  
+    font-size: 1.17em;
+    background-color: var(--white);
+  
+    transition: box-shadow .15s ease-in-out;
+  
+    &:hover {
+      box-shadow: var(--hover-box-shadow);
+      cursor: pointer;
+    }
+  }
+}

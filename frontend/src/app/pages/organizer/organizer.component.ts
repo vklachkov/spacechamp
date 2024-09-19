@@ -3,7 +3,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { takeUntil, timer } from 'rxjs';
+import { delay, takeUntil, timer } from 'rxjs';
 import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
@@ -19,9 +19,10 @@ import { OrganizerService } from '../../services/organizer.service';
 import { BaseComponent } from '../../components/base/base.component';
 import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { ParticipantStatus } from '../../models/participant-status.enum';
-import { BackButtonComponent } from '../../components/back-button/back-button.component';
 import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { HeaderComponent } from '../../components/header/header.component';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -56,7 +57,8 @@ type FilterFormValue = {
     NzListItemComponent,
     ScrollingModule,
     ReactiveFormsModule,
-    BackButtonComponent
+    LogoutButtonComponent,
+    HeaderComponent
   ],
   templateUrl: './organizer.component.html',
   styleUrls: ['./organizer.component.scss'],
@@ -137,7 +139,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
         if (value.status) {
           switch (value.status) {
             case ParticipantStatus.InTeam: {
-              initialData = initialData.filter((item: Participant) => item.jury?.id);
+              initialData = initialData.filter((item: Participant) => item.jury);
               break;
             }
             case ParticipantStatus.NotRated: {
@@ -145,7 +147,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
               break;
             }
             case ParticipantStatus.FullRated: {
-              initialData = initialData.filter((item: Participant) => Object.values(item.rates).every((rate: JuryRate | null) => rate));
+              initialData = initialData.filter((item: Participant) => !item.jury && Object.values(item.rates).every((rate: JuryRate | null) => rate));
               break;
             }
             case ParticipantStatus.PartiallyRated: {

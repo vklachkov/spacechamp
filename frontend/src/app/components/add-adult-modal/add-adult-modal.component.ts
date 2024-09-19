@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
@@ -12,7 +12,7 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { AdultRole } from '../../models/api/adult-role.enum';
 
 @Component({
-  selector: 'app-add-jury-modal',
+  selector: 'app-add-adult-modal',
   standalone: true,
   imports: [
     NzCardModule,
@@ -29,7 +29,8 @@ import { AdultRole } from '../../models/api/adult-role.enum';
     ReactiveFormsModule
   ],
   templateUrl: './add-adult-modal.component.html',
-  styleUrl: './add-adult-modal.component.scss'
+  styleUrl: './add-adult-modal.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddAdultModalComponent {
   form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({

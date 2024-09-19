@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -22,7 +22,8 @@ import { NzPopoverComponent, NzPopoverDirective } from 'ng-zorro-antd/popover';
     NzPopoverComponent
   ],
   templateUrl: './adult-card.component.html',
-  styleUrl: './adult-card.component.scss'
+  styleUrl: './adult-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdultCardComponent implements OnInit {
   @Input({ required: true }) public adult!: Adult;

@@ -1,38 +1,38 @@
-p, h3 {
-    margin: 0;
-    padding: 0;
-    text-align: start;
-}
+.participant {
+    &__content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 1em;
 
-#card-content.item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 1em;
+        &-info {
+            margin-left: 1em;
 
-    #info {
-        margin-left: 1em;
-    }
-}
+            &-title,
+            &-text,
+            &-status {
+                margin: 0;
+            }
 
-#status {
-    font-size: small;
-}
+            &-status {
+                font-size: small;
 
-#status {
-    &.in-team {
-        color: var(--in-team-color);
-    }
-
-    &.not-rated {
-        color: var(--not-rated-color);
-    }
-
-    &.partially-rated {
-        color: var(--partially-rated-color);
-    }
-
-    &.full-rated {
-        color: var(--full-rated-color);
+                &.in-team {
+                    color: var(--in-team-color);
+                }
+            
+                &.not-rated {
+                    color: var(--not-rated-color);
+                }
+            
+                &.partially-rated {
+                    color: var(--partially-rated-color);
+                }
+            
+                &.full-rated {
+                    color: var(--full-rated-color);
+                }
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { CommonModule } from '@angular/common';
 import { JuryRate, Participant } from '../../models/api/participant.interface';
 import { ParticipantStatus } from '../../models/participant-status.enum';
 
@@ -11,7 +11,8 @@ import { ParticipantStatus } from '../../models/participant-status.enum';
   standalone: true,
   imports: [CommonModule, NzCardModule, NzAvatarModule],
   templateUrl: './participant-card.component.html',
-  styleUrl: './participant-card.component.scss'
+  styleUrl: './participant-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantCardComponent implements OnInit, OnChanges {
   @Input({ required: true }) public participant!: Participant;

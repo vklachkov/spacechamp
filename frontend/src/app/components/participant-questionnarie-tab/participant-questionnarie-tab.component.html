@@ -1,0 +1,67 @@
+<nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
+    <div class="participant-card__content">
+        <nz-avatar [nzSize]="150" [nzSrc]="participant.info.photo_url"></nz-avatar>
+        
+        <nz-spin [nzSpinning]="isParticipantInfoUpdating">
+            <form class="form" nz-form [formGroup]="participantInfoForm">
+                <nz-form-item class="form__item">
+                    <nz-form-label class="form__label" nzFor="name">Имя</nz-form-label>
+                    <nz-form-control class="form__control">
+                        <input nz-input formControlName="name" id="name" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="form__item">
+                    <nz-form-label class="form__label" nzFor="city">Город</nz-form-label>
+                    <nz-form-control class="form__control">
+                        <input nz-input formControlName="city" id="city" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="form__item">
+                    <nz-form-label class="form__label" nzFor="district">Регион</nz-form-label>
+                    <nz-form-control class="form__control">
+                        <input nz-input formControlName="district" id="district" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="form__item">
+                    <nz-form-label class="form__label" nzFor="phone_number">Телефон</nz-form-label>
+                    <nz-form-control class="form__control">
+                        <input nz-input formControlName="phone_number" id="phone_number" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="form__item">
+                    <nz-form-label class="form__label" nzFor="email">Почта</nz-form-label>
+                    <nz-form-control class="form__control">
+                        <input nz-input formControlName="email" id="email" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="form__item">
+                    <nz-form-label class="form__label" nzFor="edu_org">Организация</nz-form-label>
+                    <nz-form-control class="form__control">
+                        <input nz-input formControlName="edu_org" id="edu_org" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="form__item">
+                    <nz-form-label class="form__label" nzFor="responsible_adult_name">ФИО родителя / наставника</nz-form-label>
+                    <nz-form-control class="form__control">
+                        <input nz-input formControlName="responsible_adult_name" id="responsible_adult_name" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="form__item">
+                    <nz-form-label class="form__label" nzFor="responsible_adult_phone_number">Номер телефона родителя / наставника</nz-form-label>
+                    <nz-form-control class="form__control">
+                        <input nz-input formControlName="responsible_adult_phone_number" id="responsible_adult_phone_number" />
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </nz-spin>
+    </div>
+</nz-card>
+
+<app-answers [answers]="participant.answers"></app-answers>

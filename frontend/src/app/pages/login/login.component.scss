@@ -4,25 +4,21 @@
 
   display: flex;
   flex-direction: column;
-  gap: 2em;
   align-items: center;
+  gap: 2em;
   
-  &-form {
+  &__form {
     background-color: var(--white);
     padding: 2em;
     width: 25em;
     border-radius: 1em;
 
-    .password-visible-icon {
-      cursor: pointer;
-    }
-
-    &__button {
+    &-button {
       margin: 0 auto;
       display: block;
       width: 10em;
 
-      span[nz-icon] {
+      &-icon {
         transform: rotate(45deg);
       }
 
@@ -34,13 +30,17 @@
   }
 }
 
+.password-visible-icon {
+  cursor: pointer;
+}
+
 .logo {
   width: var(--logo-size);
   height: var(--logo-size);
 
   margin-top: 12.5%;
 
-  img {
+  &__image {
     width: 100%;
     height: auto;
     display: block;

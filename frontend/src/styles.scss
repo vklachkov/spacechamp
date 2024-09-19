@@ -40,11 +40,38 @@ h1, h2, h3, h4, h5, h6, button {
     width: 100%;
     max-width: var(--container-width);
     margin: 0 auto;
+    
+    &.h-100 {
+        height: 100%;
+    }
+}
+
+.nz-layout {
+    height: 100vh;
+}
+
+.nz-header {
+    display: flex;
+    padding: 2em!important;
+    align-items: center;
+    background-color: var(--white)!important;
+    box-shadow: 0px 2px 4px gray;
+    z-index: 1;
+}
+
+.nz-content {
+    background-color: var(--primary-background);
+}
+
+.spin-height-100 {
     height: 100%;
+
+    .ant-spin-container {
+        height: 100%;
+    }
 }
 
 // Патч для кнопок с иконками (чтобы иконки были по центру)
-
 button[nz-button] {
     line-height: 1;
 

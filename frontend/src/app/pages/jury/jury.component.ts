@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -11,12 +11,13 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { takeUntil } from 'rxjs';
 import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
-import { JURY_ROOT_PATHS } from '../../app.routes';
 import { JuryService } from '../../services/jury.service';
 import { BaseComponent } from '../../components/base/base.component';
 import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
-import { BackButtonComponent } from "../../components/back-button/back-button.component";
+import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { HeaderComponent } from "../../components/header/header.component";
+import { ApplicationsGroupComponent } from "../../components/applications-group/applications-group.component";
 
 @Component({
   selector: 'app-jury-page',
@@ -28,12 +29,13 @@ import { BackButtonComponent } from "../../components/back-button/back-button.co
     NzLayoutModule,
     NzButtonComponent,
     NzIconModule,
-    NzInputModule,
     NzFlexModule,
     ParticipantCardComponent,
     NzTypographyComponent,
     NzSpinComponent,
-    BackButtonComponent
+    LogoutButtonComponent,
+    HeaderComponent,
+    ApplicationsGroupComponent
 ],
   templateUrl: './jury.component.html',
   styleUrls: ['./jury.component.scss'],
@@ -47,7 +49,6 @@ export class JuryPage extends BaseComponent implements OnInit {
   notRatedParticipants: AnonymousParticipant[] = [];
   ratedParticipants: AnonymousParticipant[] = [];
 
-  private readonly router: Router = inject(Router);
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly juryService: JuryService = inject(JuryService);
 
@@ -78,9 +79,5 @@ export class JuryPage extends BaseComponent implements OnInit {
     this.loadParticipants();
 
     this.userName = this.localStorageService.getName();
-  }
-
-  goToApplication(id: number): void {
-    this.router.navigate([JURY_ROOT_PATHS.Application, id]);
   }
 }

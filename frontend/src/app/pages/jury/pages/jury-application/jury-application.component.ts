@@ -16,8 +16,9 @@ import { JuryRate } from '../../../../models/api/participant.interface';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { AnswersComponent } from '../../../../components/answers/answers.component';
 import { RateApplicationModalComponent } from '../../../../components/rate-application-modal/rate-application-modal.component';
-import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
 import { MainButtonComponent } from '../../../../components/main-button/main-button.component';
+import { LogoutButtonComponent } from '../../../../components/logout-button/logout-button.component';
+import { HeaderComponent } from "../../../../components/header/header.component";
 
 @Component({
   standalone: true,
@@ -30,8 +31,9 @@ import { MainButtonComponent } from '../../../../components/main-button/main-but
     NzSpinComponent,
     AsyncPipe,
     AnswersComponent,
-    BackButtonComponent,
-    MainButtonComponent
+    LogoutButtonComponent,
+    MainButtonComponent,
+    HeaderComponent
 ],
   providers: [NzModalService],
   templateUrl: './jury-application.component.html',

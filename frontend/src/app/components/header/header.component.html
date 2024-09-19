@@ -1,0 +1,15 @@
+<header class="header">
+    <div class="container">
+        <div nz-row>
+            <div nz-col nzSpan="8" class="header__left">
+                <ng-content select="[header-left]"></ng-content>
+            </div>
+            <div nz-col nzSpan="8" class="header__center">
+                <ng-content select="[header-center]"></ng-content>
+            </div>
+            <div nz-col nzSpan="8" class="header__right">
+                <ng-content select="[header-right]"></ng-content>
+            </div>
+        </div>
+    </div>
+</header>

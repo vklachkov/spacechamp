@@ -1,0 +1,30 @@
+<div class="team">
+    <p nz-typography class="team__title">Команда участника:</p>
+
+    <nz-spin [nzSpinning]="isSettingCommandLoading">
+        <nz-select class="team__select" nzPlaceHolder="Не выбрано" [nzAllowClear]="true" [formControl]="teamControl">
+            @for (jury of juries; track jury.id) {
+                <nz-option [nzValue]="jury.id" [nzLabel]="jury.name" [nzDisabled]="!participant.rates[jury.id]"></nz-option>
+            }
+        </nz-select>
+    </nz-spin>
+</div>
+
+<nz-table #basicTable [nzData]="ratesTableData" [nzShowPagination]="false">
+    <thead>
+        <tr>
+            <th style="background-color: white; font-weight: 700;" nzWidth="20%">Имя жюри</th>
+            <th style="background-color: white; font-weight: 700;" nzWidth="10%">Зарплата</th>
+            <th style="background-color: white; font-weight: 700;">Комментарий</th>
+        </tr>
+    </thead>
+    <tbody>
+    @for (data of basicTable.data; track data) {
+        <tr>
+            <td>{{ data.name }}</td>
+            <td>{{ data.salary === '—' ? data.salary : data.salary | number:'1.0-0':'ru' }}</td>
+            <td>{{ data.comment }}</td>
+        </tr>
+    }
+    </tbody>
+</nz-table>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -48,6 +48,7 @@ import { salaryValidator } from '../../validators/salary.validator';
   ],
   templateUrl: './rate-application-modal.component.html',
   styleUrl: './rate-application-modal.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RateApplicationModalComponent implements OnInit {
   form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
