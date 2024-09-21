@@ -68,7 +68,11 @@ impl Participants {
 
             let participant: Option<models::Participant> = participants::table
                 .select(models::Participant::as_select())
-                .filter(participants::id.eq(id.0))
+                .filter({
+                    let id = participants::id.eq(id.0);
+                    let not_deleted = participants::deleted_by.is_null();
+                    id.and(not_deleted)
+                })
                 .first(conn)
                 .optional()?;
 
@@ -131,7 +135,6 @@ impl Participants {
 
             let adults: HashMap<AdultId, Adult> = adults::table
                 .select(super::models::Adult::as_select())
-                .order_by(adults::id.asc())
                 .load(conn)?
                 .into_iter()
                 .map(|adult| Adult::try_from(adult).map(|adult| (adult.id, adult)))
@@ -147,6 +150,7 @@ impl Participants {
 
             let participants: Vec<models::Participant> = participants::table
                 .select(models::Participant::as_select())
+                .filter(participants::deleted_by.is_null())
                 .order_by(participants::id.asc())
                 .load(conn)?;
 
@@ -237,7 +241,7 @@ impl Participants {
             }
 
             if let Some(jury_id) = jury_id {
-                let jury_exists = Self::jury_exists(conn, jury_id)?;
+                let jury_exists = Self::adult_exists(conn, jury_id, AdultRole::Jury)?;
                 if !jury_exists {
                     return Err(DataSourceError::UnknownAdult(jury_id));
                 }
@@ -267,7 +271,7 @@ impl Participants {
                 return Err(DataSourceError::UnknownParticipant(id));
             }
 
-            let jury_exists = Self::jury_exists(conn, jury_id)?;
+            let jury_exists = Self::adult_exists(conn, jury_id, AdultRole::Jury)?;
             if !jury_exists {
                 return Err(DataSourceError::UnknownAdult(jury_id));
             }
@@ -288,22 +292,48 @@ impl Participants {
         .await
     }
 
+    pub async fn delete(&self, id: ParticipantId, adult_id: AdultId) -> Result<()> {
+        self.transact(move |conn| {
+            use schema::participants;
+
+            let participant_exists = Self::participant_exists(conn, id)?;
+            if !participant_exists {
+                return Err(DataSourceError::UnknownParticipant(id));
+            }
+
+            let adult_exists = Self::adult_exists(conn, adult_id, AdultRole::Org)?;
+            if !adult_exists {
+                return Err(DataSourceError::UnknownAdult(adult_id));
+            }
+
+            diesel::update(participants::table)
+                .filter(participants::id.eq(id.0))
+                .set(participants::deleted_by.eq(adult_id.0))
+                .execute(conn)?;
+
+            Ok(())
+        })
+        .await
+    }
+
     fn participant_exists(conn: &mut PgConnection, id: ParticipantId) -> Result<bool> {
         use diesel::dsl::{exists, select};
         use schema::participants::dsl;
 
-        select(exists(dsl::participants.filter(dsl::id.eq(id.0))))
-            .get_result::<bool>(conn)
-            .map_err(Into::into)
+        select(exists(
+            dsl::participants.filter(dsl::id.eq(id.0).and(dsl::deleted_by.is_null())),
+        ))
+        .get_result::<bool>(conn)
+        .map_err(Into::into)
     }
 
-    fn jury_exists(conn: &mut PgConnection, id: AdultId) -> Result<bool> {
+    fn adult_exists(conn: &mut PgConnection, id: AdultId, role: AdultRole) -> Result<bool> {
         use diesel::dsl::{exists, select};
         use schema::adults::dsl;
 
         select(exists(dsl::adults.filter({
             let id = dsl::id.eq(id.0);
-            let jury = dsl::role.eq(AdultRole::Jury.to_string());
+            let jury = dsl::role.eq(role.to_string());
             id.and(jury)
         })))
         .get_result::<bool>(conn)

@@ -93,6 +93,10 @@ impl DataSource {
         self.participants.set_jury_rate(id, adult_id, rate).await
     }
 
+    pub async fn delete_participant(&self, id: ParticipantId, adult_id: AdultId) -> Result<()> {
+        self.participants.delete(id, adult_id).await
+    }
+
     pub async fn get_adult(&self, id: AdultId) -> Result<Option<Adult>> {
         self.adults.get(id).await
     }

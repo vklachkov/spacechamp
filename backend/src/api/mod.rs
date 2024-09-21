@@ -39,7 +39,10 @@ pub fn v1(datasource: Arc<DataSource>, tokens: Arc<BackendTokens>) -> Router {
             Router::new()
                 .route("/participants", get(all_participants))
                 .route("/participant", post(create_participant))
-                .route("/participant/:id", get(get_participant))
+                .route(
+                    "/participant/:id",
+                    get(get_participant).delete(delete_participant),
+                )
                 .route("/participant/:id/info", patch(patch_participant_info))
                 .route("/participant/:id/command", post(set_participant_command))
                 .route("/adults", get(adults))
@@ -262,6 +265,19 @@ async fn get_participant(
             id,
         )))
     }
+}
+
+async fn delete_participant(
+    auth_session: auth::AuthSession,
+    State(state): State<Arc<BackendState>>,
+    Path(id): Path<ParticipantId>,
+) -> Result<()> {
+    let authed_user_id = auth_session.user.unwrap().0.id;
+    state
+        .datasource
+        .delete_participant(id, authed_user_id)
+        .await
+        .map_err(Into::into)
 }
 
 async fn patch_participant_info(
