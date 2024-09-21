@@ -10,7 +10,7 @@ use crate::{
 };
 use anyhow::{bail, Context};
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
     routing::{delete, get, patch, post},
@@ -238,8 +238,9 @@ fn get_name(name: &str) -> String {
 
 async fn all_participants(
     State(state): State<Arc<BackendState>>,
+    Query(GetParticipantsQuery { sort }): Query<GetParticipantsQuery>,
 ) -> Result<Json<Vec<Participant>>> {
-    Ok(Json(state.datasource.get_all_participants().await?))
+    Ok(Json(state.datasource.get_all_participants(sort).await?))
 }
 
 async fn create_participant(
@@ -341,13 +342,14 @@ async fn delete_adult(
 async fn jury_participants(
     auth_session: auth::AuthSession,
     State(state): State<Arc<BackendState>>,
+    Query(GetParticipantsQuery { sort }): Query<GetParticipantsQuery>,
 ) -> Result<Json<Vec<AnonymousParticipant>>> {
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
     Ok(Json(
         state
             .datasource
-            .get_all_participants()
+            .get_all_participants(sort)
             .await?
             .into_iter()
             .filter(|p| {

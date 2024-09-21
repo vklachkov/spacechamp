@@ -129,7 +129,7 @@ impl Participants {
         .await
     }
 
-    pub async fn get_all(&self) -> Result<Vec<Participant>> {
+    pub async fn get_all(&self, sort: Sort) -> Result<Vec<Participant>> {
         self.transact(move |conn| {
             use schema::{adults, participant_rates as rates, participants};
 
@@ -148,11 +148,14 @@ impl Participants {
                 Self::group_rates(rates)
             };
 
-            let participants: Vec<models::Participant> = participants::table
+            let query = participants::table
                 .select(models::Participant::as_select())
-                .filter(participants::deleted_by.is_null())
-                .order_by(participants::id.asc())
-                .load(conn)?;
+                .filter(participants::deleted_by.is_null());
+
+            let participants: Vec<models::Participant> = match sort {
+                Sort::Asc => query.order_by(participants::id.asc()).load(conn)?,
+                Sort::Desc => query.order_by(participants::id.desc()).load(conn)?,
+            };
 
             participants
                 .into_iter()

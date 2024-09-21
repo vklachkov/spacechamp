@@ -43,3 +43,8 @@ pub struct NewAdultPayload {
     pub password: String,
     pub role: AdultRole,
 }
+
+#[derive(Deserialize)]
+pub struct GetParticipantsQuery {
+    pub sort: Sort,
+}
