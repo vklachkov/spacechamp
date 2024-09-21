@@ -122,7 +122,7 @@ impl Participants {
                     responsible_adult_name: participant.responsible_adult_name,
                     responsible_adult_phone_number: participant.responsible_adult_phone_number,
                 },
-                answers,
+                answers: Self::sanitize_answers(answers),
                 rates,
             }))
         })
@@ -178,12 +178,14 @@ impl Participants {
                             responsible_adult_phone_number: participant
                                 .responsible_adult_phone_number,
                         },
-                        answers: serde_json::from_value(participant.answers).map_err(|_| {
-                            DataSourceError::DbError(DieselError::DeserializationError(
-                                format!("invalid answers at participant id {}", participant.id)
-                                    .into(),
-                            ))
-                        })?,
+                        answers: Self::sanitize_answers(
+                            serde_json::from_value(participant.answers).map_err(|_| {
+                                DataSourceError::DbError(DieselError::DeserializationError(
+                                    format!("invalid answers at participant id {}", participant.id)
+                                        .into(),
+                                ))
+                            })?,
+                        ),
                         rates: rates
                             .remove(&ParticipantId(participant.id))
                             .unwrap_or_default(),
@@ -213,6 +215,14 @@ impl Participants {
         }
 
         output
+    }
+
+    fn sanitize_answers(mut answers: HashMap<String, String>) -> HashMap<String, String> {
+        for answer in answers.values_mut() {
+            *answer = answer.trim().to_owned();
+        }
+
+        answers
     }
 
     pub async fn set_info(&self, id: ParticipantId, info: ParticipantInfo) -> Result<()> {
