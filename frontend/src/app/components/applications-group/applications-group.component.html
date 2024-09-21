@@ -3,7 +3,7 @@
     
     @for (participant of participants; track participant.id) {
         <a title="" class="application-group__item" [routerLink]="[applicationPath, participant.id]">
-            Заявка "{{ participant.code }}"
+            {{ participant.code }}
         </a>
     }
 </div>

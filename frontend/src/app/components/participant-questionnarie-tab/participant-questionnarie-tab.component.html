@@ -1,12 +1,12 @@
 <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
     <div class="participant-card__content">
-        <div class="avatar">
+        <!-- <div class="avatar">
             <nz-avatar [nzSize]="150" [nzSrc]="participant.info.photo_url"></nz-avatar>
 
             <button class="avatar__button" nzSize="small" nz-button (click)="downloadPhoto()">
                 <span nz-icon nzType="download" nzTheme="outline"></span>
             </button>
-        </div>
+        </div> -->
         
         <nz-spin [nzSpinning]="isParticipantInfoUpdating">
             <form class="form" nz-form [formGroup]="participantInfoForm">

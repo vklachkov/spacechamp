@@ -1,7 +1,7 @@
 <nz-layout class="nz-layout">
     <nz-header class="nz-header jury-header">
         <app-header>
-            <h3 nz-typography header-left class="jury-header__title">Космический Чемпионат // {{ userName }}</h3>
+            <h3 nz-typography header-left class="jury-header__title">Заявки</h3>
 
             <app-logout-button header-right></app-logout-button>
         </app-header>
@@ -23,14 +23,14 @@
                     @if (notRatedParticipants.length > 0) {
                         <app-applications-group 
                             [participants]="notRatedParticipants" 
-                            title="Заявки без оценки"
+                            title="Без оценки"
                         ></app-applications-group>
                     }
                     
                     @if (ratedParticipants.length > 0) {
                         <app-applications-group 
                             [participants]="ratedParticipants" 
-                            title="Оценённые заявки"
+                            title="Оценённые"
                         ></app-applications-group>
                     }
                 </div>
