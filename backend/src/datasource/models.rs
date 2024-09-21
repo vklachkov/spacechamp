@@ -66,7 +66,7 @@ pub struct NewParticipant {
 impl NewParticipant {
     pub fn new(info: domain::ParticipantInfo, answers: HashMap<String, String>) -> Self {
         let code = {
-            let letters = Self::get_letters(&info.name).unwrap_or(Self::random_code());
+            let letters = Self::random_code();
             let number = rand::thread_rng().gen_range(1000..9999);
             format!("{letters}-{number}")
         };
@@ -86,23 +86,14 @@ impl NewParticipant {
         }
     }
 
-    fn get_letters(name: &str) -> Option<String> {
-        let mut splitted = name.split(' ');
-
-        let first = splitted.nth(0)?.chars().last()?.to_uppercase();
-        let second = splitted.nth(2)?.chars().next()?.to_uppercase();
-
-        Some(format!("{first}{second}"))
-    }
-
     fn random_code() -> String {
         let rng = &mut rand::thread_rng();
 
-        let first = ['А', 'Я', 'О', 'У', 'И', 'Э', 'Г', 'Б', 'В']
+        let first = ['А', 'Я', 'О', 'У', 'Ю', 'И', 'Э', 'Б', 'В']
             .choose(rng)
             .unwrap();
 
-        let second = ['Ф', 'Ш', 'С', 'П', 'Ю', 'Р', 'Е', 'М', 'Д']
+        let second = ['Ф', 'Ш', 'С', 'П', 'Р', 'Е', 'М', 'Д']
             .choose(rng)
             .unwrap();
 
