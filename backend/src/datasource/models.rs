@@ -60,16 +60,22 @@ pub struct NewParticipant {
     email: String,
     responsible_adult_name: String,
     responsible_adult_phone_number: String,
+    jury_id: Option<i32>,
     answers: serde_json::Value,
 }
 
 impl NewParticipant {
-    pub fn new(info: domain::ParticipantInfo, answers: HashMap<String, String>) -> Self {
-        let code = {
+    pub fn new(
+        code: Option<String>,
+        jury: Option<domain::Adult>,
+        info: domain::ParticipantInfo,
+        answers: HashMap<String, String>,
+    ) -> Self {
+        let code = code.unwrap_or({
             let letters = Self::random_code();
             let number = rand::thread_rng().gen_range(1000..9999);
             format!("{letters}-{number}")
-        };
+        });
 
         Self {
             code,
@@ -82,6 +88,7 @@ impl NewParticipant {
             email: info.email,
             responsible_adult_name: info.responsible_adult_name,
             responsible_adult_phone_number: info.responsible_adult_phone_number,
+            jury_id: jury.map(|jury| jury.id.0),
             answers: serde_json::to_value(answers).unwrap(),
         }
     }

@@ -21,9 +21,12 @@ impl Participants {
 
     pub async fn create(
         &self,
+        code: Option<String>,
+        jury: Option<Adult>,
         info: ParticipantInfo,
         answers: HashMap<String, String>,
-    ) -> Result<(ParticipantId, String)> {
+        rates: Option<HashMap<AdultId, Option<ParticipantRate>>>,
+    ) -> Result<()> {
         self.transact(move |conn| {
             use schema::{
                 adults::{self},
@@ -46,9 +49,17 @@ impl Participants {
             let records = jury_ids
                 .into_iter()
                 .map(|jury_id| {
+                    let (salary, comment) = rates
+                        .as_ref()
+                        .and_then(|rates| rates.get(&AdultId(jury_id)).cloned().flatten())
+                        .map(|ParticipantRate { salary, comment }| (salary, comment))
+                        .unzip();
+
                     (
                         rates::participant_id.eq(participant_id),
                         rates::jury_id.eq(jury_id),
+                        rates::salary.eq(salary),
+                        rates::comment.eq(comment),
                     )
                 })
                 .collect::<Vec<_>>();

@@ -54,10 +54,13 @@ impl DataSource {
 
     pub async fn create_participant(
         &self,
+        code: Option<String>,
+        jury: Option<Adult>,
         info: ParticipantInfo,
         answers: HashMap<String, String>,
+        rates: Option<HashMap<AdultId, Option<ParticipantRate>>>
     ) -> Result<(ParticipantId, String)> {
-        self.participants.create(info, answers).await
+        self.participants.create(code, jury, info, answers, rates).await
     }
 
     pub async fn get_participant(&self, id: ParticipantId) -> Result<Option<Participant>> {

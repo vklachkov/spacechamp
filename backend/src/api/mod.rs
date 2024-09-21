@@ -141,7 +141,7 @@ async fn new_application_webhook(
         ),
     ]);
 
-    let id = match state.datasource.create_participant(info, answers).await {
+    let id = match state.datasource.create_participant(None, None, info, answers, None).await {
         Ok((id, _)) => id,
         Err(err) => {
             tracing::error!("Failed to create participant from webhook: {err}");
@@ -245,11 +245,19 @@ async fn all_participants(
 
 async fn create_participant(
     State(state): State<Arc<BackendState>>,
-    Json(NewParticipantPayload { info, answers }): Json<NewParticipantPayload>,
+    Json(payload): Json<NewParticipantPayload>,
 ) -> Result<()> {
+    let NewParticipantPayload {
+        code,
+        jury,
+        info,
+        answers,
+        rates,
+    } = payload;
+
     state
         .datasource
-        .create_participant(info, answers)
+        .create_participant(code, jury, info, answers, rates)
         .await
         .map(|_| ())
         .map_err(Into::into)
