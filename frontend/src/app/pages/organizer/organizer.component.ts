@@ -3,7 +3,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { delay, takeUntil, timer } from 'rxjs';
+import { takeUntil, timer } from 'rxjs';
 import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
@@ -177,10 +177,6 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   trackById(index: number, item: Participant): number {
     return item.id ?? index;
-  }
-
-  goToParticipant(id: number): void {
-    this.router.navigate([ORGANIZER_ROOT_PATHS.Participant, id]);
   }
 
   changeFilterVisible(value: boolean): void {

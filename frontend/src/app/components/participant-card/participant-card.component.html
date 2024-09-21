@@ -1,37 +1,39 @@
-<nz-card class="participant" [nzBodyStyle]="{'padding': '0'}">
-    <div class="participant__content">
-        <nz-avatar [nzSize]="72" [nzSrc]="participant.info.photo_url"></nz-avatar>
-
-        <div class="participant__content-info">
-            <h3 class="participant__content-info-title">{{ participant.info.name }} "{{ participant.code }}"</h3>
+<a title="" [routerLink]="[participantPath, participant.id]">
+    <nz-card class="participant" [nzBodyStyle]="{'padding': '0'}">
+        <div class="participant__content">
+            <nz-avatar [nzSize]="72" [nzSrc]="participant.info.photo_url"></nz-avatar>
+            
+            <div class="participant__content-info">
+                <h3 class="participant__content-info-title">{{ participant.info.name }} "{{ participant.code }}"</h3>
         
-            <p nz-typograpy class="participant__content-info-text">
-                {{ participant.info.edu_org }}, {{ participant.info.city }}, {{ participant.info.district }}
-            </p>
-        
-
-            @switch (status) {
-                @case (ParticipantStatus.InTeam) {
-                    <p class="participant__content-info-status in-team">
-                        Находится в команде "{{ participant.jury?.name ?? '' }}"
-                    </p>
+                <p nz-typograpy class="participant__content-info-text">
+                    {{ participant.info.edu_org }}, {{ participant.info.city }}, {{ participant.info.district }}
+                </p>
+                
+                
+                @switch (status) {
+                    @case (ParticipantStatus.InTeam) {
+                        <p class="participant__content-info-status in-team">
+                            Находится в команде "{{ participant.jury?.name ?? '' }}"
+                        </p>
+                    }
+                    @case (ParticipantStatus.NotRated) {
+                        <p class="participant__content-info-status not-rated">
+                            Без оценок
+                        </p>
+                    }
+                    @case (ParticipantStatus.PartiallyRated) {
+                        <p class="participant__content-info-status partially-rated">
+                            Частично оценен
+                        </p>
+                    }
+                    @case (ParticipantStatus.FullRated) {
+                        <p class="participant__content-info-status full-rated">
+                            Полностью оценен
+                        </p>
+                    }
                 }
-                @case (ParticipantStatus.NotRated) {
-                    <p class="participant__content-info-status not-rated">
-                        Без оценок
-                    </p>
-                }
-                @case (ParticipantStatus.PartiallyRated) {
-                    <p class="participant__content-info-status partially-rated">
-                        Частично оценен
-                    </p>
-                }
-                @case (ParticipantStatus.FullRated) {
-                    <p class="participant__content-info-status full-rated">
-                        Полностью оценен
-                    </p>
-                }
-            }
+            </div>
         </div>
-    </div>
-</nz-card>
+    </nz-card>
+</a>

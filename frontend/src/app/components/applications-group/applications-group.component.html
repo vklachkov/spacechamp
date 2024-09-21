@@ -2,8 +2,8 @@
     <h5 nz-typography class="application-group__title">{{ title }}</h5>
     
     @for (participant of participants; track participant.id) {
-        <p class="application-group__item" (click)="goToApplication(participant.id)">
+        <a title="" class="application-group__item" [routerLink]="[applicationPath, participant.id]">
             Заявка "{{ participant.code }}"
-        </p>
+        </a>
     }
 </div>
