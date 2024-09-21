@@ -8,7 +8,16 @@
                     <div class="participant-header__info">
                         <h3 nz-typography class="participant-header__info-code">Участник "{{ participant.code }}"</h3>
 
-                        <button nz-button (click)="remove()">
+                        <button 
+                            nz-button
+                            nz-popconfirm
+                            nzPopconfirmTitle="Вы уверены, что хотите удалить участника?"
+                            nzPopconfirmPlacement="bottom"
+                            nzCancelText="Нет"
+                            nzOkType="danger"
+                            nzOkText="Да"
+                            (nzOnConfirm)="remove()" 
+                        >
                             <span nz-icon nzType="delete" nzTheme="outline"></span>
                         </button>
                     </div>

@@ -23,6 +23,7 @@ import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { HeaderComponent } from '../../components/header/header.component';
+import { Sort } from '../../models/api/sort.enum';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -88,7 +89,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
-    this.organizerService.getParticipants()
+    this.organizerService.getParticipants(Sort.DESC)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: Participant[]) => {

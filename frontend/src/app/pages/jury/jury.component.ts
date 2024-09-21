@@ -18,6 +18,7 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { HeaderComponent } from "../../components/header/header.component";
 import { ApplicationsGroupComponent } from "../../components/applications-group/applications-group.component";
+import { Sort } from '../../models/api/sort.enum';
 
 @Component({
   selector: 'app-jury-page',
@@ -54,7 +55,7 @@ export class JuryPage extends BaseComponent implements OnInit {
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
-    this.juryService.getParticipants()
+    this.juryService.getParticipants(Sort.ASC)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: AnonymousParticipant[]) => {

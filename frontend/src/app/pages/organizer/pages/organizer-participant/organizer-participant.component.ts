@@ -20,6 +20,8 @@ import {
   takeUntil,
 } from 'rxjs';
 import { NzTabComponent, NzTabSetComponent } from 'ng-zorro-antd/tabs';
+import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { Participant } from '../../../../models/api/participant.interface';
 import { OrganizerService } from '../../../../services/organizer.service';
@@ -32,7 +34,6 @@ import { LogoutButtonComponent } from '../../../../components/logout-button/logo
 import { HeaderComponent } from '../../../../components/header/header.component';
 import { ParticipantQuestionnarieTabComponent } from '../../../../components/participant-questionnarie-tab/participant-questionnarie-tab.component';
 import { ParticipantRatesTabComponent } from '../../../../components/participant-rates-tab/participant-rates-tab.component';
-import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
 
 @Component({
@@ -45,6 +46,7 @@ import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
     NzTabComponent,
     NzSpinComponent,
     NzIconModule,
+    NzPopconfirmDirective,
     NzButtonComponent,
     AnswersComponent,
     LogoutButtonComponent,
