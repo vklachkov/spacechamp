@@ -3,6 +3,8 @@ import {
   Component,
   inject,
   OnInit,
+  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -32,9 +34,9 @@ import { AnswersComponent } from '../../../../components/answers/answers.compone
 import { MainButtonComponent } from '../../../../components/main-button/main-button.component';
 import { LogoutButtonComponent } from '../../../../components/logout-button/logout-button.component';
 import { HeaderComponent } from '../../../../components/header/header.component';
-import { ParticipantQuestionnarieTabComponent } from '../../../../components/participant-questionnarie-tab/participant-questionnarie-tab.component';
+import { Mode, ParticipantQuestionnarieTabComponent } from '../../../../components/participant-questionnarie-tab/participant-questionnarie-tab.component';
 import { ParticipantRatesTabComponent } from '../../../../components/participant-rates-tab/participant-rates-tab.component';
-import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
+import { BlockNavigationIfChange } from '../../../../guards/unsaved-changes.guard';
 
 @Component({
   standalone: true,
@@ -46,7 +48,6 @@ import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
     NzTabComponent,
     NzSpinComponent,
     NzIconModule,
-    NzPopconfirmDirective,
     NzButtonComponent,
     AnswersComponent,
     LogoutButtonComponent,
@@ -60,15 +61,21 @@ import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
   styleUrls: ['./organizer-participant.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganizerParticipantPage extends BaseComponent implements OnInit {
+export class OrganizerParticipantPage extends BaseComponent implements OnInit, BlockNavigationIfChange {
+  @ViewChild(ParticipantQuestionnarieTabComponent)
+  questionnarieTab!: ParticipantQuestionnarieTabComponent;
+
   participant: Participant | null = null;
 
   isDataLoading: boolean = false;
   juries: Adult[] = [];
 
-  private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
+
+  ngOnInit(): void {
+    this.loadData();
+  }
 
   private loadData(): void {
     const participant$: Observable<Participant | null> =
@@ -113,25 +120,8 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void {
-    this.loadData();
-  }
-
-  remove(): void {
-    this.isDataLoading = true;
-    this.organizerService.removeParticipant((<Participant>this.participant).id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.router.navigate([ROOT_ROUTE_PATHS.Index]);
-          this.isDataLoading = false;
-          this.cdr.markForCheck();
-        },
-        error: (err: HttpErrorResponse) => {
-          this.isDataLoading = false;
-          this.cdr.markForCheck();
-          this.showErrorNotification('Ошибка при удалении участника', err);
-        }
-      });
+  hasChanges(): boolean {
+    return this.questionnarieTab?.mode === Mode.Edit &&
+      this.questionnarieTab?.infoForm?.dirty;
   }
 }

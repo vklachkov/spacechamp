@@ -1,3 +1,9 @@
+.actions {
+  display: flex;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 .participant-card {
   margin-bottom: 0.5em;
 
@@ -25,6 +31,16 @@
     bottom: 4px;
     z-index: 100;
     display: none;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  &__item {
+    margin: 0;
   }
 }
 

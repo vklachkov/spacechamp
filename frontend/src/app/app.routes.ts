@@ -8,6 +8,7 @@ import { OrganizerParticipantPage } from './pages/organizer/pages/organizer-part
 import { JuryApplicationPage } from './pages/jury/pages/jury-application/jury-application.component';
 import { OrganizerAdultsPage } from './pages/organizer/pages/organizer-adults/organizer-adults.component';
 import { sessionGuard } from './guards/session.guard';
+import { CanDeactivateBlockNavigationIfChange } from './guards/unsaved-changes.guard';
 
 export const enum ROOT_ROUTE_PATHS {
     Index = '',
@@ -43,7 +44,8 @@ export const routes: Routes = [
     {
         path: `${ORGANIZER_ROOT_PATHS.Participant}/:id`,
         component: OrganizerParticipantPage,
-        canActivate: [organizerGuard()]
+        canActivate: [organizerGuard()],
+        canDeactivate: [CanDeactivateBlockNavigationIfChange]
     },
     // Роуты для жюри
     {
