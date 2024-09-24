@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, ElementRef, inject, OnInit, viewChild, ViewChild, viewChildren } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,6 +24,7 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { Sort } from '../../models/api/sort.enum';
+import { injectVirtualizer } from '@tanstack/angular-virtual';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -66,8 +67,23 @@ type FilterFormValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerPage extends BaseComponent implements OnInit {
-  @ViewChild(CdkVirtualScrollViewport, { static: false }) 
-  readonly virtualScroll!: CdkVirtualScrollViewport;
+  scrollElement = viewChild<ElementRef<HTMLDivElement>>('scrollElement')
+
+  virtualItems = viewChildren<ElementRef<HTMLDivElement>>('virtualItem')
+
+  #measureItems = effect(
+    () =>
+      this.virtualItems().forEach((el) => {
+        this.virtualizer.measureElement(el.nativeElement)
+      }),
+    { allowSignalWrites: true },
+  )
+
+  virtualizer = injectVirtualizer(() => ({
+    scrollElement: this.scrollElement(),
+    count: 40,
+    estimateSize: () => 120,
+  }))
 
   scrolledIndex: number = 0;
 
@@ -97,26 +113,12 @@ export class OrganizerPage extends BaseComponent implements OnInit {
           this.allParticipants = data;
           this.isParticipantsLoading = false;
           this.cdr.markForCheck();
-
-          this.initScrollPosition();
         },
         error: (err: HttpErrorResponse) => {
           this.isParticipantsLoading = false;
           this.cdr.markForCheck();
           this.showErrorNotification('Ошибка при получении данных об участниках', err);
         }
-      });
-  }
-
-  private initScrollPosition(): void {
-    // Хак для иницилизации виртуал скролла
-    timer(300)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        const scrollIndex: number = this.localStorageService.getScrollIndex() ?? 0;
-        this.scrolledIndex = scrollIndex;
-        this.virtualScroll.scrollToIndex(scrollIndex, 'smooth');
-        this.cdr.markForCheck();
       });
   }
 
@@ -177,7 +179,7 @@ export class OrganizerPage extends BaseComponent implements OnInit {
   }
 
   trackById(index: number, item: Participant): number {
-    return item.id ?? index;
+    return item.id;
   }
 
   changeFilterVisible(value: boolean): void {

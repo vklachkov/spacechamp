@@ -48,13 +48,48 @@
             @if (isParticipantsLoading) {
                 <nz-spin class="spin-height-100"></nz-spin>
             } @else {
-                <cdk-virtual-scroll-viewport (scrolledIndexChange)="scrolledIndex = $event" itemSize="102" class="virtual-scroll">
+                <!-- <cdk-virtual-scroll-viewport (scrolledIndexChange)="scrolledIndex = $event" itemSize="80" class="virtual-scroll">
+                   <p style="padding: 80px; margin: 0; border: 1px solid black; box-sizing: border-box;" *cdkVirtualFor="let participant of participants; trackBy: trackById">
+                        {{ participant.info.name }}
+                    </p>
+
                     <app-participant-card
-                        *cdkVirtualFor="let participant of participants; trackBy: trackById"
+                       
                         class="participant-card"
                         [participant]="participant"
                     ></app-participant-card>
-                </cdk-virtual-scroll-viewport>
+                </cdk-virtual-scroll-viewport> -->
+                <div #scrollElement class="list scroll-container">
+                    <div
+                      style="position: relative; width: 100%;"
+                      [style.height.px]="virtualizer.getTotalSize()"
+                    >
+                      <div
+                        style="position: absolute; top: 0; left: 0; width: 100%;"
+                        [style.transform]="
+                          'translateY(' +
+                          (virtualizer.getVirtualItems()[0]
+                            ? virtualizer.getVirtualItems()[0].start
+                            : 0) +
+                          'px)'
+                        "
+                      >
+                        @for (row of virtualizer.getVirtualItems(); track row.index) {
+                          <div
+                            #virtualItem
+                            [attr.data-index]="row.index"
+                            [class.list-item-even]="row.index % 2 === 0"
+                            [class.list-item-odd]="row.index % 2 !== 0"
+                          >
+                            <div style="padding: 10px 0">
+                              <div>Row {{ row.index }}</div>
+                              <div>{{ participants[row.index].info.name }}</div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                </div>
             }
         </div>
     </nz-content>
