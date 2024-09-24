@@ -140,7 +140,12 @@ impl Participants {
         .await
     }
 
-    pub async fn get_all(&self, sort: Sort) -> Result<Vec<Participant>> {
+    pub async fn get_all(
+        &self,
+        search: Option<String>,
+        sort: Sort,
+        order: Order,
+    ) -> Result<Vec<Participant>> {
         self.transact(move |conn| {
             use schema::{adults, participant_rates as rates, participants};
 
@@ -159,13 +164,58 @@ impl Participants {
                 Self::group_rates(rates)
             };
 
-            let query = participants::table
+            let mut query = participants::table
                 .select(models::Participant::as_select())
-                .filter(participants::deleted_by.is_null());
+                .filter(participants::deleted_by.is_null())
+                .into_boxed();
+
+            if let Some(search) = search {
+                use participants::{
+                    city, code, district, edu_org, email, name, phone_number,
+                    responsible_adult_name, responsible_adult_phone_number,
+                };
+
+                let like = format!("%{search}%");
+                let like_code = code.ilike(like.clone());
+                let like_name = name.ilike(like.clone());
+                let like_city = city.ilike(like.clone());
+                let like_district = district.ilike(like.clone());
+                let like_edu_org = edu_org.ilike(like.clone());
+                let like_phone_number = phone_number.ilike(like.clone());
+                let like_email = email.ilike(like.clone());
+                let like_adult_name = responsible_adult_name.ilike(like.clone());
+                let like_adult_phone_number = responsible_adult_phone_number.ilike(like.clone());
+
+                query = query.filter(
+                    like_code
+                        .or(like_name)
+                        .or(like_city)
+                        .or(like_district)
+                        .or(like_edu_org)
+                        .or(like_phone_number)
+                        .or(like_email)
+                        .or(like_adult_name)
+                        .or(like_adult_phone_number),
+                );
+            }
 
             let participants: Vec<models::Participant> = match sort {
-                Sort::Asc => query.order_by(participants::id.asc()).load(conn)?,
-                Sort::Desc => query.order_by(participants::id.desc()).load(conn)?,
+                Sort::Id => match order {
+                    Order::Asc => query.order_by(participants::id.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::id.desc()).load(conn)?,
+                },
+                Sort::Name => match order {
+                    Order::Asc => query.order_by(participants::name.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::name.desc()).load(conn)?,
+                },
+                Sort::District => match order {
+                    Order::Asc => query.order_by(participants::district.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::district.desc()).load(conn)?,
+                },
+                Sort::City => match order {
+                    Order::Asc => query.order_by(participants::city.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::city.desc()).load(conn)?,
+                },
             };
 
             participants

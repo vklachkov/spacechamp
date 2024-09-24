@@ -67,8 +67,13 @@ impl DataSource {
         self.participants.get(id).await
     }
 
-    pub async fn get_all_participants(&self, sort: Sort) -> Result<Vec<Participant>> {
-        self.participants.get_all(sort).await
+    pub async fn get_all_participants(
+        &self,
+        search: Option<String>,
+        sort: Sort,
+        order: Order,
+    ) -> Result<Vec<Participant>> {
+        self.participants.get_all(search, sort, order).await
     }
 
     pub async fn update_participant_info(

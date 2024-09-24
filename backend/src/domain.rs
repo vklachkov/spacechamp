@@ -90,7 +90,16 @@ pub struct ParticipantRate {
 
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum Sort {
+pub enum Order {
     Asc,
     Desc,
+}
+
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Sort {
+    Id,
+    Name,
+    District,
+    City,
 }

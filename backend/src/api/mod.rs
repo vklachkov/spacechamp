@@ -238,9 +238,18 @@ fn get_name(name: &str) -> String {
 
 async fn all_participants(
     State(state): State<Arc<BackendState>>,
-    Query(GetParticipantsQuery { sort }): Query<GetParticipantsQuery>,
+    Query(GetParticipantsQuery {
+        search,
+        sort,
+        order,
+    }): Query<GetParticipantsQuery>,
 ) -> Result<Json<Vec<Participant>>> {
-    Ok(Json(state.datasource.get_all_participants(sort).await?))
+    Ok(Json(
+        state
+            .datasource
+            .get_all_participants(search, sort, order)
+            .await?,
+    ))
 }
 
 async fn create_participant(
@@ -350,14 +359,14 @@ async fn delete_adult(
 async fn jury_participants(
     auth_session: auth::AuthSession,
     State(state): State<Arc<BackendState>>,
-    Query(GetParticipantsQuery { sort }): Query<GetParticipantsQuery>,
+    Query(GetJuryParticipantsQuery { order }): Query<GetJuryParticipantsQuery>,
 ) -> Result<Json<Vec<AnonymousParticipant>>> {
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
     Ok(Json(
         state
             .datasource
-            .get_all_participants(sort)
+            .get_all_participants(None, Sort::Id, order)
             .await?
             .into_iter()
             .filter(|p| {

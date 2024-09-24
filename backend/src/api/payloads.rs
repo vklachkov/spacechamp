@@ -49,5 +49,12 @@ pub struct NewAdultPayload {
 
 #[derive(Deserialize)]
 pub struct GetParticipantsQuery {
+    pub search: Option<String>,
     pub sort: Sort,
+    pub order: Order,
+}
+
+#[derive(Deserialize)]
+pub struct GetJuryParticipantsQuery {
+    pub order: Order,
 }
