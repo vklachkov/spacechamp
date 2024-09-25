@@ -8,6 +8,7 @@ use crate::{
     datasource::{DataSource, DataSourceError},
     domain::*,
 };
+use anyhow::{bail, Context};
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -19,10 +20,15 @@ use std::{collections::HashMap, sync::Arc};
 
 struct BackendState {
     datasource: Arc<DataSource>,
+    tokens: Arc<BackendTokens>,
 }
 
-pub fn v1(datasource: Arc<DataSource>) -> Router {
-    let state = BackendState { datasource };
+pub struct BackendTokens {
+    pub notisend: String,
+}
+
+pub fn v1(datasource: Arc<DataSource>, tokens: Arc<BackendTokens>) -> Router {
+    let state = BackendState { datasource, tokens };
 
     Router::new()
         .route("/login", post(login))
@@ -132,13 +138,99 @@ async fn new_application_webhook(
         ),
     ]);
 
-    match state.datasource.create_participant(info, answers).await {
-        Ok(()) => StatusCode::OK,
+    let id = match state.datasource.create_participant(info, answers).await {
+        Ok((id, _)) => id,
         Err(err) => {
             tracing::error!("Failed to create participant from webhook: {err}");
-            StatusCode::INTERNAL_SERVER_ERROR
+            return StatusCode::INTERNAL_SERVER_ERROR;
+        }
+    };
+
+    if let Ok(Some(participant)) = state.datasource.get_participant(id).await {
+        send_email_with_code(state, participant).await;
+    }
+
+    StatusCode::OK
+}
+
+async fn send_email_with_code(state: Arc<BackendState>, participant: Participant) {
+    match send_email(&state.tokens.notisend, &participant).await {
+        Ok(()) => {
+            tracing::info!(
+                "Successfully send code to participant '{name}' (code '{code}', email '{email}')",
+                name = participant.info.name,
+                code = participant.code,
+                email = participant.info.email,
+            );
+        }
+        Err(err) => {
+            tracing::info!(
+                "Failed to send code to participant '{name}' (code '{code}', email '{email}'): {err:#}",
+                name = participant.info.name,
+                code = participant.code,
+                email = participant.info.email,
+            );
         }
     }
+}
+
+async fn send_email(token: &str, participant: &Participant) -> anyhow::Result<()> {
+    const EMAIL: &str = include_str!("../../mail/code.html");
+
+    let email = &participant.info.email;
+    let name = get_name(&participant.info.name);
+    let code = &participant.code;
+
+    let prepared_email_content = EMAIL.replace("NAME", &name).replace("ЯЯ-0000", code);
+
+    let request_body = serde_json::json!({
+        "from_email": "info@spacechamp-org.ru",
+        "from_name": "Космический Чемпионат 2024",
+        "to": email,
+        "subject": "Заявка на Космический Чемпионат 2024",
+        "text": format!("Твоя заявка на участие в Космическом Чемпионате принята! Твой шифр: {code}"),
+        "html": prepared_email_content
+    });
+
+    let send_result = reqwest::Client::new()
+        .post("https://api.notisend.ru/v1/email/messages")
+        .json(&request_body)
+        .bearer_auth(token)
+        .send()
+        .await
+        .context("sending 'email/messages' request")?;
+
+    let response = send_result
+        .json::<serde_json::Value>()
+        .await
+        .context("parsing notisend response")?;
+
+    if let Some(errors) = response.get("errors") {
+        let errors = errors.as_array().context("invalid notisend response")?;
+        let code = errors[0]
+            .get("code")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        let detail = errors[0]
+            .get("detail")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        bail!("notisend error {code}: {detail}");
+    }
+
+    let status = response
+        .get("status")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default();
+    if status != "queued" {
+        bail!("notisend strange status: {status}")
+    }
+
+    Ok(())
+}
+
+fn get_name(name: &str) -> String {
+    name.split(' ').take(2).collect::<Vec<_>>().join(" ")
 }
 
 async fn all_participants(
@@ -155,6 +247,7 @@ async fn create_participant(
         .datasource
         .create_participant(info, answers)
         .await
+        .map(|_| ())
         .map_err(Into::into)
 }
 

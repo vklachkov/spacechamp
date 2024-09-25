@@ -56,7 +56,7 @@ impl DataSource {
         &self,
         info: ParticipantInfo,
         answers: HashMap<String, String>,
-    ) -> Result<()> {
+    ) -> Result<(ParticipantId, String)> {
         self.participants.create(info, answers).await
     }
 

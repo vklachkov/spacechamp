@@ -23,17 +23,18 @@ impl Participants {
         &self,
         info: ParticipantInfo,
         answers: HashMap<String, String>,
-    ) -> Result<()> {
+    ) -> Result<(ParticipantId, String)> {
         self.transact(move |conn| {
             use schema::{
                 adults::{self},
                 participant_rates as rates, participants,
             };
 
-            let participant_id: i32 = diesel::insert_into(participants::table)
-                .values(super::models::NewParticipant::new(info, answers))
-                .returning(participants::id)
-                .get_result(conn)?;
+            let (participant_id, participant_code): (i32, String) =
+                diesel::insert_into(participants::table)
+                    .values(super::models::NewParticipant::new(info, answers))
+                    .returning((participants::id, participants::code))
+                    .get_result(conn)?;
 
             // TODO: Combine select and insert.
             let jury_ids: Vec<i32> = adults::table
@@ -56,7 +57,7 @@ impl Participants {
                 .values(records)
                 .execute(conn)?;
 
-            Ok(())
+            Ok((ParticipantId(participant_id), participant_code))
         })
         .await
     }
