@@ -26,7 +26,7 @@ impl Participants {
         info: ParticipantInfo,
         answers: HashMap<String, String>,
         rates: Option<HashMap<AdultId, Option<ParticipantRate>>>,
-    ) -> Result<()> {
+    ) -> Result<(ParticipantId, String)> {
         self.transact(move |conn| {
             use schema::{
                 adults::{self},
@@ -35,7 +35,9 @@ impl Participants {
 
             let (participant_id, participant_code): (i32, String) =
                 diesel::insert_into(participants::table)
-                    .values(super::models::NewParticipant::new(info, answers))
+                    .values(super::models::NewParticipant::new(
+                        code, jury, info, answers,
+                    ))
                     .returning((participants::id, participants::code))
                     .get_result(conn)?;
 
