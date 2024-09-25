@@ -3,6 +3,7 @@ mod models;
 mod participants;
 mod result;
 mod schema;
+mod utils;
 
 pub use self::result::DataSourceError;
 
