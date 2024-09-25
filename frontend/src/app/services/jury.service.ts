@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { AnonymousParticipant } from '../models/api/anonymous-participant.interface';
 import { JuryRate } from '../models/api/participant.interface';
 import { environment } from '../environments/environment.local';
-import { Sort } from '../models/api/sort.enum';
+import { Order } from '../models/api/order.enum';
+import { FilterOptions } from '../models/api/filter-options.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +13,8 @@ import { Sort } from '../models/api/sort.enum';
 export class JuryService {
   private readonly http: HttpClient = inject(HttpClient);
 
-  getParticipants(sort: Sort): Observable<AnonymousParticipant[]> {
-    // TODO: енамы
-    const params: HttpParams = new HttpParams().append('order', sort);
+  getParticipants(): Observable<AnonymousParticipant[]> {
+    const params: HttpParams = new HttpParams().append(FilterOptions.Order, Order.ASC);
     
     return this.http.get<AnonymousParticipant[]>(`${environment.API_URL}/jury/participants`, { 
       params, 

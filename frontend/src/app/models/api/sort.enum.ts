@@ -1,4 +1,6 @@
-export const enum Sort {
-  ASC = 'asc',
-  DESC = 'desc'
+export enum Sort {
+  Id = 'id',
+  Name = 'name',
+  District = 'district',
+  City = 'city'
 }

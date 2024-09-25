@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
@@ -15,13 +15,15 @@ import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
   styleUrl: './participant-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ParticipantCardComponent implements OnInit, OnChanges {
+export class ParticipantCardComponent implements OnInit {
   @Input({ required: true }) participant!: Participant;
 
   status: ParticipantStatus | null = null;
   ParticipantStatus = ParticipantStatus;
 
   participantPath: string = ORGANIZER_ROOT_PATHS.Participant;
+
+  text: string = '';
 
   private getStatus(): ParticipantStatus | null {
     if (this.participant.jury?.id) {
@@ -43,13 +45,17 @@ export class ParticipantCardComponent implements OnInit, OnChanges {
     return null;
   }
 
-  ngOnChanges(): void {
-    // Виртуал скролл не переставляет элементы в списке, а подменяет одно на другое, поэтому при каждой такой подмене
-    // нужно переиницилизировать статус
-    this.status = this.getStatus();
+  private buildText(): void {
+    const text: string[] = [`г. ${this.participant.info.city}`, this.participant.info.edu_org];
+    if (this.participant.info.responsible_adult_name) {
+      text.push(this.participant.info.responsible_adult_name);
+    }
+
+    this.text = text.join(', ');
   }
 
   ngOnInit(): void {
     this.status = this.getStatus();
+    this.buildText();
   }
 }

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { BaseComponent } from '../base/base.component';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
+import { NavigationService } from '../../services/navigation.service';
 
 @Component({
   selector: 'app-main-button',
@@ -14,9 +14,9 @@ import { ROOT_ROUTE_PATHS } from '../../app.routes';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainButtonComponent extends BaseComponent {
-  private readonly router: Router = inject(Router);
+  private readonly navigationService: NavigationService = inject(NavigationService);
 
   goToMain(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Index]);
+    this.navigationService.back(ROOT_ROUTE_PATHS.Index);
   }
 }

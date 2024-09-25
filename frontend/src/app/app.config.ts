@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
-  FilterOutline,
   LogoutOutline,
   StarOutline,
   StarFill,
@@ -26,7 +25,8 @@ import {
   RocketOutline,
   DownloadOutline,
   RollbackOutline,
-  SaveOutline
+  SaveOutline,
+  SettingOutline
 } from '@ant-design/icons-angular/icons';
 import { unauthorizedInterceptor } from './interceptors/unauthorized.interceptor';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -38,7 +38,6 @@ export const appConfig: ApplicationConfig = {
     provideExperimentalZonelessChangeDetection(),
     provideRouter(routes),
     provideNzIcons([
-      FilterOutline,
       LogoutOutline,
       StarOutline,
       StarFill,
@@ -56,7 +55,8 @@ export const appConfig: ApplicationConfig = {
       RocketOutline,
       DownloadOutline,
       RollbackOutline,
-      SaveOutline
+      SaveOutline,
+      SettingOutline
     ]),
     provideNzI18n(ru_RU),
     importProvidersFrom(FormsModule),
