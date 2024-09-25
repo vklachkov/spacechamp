@@ -1,4 +1,4 @@
-export const enum Order {
+export enum Order {
   ASC = 'asc',
   DESC = 'desc'
 }

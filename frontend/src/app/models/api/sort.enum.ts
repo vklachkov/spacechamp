@@ -1,4 +1,4 @@
-export const enum Sort {
+export enum Sort {
   Id = 'id',
   Name = 'name',
   District = 'district',

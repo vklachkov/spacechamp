@@ -11,26 +11,53 @@
                 </ng-template>
         
                 <button 
+                    class="filter__show-options"
                     nz-button
                     nz-popover
                     nzPopoverTrigger="click"
                     nzPopoverPlacement="bottom"
                     [nzPopoverContent]="contentTemplate"
+                    [nzPopoverOverlayStyle]="{'width': '34em'}"
                     [(nzPopoverVisible)]="filterVisible"
                     (nzPopoverVisibleChange)="changeFilterVisible($event)"
                 >
-                    <span nz-icon nzType="filter" nzTheme="outline"></span>
-                    Фильтр
+                    <span nz-icon nzType="setting" nzTheme="outline"></span>
                 </button>
     
                 <ng-template #contentTemplate>
-                    <nz-radio-group class="filter__options" formControlName="status">
-                        <label nz-radio [nzValue]="null">Все</label>
-                        <label nz-radio [nzValue]="ParticipantStatus.NotRated">Без оценок</label>
-                        <label nz-radio [nzValue]="ParticipantStatus.PartiallyRated">Частично оценненые</label>
-                        <label nz-radio [nzValue]="ParticipantStatus.FullRated">Полностью оценненые</label>
-                        <label nz-radio [nzValue]="ParticipantStatus.InTeam">В команде</label>
-                    </nz-radio-group>
+                    <div class="filter__options">
+                        <div class="filter__options-item">
+                            <p nz-typography class="filter__options-item-title">Статус</p>
+
+                            <nz-radio-group class="filter__options-group" formControlName="status">
+                                <label nz-radio [nzValue]="null">Все</label>
+                                <label nz-radio [nzValue]="ParticipantStatus.NotRated">Без оценок</label>
+                                <label nz-radio [nzValue]="ParticipantStatus.PartiallyRated">Частично оценненые</label>
+                                <label nz-radio [nzValue]="ParticipantStatus.FullRated">Полностью оценненые</label>
+                                <label nz-radio [nzValue]="ParticipantStatus.InTeam">В команде</label>
+                            </nz-radio-group>
+                        </div>
+
+                        <div class="filter__options-item">
+                            <p nz-typography class="filter__options-item-title">Сортировка</p>
+
+                            <nz-radio-group class="filter__options-group" formControlName="sort">
+                                <label nz-radio [nzValue]="Sort.Id">Номер</label>
+                                <label nz-radio [nzValue]="Sort.Name">Имя</label>
+                                <label nz-radio [nzValue]="Sort.City">Город</label>
+                                <label nz-radio [nzValue]="Sort.District">Район</label>
+                            </nz-radio-group>
+                        </div>
+
+                        <div class="filter__options-item">
+                            <p nz-typography class="filter__options-item-title">Порядок</p>
+
+                            <nz-radio-group class="filter__options-group" formControlName="order">
+                                <label nz-radio [nzValue]="Order.ASC">{{ ascSortLabel }}</label>
+                                <label nz-radio [nzValue]="Order.DESC">{{ descSortLabel }}</label>
+                            </nz-radio-group>
+                        </div>
+                    </div>
                 </ng-template>
             </form>
 

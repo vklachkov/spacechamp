@@ -23,16 +23,22 @@ import { LogoutButtonComponent } from '../../components/logout-button/logout-but
 import { HeaderComponent } from '../../components/header/header.component';
 import { Order } from '../../models/api/order.enum';
 import { Sort } from '../../models/api/sort.enum';
+import { ParticipantsQuery } from '../../models/participants-query.interface';
 
 type FilterForm = {
   search: FormControl<string | null>;
   status: FormControl<ParticipantStatus | null>;
+  sort: FormControl<Sort | null>;
+  order: FormControl<Order | null>;
 };
 
-type FilterFormValue = {
-  search?: string | null;
-  status?: ParticipantStatus | null;
-};
+const DEFAULT_SORT: Sort = Sort.Id;
+const DEFAULT_ORDER: Order = Order.DESC;
+
+const ASC_SORT_NUMERIC_LABEL: string = 'От старых к новым';
+const DESC_SORT_NUMBERIC_LABEL: string = 'От новых к старым';
+const ASC_SORT_LETTER_LABEL: string = 'От А до Я';
+const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
 
 @Component({
   selector: 'app-organizer-page',
@@ -65,9 +71,13 @@ type FilterFormValue = {
 })
 export class OrganizerPage extends BaseComponent implements OnInit {
   ParticipantStatus = ParticipantStatus;
+  Sort = Sort;
+  Order = Order;
   filterForm: FormGroup<FilterForm> = new FormGroup({
     search: new FormControl<string | null>(null),
-    status: new FormControl<ParticipantStatus | null>(null)
+    status: new FormControl<ParticipantStatus | null>(null),
+    sort: new FormControl<Sort | null>(DEFAULT_SORT),
+    order: new FormControl<Order | null>(DEFAULT_ORDER),
   });
 
   participants: Participant[] = [];
@@ -75,14 +85,18 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   filterVisible: boolean = false;
 
+  ascSortLabel: string = ASC_SORT_NUMERIC_LABEL;
+  descSortLabel: string = DESC_SORT_NUMBERIC_LABEL;
+
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
 
-  private loadParticipants(order: Order, sort: Sort, search?: string | null): void {
+  private loadParticipants(): void {
     this.isParticipantsLoading = true;
     this.cdr.markForCheck();
 
-    this.organizerService.getParticipants(order, sort, search)
+    const query: ParticipantsQuery = this.buildQuery();
+    this.organizerService.getParticipants(query)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: Participant[]) => {
@@ -121,22 +135,58 @@ export class OrganizerPage extends BaseComponent implements OnInit {
     }
   }
 
-  private initFilter(): void {
+  private buildQuery(): ParticipantsQuery {
+    return {
+      sort: this.filterForm.value.sort ?? DEFAULT_SORT,
+      order: this.filterForm.value.order ?? DEFAULT_ORDER,
+      search: this.filterForm.value.search
+    }
+  }
+
+  private initFilterFormSubscription(): void {
     this.filterForm.valueChanges
       .pipe(
         debounceTime(300), 
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: (value: FilterFormValue) => {
-          this.loadParticipants(Order.DESC, Sort.Id, value.search);
+        next: () => {
+          this.loadParticipants();
         }
       });
   }
 
+  private initSortControlSubscription(): void {
+    this.filterForm.get('sort')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (value: Sort | null) => {
+          if (!value) {
+            return;
+          }
+
+          switch (value) {
+            case Sort.Id: {
+              this.ascSortLabel = ASC_SORT_NUMERIC_LABEL;
+              this.descSortLabel = DESC_SORT_NUMBERIC_LABEL;
+              break;
+            }
+            case Sort.City:
+            case Sort.District:
+            case Sort.Name: {
+              this.ascSortLabel = ASC_SORT_LETTER_LABEL;
+              this.descSortLabel = DESC_SORT_LETTER_LABEL;
+              break;
+            }
+          }
+        }
+      })
+  }
+
   ngOnInit(): void {
-    this.loadParticipants(Order.DESC, Sort.Id);
-    this.initFilter();
+    this.loadParticipants();
+    this.initFilterFormSubscription();
+    this.initSortControlSubscription();
   }
 
   goToJuryPanel(): void {
