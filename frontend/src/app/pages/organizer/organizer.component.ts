@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,6 +24,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { Order } from '../../models/api/order.enum';
 import { Sort } from '../../models/api/sort.enum';
 import { ParticipantsQuery } from '../../models/participants-query.interface';
+import { BindQueryParamsFactory, BindQueryParamsManager } from '@ngneat/bind-query-params';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -31,6 +32,13 @@ type FilterForm = {
   sort: FormControl<Sort | null>;
   order: FormControl<Order | null>;
 };
+
+type FilterFormValue = {
+  search?: string | null;
+  status?: ParticipantStatus | null;
+  sort?: Sort | null;
+  order?: Order | null;
+}
 
 const DEFAULT_SORT: Sort = Sort.Id;
 const DEFAULT_ORDER: Order = Order.DESC;
@@ -69,7 +77,7 @@ const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
   styleUrls: ['./organizer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrganizerPage extends BaseComponent implements OnInit {
+export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
   ParticipantStatus = ParticipantStatus;
   Sort = Sort;
   Order = Order;
@@ -85,11 +93,39 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   filterVisible: boolean = false;
 
-  ascSortLabel: string = ASC_SORT_NUMERIC_LABEL;
-  descSortLabel: string = DESC_SORT_NUMBERIC_LABEL;
+  ascSortLabel: string = '';
+  descSortLabel: string = '';
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
+  private readonly queryManager: BindQueryParamsFactory = inject(BindQueryParamsFactory);
+
+  private bindQueryParamsManager: BindQueryParamsManager<FilterFormValue> = this.queryManager.create<FilterFormValue>([
+    {
+      queryKey: 'order',
+      type: 'string',
+      syncInitialControlValue: false,
+      syncInitialQueryParamValue: true
+    },
+    {
+      queryKey: 'sort',
+      type: 'string',
+      syncInitialControlValue: false,
+      syncInitialQueryParamValue: true
+    },
+    {
+      queryKey: 'search',
+      type: 'string',
+      syncInitialControlValue: false,
+      syncInitialQueryParamValue: true
+    },
+    {
+      queryKey: 'status',
+      type: 'string',
+      syncInitialControlValue: false,
+      syncInitialQueryParamValue: true
+    }
+  ]).connect(this.filterForm);
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
@@ -156,6 +192,23 @@ export class OrganizerPage extends BaseComponent implements OnInit {
       });
   }
 
+  private setSortLabels(sort: Sort): void {
+    switch (sort) {
+      case Sort.Id: {
+        this.ascSortLabel = ASC_SORT_NUMERIC_LABEL;
+        this.descSortLabel = DESC_SORT_NUMBERIC_LABEL;
+        break;
+      }
+      case Sort.City:
+      case Sort.District:
+      case Sort.Name: {
+        this.ascSortLabel = ASC_SORT_LETTER_LABEL;
+        this.descSortLabel = DESC_SORT_LETTER_LABEL;
+        break;
+      }
+    }
+  }
+
   private initSortControlSubscription(): void {
     this.filterForm.get('sort')?.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -165,25 +218,23 @@ export class OrganizerPage extends BaseComponent implements OnInit {
             return;
           }
 
-          switch (value) {
-            case Sort.Id: {
-              this.ascSortLabel = ASC_SORT_NUMERIC_LABEL;
-              this.descSortLabel = DESC_SORT_NUMBERIC_LABEL;
-              break;
-            }
-            case Sort.City:
-            case Sort.District:
-            case Sort.Name: {
-              this.ascSortLabel = ASC_SORT_LETTER_LABEL;
-              this.descSortLabel = DESC_SORT_LETTER_LABEL;
-              break;
-            }
-          }
+          this.setSortLabels(value);
         }
-      })
+      });
+  }
+
+  private initSortLabels(): void {
+    const sort: FilterFormValue['sort'] = this.filterForm.value.sort;
+
+    if (!sort) {
+      return;
+    }
+
+    this.setSortLabels(sort);
   }
 
   ngOnInit(): void {
+    this.initSortLabels();
     this.loadParticipants();
     this.initFilterFormSubscription();
     this.initSortControlSubscription();
@@ -199,5 +250,6 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.bindQueryParamsManager.destroy();
   }
 }
