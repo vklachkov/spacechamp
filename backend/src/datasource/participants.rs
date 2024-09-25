@@ -288,7 +288,7 @@ impl Participants {
         answers
     }
 
-    pub async fn update(
+    pub async fn patch(
         &self,
         id: ParticipantId,
         info: ParticipantInfo,
