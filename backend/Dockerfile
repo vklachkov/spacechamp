@@ -6,7 +6,7 @@ RUN cargo build --release
 
 FROM debian:bookworm-slim
 
-RUN apt-get update && apt-get install -y libpq-dev
+RUN apt-get update && apt-get install -y ca-certificates libpq-dev
 
 COPY --from=builder /app/target/release/backend /bin
 

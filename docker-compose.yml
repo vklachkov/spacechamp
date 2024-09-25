@@ -39,6 +39,8 @@ services:
       - NOTISEND_TOKEN=${NOTISEND_TOKEN}
     volumes:
       - "backend-data:/var/lib/backend"
+    ports:
+      - 8833:80
     networks:
       - postgres
     labels:

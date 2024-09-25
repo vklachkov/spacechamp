@@ -31,7 +31,7 @@ for participant in participants:
     id = participant["id"]
     code = participant["code"]
 
-    if id <= 60:
+    if id <= 61:
         print(f"Письмо на почту {email} уже отправлено")
         continue
 
