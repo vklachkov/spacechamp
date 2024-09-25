@@ -4,10 +4,9 @@ import {
   inject,
   OnInit,
   ViewChild,
-  viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
@@ -22,7 +21,6 @@ import {
   takeUntil,
 } from 'rxjs';
 import { NzTabComponent, NzTabSetComponent } from 'ng-zorro-antd/tabs';
-import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { Participant } from '../../../../models/api/participant.interface';

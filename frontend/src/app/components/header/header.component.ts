@@ -16,7 +16,7 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
 }

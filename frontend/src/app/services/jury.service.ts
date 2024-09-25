@@ -13,7 +13,8 @@ export class JuryService {
   private readonly http: HttpClient = inject(HttpClient);
 
   getParticipants(sort: Sort): Observable<AnonymousParticipant[]> {
-    const params: HttpParams = new HttpParams().append('sort', sort);
+    // TODO: енамы
+    const params: HttpParams = new HttpParams().append('order', sort);
     
     return this.http.get<AnonymousParticipant[]>(`${environment.API_URL}/jury/participants`, { 
       params, 

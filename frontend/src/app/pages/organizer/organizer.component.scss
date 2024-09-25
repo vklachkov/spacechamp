@@ -1,18 +1,14 @@
 :host {
-  // Жеский хак c 2px, чтобы при наведении везде было видно рамку
-  ::ng-deep {
-    .cdk-virtual-scroll-content-wrapper {
-      padding: 2em 2px;
+  .spin {
+    ::ng-deep {
+      // Чтобы не было белого фона у спина
+      .ant-spin-blur {
+        display: none;
+      }
     }
   }
 }
 
-.scroll-container {
-  height: 400px;
-  width: 400px;
-  overflow-y: auto;
-  contain: 'strict';
-}
 
 .filter {
   display: flex;
@@ -25,6 +21,12 @@
   }
 }
 
+.content {
+  padding: 2em;
+  scrollbar-width: none;
+  overflow-y: scroll;
+}
+
 .participant-card {
   display: block;
   margin-bottom: .5em;
@@ -34,9 +36,4 @@
     box-shadow: var(--hover-box-shadow);
     cursor: pointer;
   }
-}
-
-.virtual-scroll {
-  scrollbar-width: none;
-  height: 100%;
 }

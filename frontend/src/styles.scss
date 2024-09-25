@@ -13,6 +13,7 @@
     --black: rgba(0, 0, 0, 0.85);
     --white: #fff;
     --red: #e9202a;
+    --light-gray: rgba(0, 0, 0, .06);
 
     --logo-size: 256px;
 
@@ -42,10 +43,10 @@ h1, h2, h3, h4, h5, h6, button {
     width: 100%;
     max-width: var(--container-width);
     margin: 0 auto;
-    
-    &.h-100 {
-        height: 100%;
-    }
+}
+
+.h-100 {
+    height: 100%;
 }
 
 .nz-layout {

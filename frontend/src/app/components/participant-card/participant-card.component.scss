@@ -1,38 +1,29 @@
 .participant {
-    &__content {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 1em;
+    display: block;
+    padding: .5em .8em;
 
-        &-info {
-            margin-left: 1em;
+    text-decoration: none;
+    border: 1px solid var(--light-gray);
+    background-color: var(--white);
 
-            &-title,
-            &-text,
-            &-status {
-                margin: 0;
-            }
+    &__status {
+        font-size: small;
+        margin-bottom: 0;
 
-            &-status {
-                font-size: small;
-
-                &.in-team {
-                    color: var(--in-team-color);
-                }
-            
-                &.not-rated {
-                    color: var(--not-rated-color);
-                }
-            
-                &.partially-rated {
-                    color: var(--partially-rated-color);
-                }
-            
-                &.full-rated {
-                    color: var(--full-rated-color);
-                }
-            }
+        &.in-team {
+            color: var(--in-team-color);
+        }
+    
+        &.not-rated {
+            color: var(--not-rated-color);
+        }
+    
+        &.partially-rated {
+            color: var(--partially-rated-color);
+        }
+    
+        &.full-rated {
+            color: var(--full-rated-color);
         }
     }
 }

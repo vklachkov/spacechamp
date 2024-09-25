@@ -8,6 +8,7 @@ export interface BlockNavigationIfChange {
   hasChanges: () => boolean;
 }
 
+// TODO: canDeactive на функцию можна переписать?
 @Injectable({ providedIn: 'root' })
 export class CanDeactivateBlockNavigationIfChange<T extends BlockNavigationIfChange> implements CanDeactivate<T> {
   private readonly nzModalService: NzModalService = inject(NzModalService);

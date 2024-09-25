@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, effect, ElementRef, inject, OnInit, viewChild, ViewChild, viewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { takeUntil, timer } from 'rxjs';
-import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { takeUntil } from 'rxjs';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -20,11 +19,9 @@ import { BaseComponent } from '../../components/base/base.component';
 import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { ParticipantStatus } from '../../models/participant-status.enum';
 import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
-import { LocalStorageService } from '../../services/local-storage.service';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { Sort } from '../../models/api/sort.enum';
-import { injectVirtualizer } from '@tanstack/angular-virtual';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -57,7 +54,6 @@ type FilterFormValue = {
     FormsModule,
     NzListComponent,
     NzListItemComponent,
-    ScrollingModule,
     ReactiveFormsModule,
     LogoutButtonComponent,
     HeaderComponent
@@ -67,26 +63,6 @@ type FilterFormValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerPage extends BaseComponent implements OnInit {
-  scrollElement = viewChild<ElementRef<HTMLDivElement>>('scrollElement')
-
-  virtualItems = viewChildren<ElementRef<HTMLDivElement>>('virtualItem')
-
-  #measureItems = effect(
-    () =>
-      this.virtualItems().forEach((el) => {
-        this.virtualizer.measureElement(el.nativeElement)
-      }),
-    { allowSignalWrites: true },
-  )
-
-  virtualizer = injectVirtualizer(() => ({
-    scrollElement: this.scrollElement(),
-    count: 40,
-    estimateSize: () => 120,
-  }))
-
-  scrolledIndex: number = 0;
-
   ParticipantStatus = ParticipantStatus;
   filterForm: FormGroup<FilterForm> = new FormGroup({
     search: new FormControl<string | null>(null),
@@ -101,7 +77,6 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
-  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
@@ -188,6 +163,5 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.localStorageService.setScrollIndex(this.scrolledIndex);
   }
 }

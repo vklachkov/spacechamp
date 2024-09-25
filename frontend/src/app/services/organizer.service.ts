@@ -13,7 +13,7 @@ export class OrganizerService {
   private readonly http: HttpClient = inject(HttpClient);
 
   getParticipants(sort: Sort): Observable<Participant[]> {
-    const params: HttpParams = new HttpParams().append('sort', sort);
+    const params: HttpParams = new HttpParams().append('order', sort).append('sort', 'id');
 
     return this.http.get<Participant[]>(`${environment.API_URL}/org/participants`, { 
       params, 
