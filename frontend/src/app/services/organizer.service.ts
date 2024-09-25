@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { Participant, ParticipantInfo } from '../models/api/participant.interface';
 import { Adult } from '../models/api/adult.interface';
 import { environment } from '../environments/environment.local';
+import { Order } from '../models/api/order.enum';
 import { Sort } from '../models/api/sort.enum';
+import { FilterOptions } from '../models/api/filter-options.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +14,14 @@ import { Sort } from '../models/api/sort.enum';
 export class OrganizerService {
   private readonly http: HttpClient = inject(HttpClient);
 
-  getParticipants(sort: Sort): Observable<Participant[]> {
-    const params: HttpParams = new HttpParams().append('order', sort).append('sort', 'id');
+  getParticipants(order: Order, sort: Sort, search?: string | null): Observable<Participant[]> {
+    let params: HttpParams = new HttpParams()
+      .append(FilterOptions.Order, order)
+      .append(FilterOptions.Sort, sort);
+
+    if (search) {
+      params = params.append(FilterOptions.Search, search);
+    }
 
     return this.http.get<Participant[]>(`${environment.API_URL}/org/participants`, { 
       params, 

@@ -3,7 +3,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { takeUntil } from 'rxjs';
+import { debounceTime, delay, takeUntil } from 'rxjs';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -21,6 +21,7 @@ import { ParticipantStatus } from '../../models/participant-status.enum';
 import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { HeaderComponent } from '../../components/header/header.component';
+import { Order } from '../../models/api/order.enum';
 import { Sort } from '../../models/api/sort.enum';
 
 type FilterForm = {
@@ -70,7 +71,6 @@ export class OrganizerPage extends BaseComponent implements OnInit {
   });
 
   participants: Participant[] = [];
-  private allParticipants: Participant[] = [];
   isParticipantsLoading: boolean = false;
 
   filterVisible: boolean = false;
@@ -78,14 +78,15 @@ export class OrganizerPage extends BaseComponent implements OnInit {
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
 
-  private loadParticipants(): void {
+  private loadParticipants(order: Order, sort: Sort, search?: string | null): void {
     this.isParticipantsLoading = true;
-    this.organizerService.getParticipants(Sort.DESC)
+    this.cdr.markForCheck();
+
+    this.organizerService.getParticipants(order, sort, search)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: Participant[]) => {
-          this.participants = data;
-          this.allParticipants = data;
+          this.participants = this.filterByStatus(data);
           this.isParticipantsLoading = false;
           this.cdr.markForCheck();
         },
@@ -97,64 +98,49 @@ export class OrganizerPage extends BaseComponent implements OnInit {
       });
   }
 
+  private filterByStatus(participants: Participant[]): Participant[] {
+    if (!this.filterForm.value.status) {
+      return participants;
+    }
+
+    switch (this.filterForm.value.status) {
+      case ParticipantStatus.InTeam: {
+        return participants.filter((item: Participant) => item.jury);
+      }
+      case ParticipantStatus.NotRated: {
+        return participants.filter((item: Participant) => Object.values(item.rates).every((rate: JuryRate | null) => !rate));
+      }
+      case ParticipantStatus.FullRated: {
+        return participants.filter((item: Participant) => !item.jury && Object.values(item.rates).every((rate: JuryRate | null) => rate));
+      }
+      case ParticipantStatus.PartiallyRated: {
+        return participants.filter((item: Participant) => 
+          Object.values(item.rates).some((rate: JuryRate | null) => !rate) &&
+          Object.values(item.rates).some((rate: JuryRate | null) => rate));
+      }
+    }
+  }
+
   private initFilter(): void {
     this.filterForm.valueChanges
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (value: FilterFormValue) => {
-        let initialData: Participant[] = this.allParticipants;
-
-        if (value.search) {
-          initialData = initialData.filter((item: Participant) => {
-            let search = (<string>value.search).trim().toLowerCase();
-            
-            return item.code.toLowerCase().includes(search) ||
-                  item.info.city.toLowerCase().includes(search) ||
-                  item.info.district.toLowerCase().includes(search) ||
-                  item.info.name.toLowerCase().includes(search);
-          });
+      .pipe(
+        debounceTime(300), 
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (value: FilterFormValue) => {
+          this.loadParticipants(Order.DESC, Sort.Id, value.search);
         }
-
-        if (value.status) {
-          switch (value.status) {
-            case ParticipantStatus.InTeam: {
-              initialData = initialData.filter((item: Participant) => item.jury);
-              break;
-            }
-            case ParticipantStatus.NotRated: {
-              initialData = initialData.filter((item: Participant) => Object.values(item.rates).every((rate: JuryRate | null) => !rate));
-              break;
-            }
-            case ParticipantStatus.FullRated: {
-              initialData = initialData.filter((item: Participant) => !item.jury && Object.values(item.rates).every((rate: JuryRate | null) => rate));
-              break;
-            }
-            case ParticipantStatus.PartiallyRated: {
-              initialData = initialData.filter((item: Participant) => 
-                Object.values(item.rates).some((rate: JuryRate | null) => !rate) &&
-                Object.values(item.rates).some((rate: JuryRate | null) => rate));
-              break;
-            }
-          }
-        }
-
-        this.participants = initialData;
-        this.cdr.markForCheck();
-      }
-    });
+      });
   }
 
   ngOnInit(): void {
-    this.loadParticipants();
+    this.loadParticipants(Order.DESC, Sort.Id);
     this.initFilter();
   }
 
   goToJuryPanel(): void {
     this.router.navigate([ORGANIZER_ROOT_PATHS.Adults]);
-  }
-
-  trackById(index: number, item: Participant): number {
-    return item.id;
   }
 
   changeFilterVisible(value: boolean): void {
