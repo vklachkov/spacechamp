@@ -49,6 +49,10 @@ services:
       - "0.0.0.0:80"
       - "--sessions-path"
       - "/var/lib/backend/sessions.json"
+      - "--notisend-token"
+      - "$NOTISEND_TOKEN"
+    environment:
+      - NOTISEND_TOKEN=${NOTISEND_TOKEN}
     volumes:
       - "backend-data:/var/lib/backend"
     networks:

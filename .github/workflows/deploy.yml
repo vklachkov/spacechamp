@@ -96,4 +96,4 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          script: docker compose -f /tmp/docker-compose.prod.yml up -d
+          script: NOTISEND_TOKEN=${{ secrets.NOTISEND_TOKEN }} docker compose -f /tmp/docker-compose.prod.yml up -d
