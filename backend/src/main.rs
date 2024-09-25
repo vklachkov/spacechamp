@@ -2,6 +2,7 @@ mod api;
 mod datasource;
 mod domain;
 
+use api::BackendTokens;
 use argh::FromArgs;
 use axum::Router;
 use axum_login::{tower_sessions::SessionManagerLayer, AuthManagerLayerBuilder};
@@ -25,6 +26,10 @@ struct Args {
     /// path to sessions store
     sessions_path: PathBuf,
 
+    #[argh(option)]
+    /// mailsender token
+    notisend_token: String,
+
     /// enable extra logs
     #[argh(switch)]
     verbose: bool,
@@ -41,8 +46,13 @@ async fn main() {
     setup_log(&args);
     hello(&args);
 
-    let datasource = DataSource::new(&args.db_url);
-    run(datasource, args.addr, args.sessions_path).await;
+    run(
+        DataSource::new(&args.db_url),
+        args.addr,
+        args.sessions_path,
+        args.notisend_token,
+    )
+    .await;
 }
 
 fn setup_log(args: &Args) {
@@ -76,8 +86,16 @@ fn hello(args: &Args) {
     );
 }
 
-async fn run(datasource: DataSource, addr: SocketAddr, sessions_path: PathBuf) {
+async fn run(
+    datasource: DataSource,
+    addr: SocketAddr,
+    sessions_path: PathBuf,
+    notisend_token: String,
+) {
     let datasource = Arc::new(datasource);
+    let tokens = Arc::new(BackendTokens {
+        notisend: notisend_token,
+    });
 
     let session_store = api::session_store::JsonSessionStore::new(sessions_path).await;
     let session_layer = SessionManagerLayer::new(session_store).with_secure(false);
@@ -88,7 +106,7 @@ async fn run(datasource: DataSource, addr: SocketAddr, sessions_path: PathBuf) {
     let cors_layer = CorsLayer::very_permissive();
 
     let app = Router::new()
-        .nest("/api/v1", api::v1(datasource))
+        .nest("/api/v1", api::v1(datasource, tokens))
         .layer(auth_layer)
         .layer(cors_layer);
 
