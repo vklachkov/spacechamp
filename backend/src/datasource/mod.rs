@@ -78,12 +78,13 @@ impl DataSource {
         self.participants.get_all(search, sort, order).await
     }
 
-    pub async fn update_participant_info(
+    pub async fn update_participant(
         &self,
         id: ParticipantId,
         info: ParticipantInfo,
+        answers: HashMap<String, String>,
     ) -> Result<()> {
-        self.participants.set_info(id, info).await
+        self.participants.update(id, info, answers).await
     }
 
     pub async fn set_participant_command(

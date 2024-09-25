@@ -288,7 +288,12 @@ impl Participants {
         answers
     }
 
-    pub async fn set_info(&self, id: ParticipantId, info: ParticipantInfo) -> Result<()> {
+    pub async fn update(
+        &self,
+        id: ParticipantId,
+        info: ParticipantInfo,
+        answers: HashMap<String, String>,
+    ) -> Result<()> {
         self.transact(move |conn| {
             use schema::participants;
 
@@ -297,9 +302,14 @@ impl Participants {
                 return Err(DataSourceError::UnknownParticipant(id));
             }
 
+            let answers = serde_json::to_value(&answers).unwrap();
+
             diesel::update(participants::table)
                 .filter(participants::id.eq(id.0))
-                .set(models::ParticipantInfo::from(info))
+                .set((
+                    models::ParticipantInfo::from(info),
+                    participants::answers.eq(answers),
+                ))
                 .execute(conn)?;
 
             Ok(())

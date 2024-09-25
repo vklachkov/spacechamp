@@ -13,7 +13,7 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
-    routing::{delete, get, patch, post},
+    routing::{delete, get, post},
     Form, Json, Router,
 };
 use std::{collections::HashMap, sync::Arc};
@@ -41,9 +41,10 @@ pub fn v1(datasource: Arc<DataSource>, tokens: Arc<BackendTokens>) -> Router {
                 .route("/participant", post(create_participant))
                 .route(
                     "/participant/:id",
-                    get(get_participant).delete(delete_participant),
+                    get(get_participant)
+                        .delete(delete_participant)
+                        .patch(patch_participant),
                 )
-                .route("/participant/:id/info", patch(patch_participant_info))
                 .route("/participant/:id/command", post(set_participant_command))
                 .route("/adults", get(adults))
                 .route("/adult", post(create_adult))
@@ -141,7 +142,11 @@ async fn new_application_webhook(
         ),
     ]);
 
-    let id = match state.datasource.create_participant(None, None, info, answers, None).await {
+    let id = match state
+        .datasource
+        .create_participant(None, None, info, answers, None)
+        .await
+    {
         Ok((id, _)) => id,
         Err(err) => {
             tracing::error!("Failed to create participant from webhook: {err}");
@@ -298,14 +303,14 @@ async fn delete_participant(
         .map_err(Into::into)
 }
 
-async fn patch_participant_info(
+async fn patch_participant(
     State(state): State<Arc<BackendState>>,
     Path(id): Path<ParticipantId>,
-    Json(info): Json<ParticipantInfo>,
+    Json(UpdateParticipantPayload { info, answers }): Json<UpdateParticipantPayload>,
 ) -> Result<()> {
     state
         .datasource
-        .update_participant_info(id, info)
+        .update_participant(id, info, answers)
         .await
         .map_err(Into::into)
 }

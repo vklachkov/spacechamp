@@ -30,6 +30,13 @@ pub struct NewParticipantPayload {
 }
 
 #[derive(Deserialize)]
+pub struct UpdateParticipantPayload {
+    #[serde(flatten)]
+    pub info: ParticipantInfo,
+    pub answers: HashMap<String, String>,
+}
+
+#[derive(Deserialize)]
 pub struct SetParticipantCommandPayload {
     pub jury_id: Option<AdultId>,
 }
