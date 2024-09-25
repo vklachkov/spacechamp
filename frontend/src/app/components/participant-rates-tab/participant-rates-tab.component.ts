@@ -3,11 +3,11 @@ import { BaseComponent } from '../base/base.component';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzTableComponent, NzTableModule } from 'ng-zorro-antd/table';
+import { NzTableModule } from 'ng-zorro-antd/table';
 import { CommonModule } from '@angular/common';
-import { JuryRate, Participant, Rates } from '../../models/api/participant.interface';
+import { JuryRate, Participant } from '../../models/api/participant.interface';
 import { Adult } from '../../models/api/adult.interface';
-import { delay, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, switchMap, takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { OrganizerService } from '../../services/organizer.service';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
@@ -72,7 +72,7 @@ export class ParticipantRatesTabComponent extends BaseComponent implements OnIni
   private initTeamControlSubscription(): void {
     this.teamControl.valueChanges
       .pipe(
-        delay(200),
+        debounceTime(200),
         switchMap((value: number | null) => {
           this.isSettingCommandLoading = true;
           this.cdr.markForCheck();
