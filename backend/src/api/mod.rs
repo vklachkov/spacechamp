@@ -10,7 +10,7 @@ use crate::{
 };
 use anyhow::{bail, Context};
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
     routing::{delete, get, patch, post},
@@ -39,7 +39,10 @@ pub fn v1(datasource: Arc<DataSource>, tokens: Arc<BackendTokens>) -> Router {
             Router::new()
                 .route("/participants", get(all_participants))
                 .route("/participant", post(create_participant))
-                .route("/participant/:id", get(get_participant))
+                .route(
+                    "/participant/:id",
+                    get(get_participant).delete(delete_participant),
+                )
                 .route("/participant/:id/info", patch(patch_participant_info))
                 .route("/participant/:id/command", post(set_participant_command))
                 .route("/adults", get(adults))
@@ -121,24 +124,24 @@ async fn new_application_webhook(
 
     let answers = HashMap::from([
         (
-            "Расскажи о своих навыках? что ты умеешь в инженерной или научной деятельности и на каком уровне ты владеешь этими навыками Что ты умеешь делать лучше других?".to_owned(),
+            "Расскажи о своих навыках – что ты умеешь в инженерной или научной деятельности и на каком уровне ты владеешь этими навыками? Что ты умеешь делать лучше других?".to_owned(),
             get("Расскажи_о_своих_навыках__что_ты_умеешь_в_инженерной_или_научной_деятельности_и_на_каком_уровне_ты_владеешь_этими_навыками_Что_ты_умеешь_делать_лучше_других").to_owned(),
         ),
         (
-            "Расскажи о своих достижениях о проектах которые ты реализовал раньше и какую роль ты в этих проектах выполнял".to_owned(),
+            "Расскажи о своих достижениях – о проектах, которые ты реализовал раньше и какую роль ты в этих проектах выполнял?".to_owned(),
             get("Расскажи_о_своих_достижениях__о_проектах_которые_ты_реализовал_раньше_и_какую_роль_ты_в_этих_проектах_выполнял").to_owned(),
         ),
         (
-            "Расскажи о трех самых ярких конкурсах в которых ты принимал участие".to_owned(),
+            "Расскажи о трех самых ярких конкурсах, в которых ты принимал участие".to_owned(),
             get("Расскажи_о_трех_самых_ярких_конкурсах_в_которых_ты_принимал_участие").to_owned(),
         ),
         (
-            "Как ты думаешь почему человек летает в космос не дальше орбиты МКС? Почему космические агентства до сих пор не освоили Луну не долетели до Марса и не научились приземляться на астероиды? Какие направления науки и технологий надо усиленно развивать чтобы как можно скорее достичь новых горизонтов в космосе?".to_owned(),
+            "Как ты думаешь, почему человек летает в космос не дальше орбиты МКС? Почему космические агентства до сих пор не освоили Луну, не долетели до Марса и не научились приземляться на астероиды? Какие направления науки и технологий надо усиленно развивать, чтобы как можно скорее достичь новых горизонтов в космосе?".to_owned(),
             get("Как_ты_думаешь_почему_человек_летает_в_космос_не_дальше_орбиты_МКС_Почему_космические_агентства_до_сих_пор_не_освоили_Луну_не_долетели_до_Марса_и_не_научились_приземляться_на_астероиды_Какие_направления_науки_и_технологий_надо_усиленно_развивать_чтобы_как_можно_скорее_достичь_новых_горизонтов_в_космосе").to_owned(),
         ),
     ]);
 
-    let id = match state.datasource.create_participant(info, answers).await {
+    let id = match state.datasource.create_participant(None, None, info, answers, None).await {
         Ok((id, _)) => id,
         Err(err) => {
             tracing::error!("Failed to create participant from webhook: {err}");
@@ -235,17 +238,35 @@ fn get_name(name: &str) -> String {
 
 async fn all_participants(
     State(state): State<Arc<BackendState>>,
+    Query(GetParticipantsQuery {
+        search,
+        sort,
+        order,
+    }): Query<GetParticipantsQuery>,
 ) -> Result<Json<Vec<Participant>>> {
-    Ok(Json(state.datasource.get_all_participants().await?))
+    Ok(Json(
+        state
+            .datasource
+            .get_all_participants(search, sort, order)
+            .await?,
+    ))
 }
 
 async fn create_participant(
     State(state): State<Arc<BackendState>>,
-    Json(NewParticipantPayload { info, answers }): Json<NewParticipantPayload>,
+    Json(payload): Json<NewParticipantPayload>,
 ) -> Result<()> {
+    let NewParticipantPayload {
+        code,
+        jury,
+        info,
+        answers,
+        rates,
+    } = payload;
+
     state
         .datasource
-        .create_participant(info, answers)
+        .create_participant(code, jury, info, answers, rates)
         .await
         .map(|_| ())
         .map_err(Into::into)
@@ -262,6 +283,19 @@ async fn get_participant(
             id,
         )))
     }
+}
+
+async fn delete_participant(
+    auth_session: auth::AuthSession,
+    State(state): State<Arc<BackendState>>,
+    Path(id): Path<ParticipantId>,
+) -> Result<()> {
+    let authed_user_id = auth_session.user.unwrap().0.id;
+    state
+        .datasource
+        .delete_participant(id, authed_user_id)
+        .await
+        .map_err(Into::into)
 }
 
 async fn patch_participant_info(
@@ -325,13 +359,14 @@ async fn delete_adult(
 async fn jury_participants(
     auth_session: auth::AuthSession,
     State(state): State<Arc<BackendState>>,
+    Query(GetJuryParticipantsQuery { order }): Query<GetJuryParticipantsQuery>,
 ) -> Result<Json<Vec<AnonymousParticipant>>> {
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
     Ok(Json(
         state
             .datasource
-            .get_all_participants()
+            .get_all_participants(None, Sort::Id, order)
             .await?
             .into_iter()
             .filter(|p| {

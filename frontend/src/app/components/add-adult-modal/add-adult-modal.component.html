@@ -1,0 +1,31 @@
+<form class="form" nz-form [formGroup]="form">
+    <nz-form-item class="form__item">
+        <nz-form-label class="form__item-label" nzRequired nzFor="name">Имя</nz-form-label>
+        <nz-form-control nzErrorTip="Поле является обязательным">
+            <input nz-input formControlName="name" id="name" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item class="form__item">
+        <nz-form-label class="form__item-label" nzRequired nzFor="password">Пароль</nz-form-label>
+        <nz-form-control nzErrorTip="Поле является обязательным">
+            <input nz-input formControlName="password" id="password" />
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item class="form__item">
+        <nz-form-control>
+            <div class="is-organizer-control">
+                <span nz-typography>Жюри</span>   
+
+                <nz-switch formControlName="isOrganizer"></nz-switch>
+
+                <span nz-typography>Организатор</span>
+            </div>
+        </nz-form-control>
+    </nz-form-item>
+</form>
+<div *nzModalFooter>
+    <button nz-button nzType="default" (click)="close()">Отмена</button>
+    <button nz-button nzType="primary" [disabled]="form.invalid" (click)="add()">Добавить</button>
+</div>

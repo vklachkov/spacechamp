@@ -1,0 +1,12 @@
+<ul class="answers">
+  @for (answer of answers | keyvalue; track $index) {
+  <li class="answers__item">
+    <h5 nz-typography class="answers__item-title">{{ answer.key }}</h5>
+    <p
+      nz-typography
+      class="answers__item-text"
+      [class.empty-answer]="!answer.value"
+    >{{ answer.value || EMPTY_ANSWER }}</p>
+  </li>
+  }
+</ul>

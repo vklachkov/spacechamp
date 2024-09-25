@@ -12,14 +12,16 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzPopoverDirective } from 'ng-zorro-antd/popover';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { ORGANIZER_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
+import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
 import { JuryRate, Participant } from '../../models/api/participant.interface';
-import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
 import { OrganizerService } from '../../services/organizer.service';
 import { BaseComponent } from '../../components/base/base.component';
+import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { ParticipantStatus } from '../../models/participant-status.enum';
-import { AuthService } from '../../services/auth.service';
-import { LocalStorageService } from '../../services/local-storage.service';
+import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
+import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { Sort } from '../../models/api/sort.enum';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -47,10 +49,14 @@ type FilterFormValue = {
     NzRadioComponent,
     NzRadioGroupComponent,
     NzSpinComponent,
-    KnownParticipantCardComponent,
+    ParticipantCardComponent,
     AsyncPipe,
     FormsModule,
+    NzListComponent,
+    NzListItemComponent,
     ReactiveFormsModule,
+    LogoutButtonComponent,
+    HeaderComponent
   ],
   templateUrl: './organizer.component.html',
   styleUrls: ['./organizer.component.scss'],
@@ -71,12 +77,10 @@ export class OrganizerPage extends BaseComponent implements OnInit {
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
-  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
-  private readonly authService: AuthService = inject(AuthService);
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
-    this.organizerService.getParticipants()
+    this.organizerService.getParticipants(Sort.DESC)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: Participant[]) => {
@@ -105,16 +109,16 @@ export class OrganizerPage extends BaseComponent implements OnInit {
             let search = (<string>value.search).trim().toLowerCase();
             
             return item.code.toLowerCase().includes(search) ||
-                   item.info.city.toLowerCase().includes(search) ||
-                   item.info.district.toLowerCase().includes(search) ||
-                   item.info.name.toLowerCase().includes(search);
+                  item.info.city.toLowerCase().includes(search) ||
+                  item.info.district.toLowerCase().includes(search) ||
+                  item.info.name.toLowerCase().includes(search);
           });
         }
 
         if (value.status) {
           switch (value.status) {
             case ParticipantStatus.InTeam: {
-              initialData = initialData.filter((item: Participant) => item.jury?.id);
+              initialData = initialData.filter((item: Participant) => item.jury);
               break;
             }
             case ParticipantStatus.NotRated: {
@@ -122,11 +126,13 @@ export class OrganizerPage extends BaseComponent implements OnInit {
               break;
             }
             case ParticipantStatus.FullRated: {
-              initialData = initialData.filter((item: Participant) => Object.values(item.rates).every((rate: JuryRate | null) => rate));
+              initialData = initialData.filter((item: Participant) => !item.jury && Object.values(item.rates).every((rate: JuryRate | null) => rate));
               break;
             }
             case ParticipantStatus.PartiallyRated: {
-              initialData = initialData.filter((item: Participant) => Object.values(item.rates).some((rate: JuryRate | null) => rate));
+              initialData = initialData.filter((item: Participant) => 
+                Object.values(item.rates).some((rate: JuryRate | null) => !rate) &&
+                Object.values(item.rates).some((rate: JuryRate | null) => rate));
               break;
             }
           }
@@ -147,25 +153,15 @@ export class OrganizerPage extends BaseComponent implements OnInit {
     this.router.navigate([ORGANIZER_ROOT_PATHS.Adults]);
   }
 
-  goToLogin(): void {
-    this.authService.logout()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.localStorageService.clearAuthData();
-          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.showErrorNotification('Ошибка при выходе', err);
-        }
-      });
-  }
-
-  goToParticipant(id: number): void {
-    this.router.navigate([ORGANIZER_ROOT_PATHS.Participant, id]);
+  trackById(index: number, item: Participant): number {
+    return item.id;
   }
 
   changeFilterVisible(value: boolean): void {
     this.filterVisible = value;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
   }
 }

@@ -1,22 +1,20 @@
-<nz-layout class="app-layout">
-    <nz-header>
-        <header class="header">
-            <div class="info">
-                <button nz-button (click)="goToApplications()">
-                    <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
-                    На главную
-                </button>
+<nz-layout class="nz-layout">
+    <nz-header class="nz-header jury-application-header">
+        <app-header>
+            <app-main-button header-left></app-main-button>
 
+            <!-- Почему-то без оборачивания во что-либо не работает -->
+            <div header-left class="jury-application-header__wrap">
                 @if (isParticipantLoading) {
-                    <nz-spin></nz-spin>
+                    <nz-spin header-left class="jury-application-header__spin"></nz-spin>
                 } @else {
                     @if (participant?.in_command) {
-                        <button nz-button nzType="default" (click)="openEvaluateModal()">Посмотреть оценку</button>
+                        <button nz-button nzType="default" header-left (click)="openRateModal()">Посмотреть оценку</button>
                     } @else {
                         @if (participant?.rate) {
-                            <button nz-button nzType="default" (click)="openEvaluateModal()">Изменить оценку</button>
+                            <button nz-button nzType="default" header-left (click)="openRateModal()">Изменить оценку</button>
                         } @else {
-                            <button nz-button nzType="primary" (click)="openEvaluateModal()">
+                            <button nz-button nzType="primary" header-left (click)="openRateModal()">
                                 <span nz-icon nzType="dollar" nzTheme="outline"></span>
                                 Оценить
                             </button>
@@ -25,35 +23,29 @@
                 }   
             </div>
 
-            <button nz-button class="header__button" (click)="goToLogin()">
-                <span nz-icon nzType="logout" nzTheme="outline"></span>
-                Выход
-            </button>
-        </header>
+            <app-logout-button header-right></app-logout-button>
+        </app-header>
     </nz-header>
 
-    <nz-content>
-        @if (isParticipantLoading) {
-            <nz-spin></nz-spin>
-        } @else {
-            @if (participant) {
-                <h2 nz-typography class="header__name">
-                    <strong>
-                        Заявка "{{ participant.code }}"
-                    </strong>
-                </h2>
-                
-                <h3 nz-typography>Анкета</h3>
-                
-                <ul class="answers">
-                    @for (answer of participant.answers | keyvalue; track $index) {
-                        <li>
-                            <p nz-typography><strong>{{ answer.key }}</strong></p>
-                            <p nz-typography [class.empty-answer]="!answer.value">{{ answer.value || 'Нет ответа' }}</p>
-                        </li>
-                    }
-                </ul>
+    <nz-content class="nz-content content">
+        <div class="container">
+            @if (isParticipantLoading) {
+                <nz-spin class="spin-height-100"></nz-spin>
+            } @else {
+                @if (participant) {
+                    <div class="questionnarie">
+                        <h2 nz-typography class="questionnarie__name">
+                            <strong>
+                                Заявка "{{ participant.code }}"
+                            </strong>
+                        </h2>
+
+                        <h3 nz-typography class="questionnarie__title">Анкета</h3>
+
+                        <app-answers [answers]="participant.answers"></app-answers>
+                    </div>                    
+                }
             }
-        }
+        </div>
     </nz-content>
 </nz-layout>

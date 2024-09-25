@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -10,13 +10,15 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { takeUntil } from 'rxjs';
-import { KnownParticipantCardComponent } from '../../components/known-participant-card/known-participant-card.component';
-import { JURY_ROOT_PATHS, ROOT_ROUTE_PATHS } from '../../app.routes';
+import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
 import { JuryService } from '../../services/jury.service';
-import { AuthService } from '../../services/auth.service';
 import { BaseComponent } from '../../components/base/base.component';
 import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { HeaderComponent } from "../../components/header/header.component";
+import { ApplicationsGroupComponent } from "../../components/applications-group/applications-group.component";
+import { Sort } from '../../models/api/sort.enum';
 
 @Component({
   selector: 'app-jury-page',
@@ -28,12 +30,14 @@ import { LocalStorageService } from '../../services/local-storage.service';
     NzLayoutModule,
     NzButtonComponent,
     NzIconModule,
-    NzInputModule,
     NzFlexModule,
-    KnownParticipantCardComponent,
+    ParticipantCardComponent,
     NzTypographyComponent,
-    NzSpinComponent
-  ],
+    NzSpinComponent,
+    LogoutButtonComponent,
+    HeaderComponent,
+    ApplicationsGroupComponent
+],
   templateUrl: './jury.component.html',
   styleUrls: ['./jury.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -46,14 +50,12 @@ export class JuryPage extends BaseComponent implements OnInit {
   notRatedParticipants: AnonymousParticipant[] = [];
   ratedParticipants: AnonymousParticipant[] = [];
 
-  private readonly router: Router = inject(Router);
-  private readonly authService: AuthService = inject(AuthService);
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly juryService: JuryService = inject(JuryService);
 
   private loadParticipants(): void {
     this.isParticipantsLoading = true;
-    this.juryService.getParticipants()
+    this.juryService.getParticipants(Sort.ASC)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: AnonymousParticipant[]) => {
@@ -78,23 +80,5 @@ export class JuryPage extends BaseComponent implements OnInit {
     this.loadParticipants();
 
     this.userName = this.localStorageService.getName();
-  }
-
-  goToLogin(): void {
-    this.authService.logout()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.localStorageService.clearAuthData();
-          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.showErrorNotification('Ошибка при выходе', err);
-        }
-      });
-  }
-
-  goToApplication(id: number): void {
-    this.router.navigate([JURY_ROOT_PATHS.Application, id]);
   }
 }

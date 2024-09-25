@@ -1,0 +1,41 @@
+<!-- <a title="" [routerLink]="[participantPath, participant.id]"> -->
+    <!-- <nz-card class="participant" [nzBodyStyle]="{'padding': '0'}"> -->
+        <a title="" class="participant" [routerLink]="[participantPath, participant.id]">
+            <!-- <nz-avatar [nzSize]="72" [nzSrc]="participant.info.photo_url"></nz-avatar> -->
+            
+            <!-- <div class="participant-info"> -->
+                <h3 class="participant__title">{{ participant.info.name }} "{{ participant.code }}"</h3>
+        
+                <p nz-typograpy class="participant__text">
+                    г. {{ participant.info.city }},
+                    {{ participant.info.edu_org }},
+                    {{ participant.info.responsible_adult_name }}
+                </p>
+                
+                
+                @switch (status) {
+                    @case (ParticipantStatus.InTeam) {
+                        <p class="participant__status in-team">
+                            Находится в команде "{{ participant.jury?.name ?? '' }}"
+                        </p>
+                    }
+                    @case (ParticipantStatus.NotRated) {
+                        <p class="participant__status not-rated">
+                            Без оценок
+                        </p>
+                    }
+                    @case (ParticipantStatus.PartiallyRated) {
+                        <p class="participant__status partially-rated">
+                            Частично оценен
+                        </p>
+                    }
+                    @case (ParticipantStatus.FullRated) {
+                        <p class="participant__status full-rated">
+                            Полностью оценен
+                        </p>
+                    }
+                }
+            <!-- </div> -->
+        </a>
+    <!-- </nz-card> -->
+<!-- </a> -->

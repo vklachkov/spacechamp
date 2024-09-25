@@ -1,0 +1,16 @@
+.form {
+  &__item {
+    &-label {
+      min-width: 8em;
+      text-align: left;
+    }
+
+    &-input-number {
+      width: 100%;
+    }
+
+    &-textarea {
+      resize: none;
+    }
+  }
+}

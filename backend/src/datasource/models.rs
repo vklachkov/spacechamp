@@ -1,6 +1,6 @@
 use crate::domain;
 use diesel::{prelude::*, result::Error as DieselError};
-use rand::Rng;
+use rand::{seq::SliceRandom, Rng};
 use std::{collections::HashMap, str::FromStr};
 
 #[derive(Insertable)]
@@ -60,17 +60,22 @@ pub struct NewParticipant {
     email: String,
     responsible_adult_name: String,
     responsible_adult_phone_number: String,
+    jury_id: Option<i32>,
     answers: serde_json::Value,
 }
 
 impl NewParticipant {
-    pub fn new(info: domain::ParticipantInfo, answers: HashMap<String, String>) -> Self {
-        let code = {
-            let first_letter = info.name.chars().next().unwrap().to_uppercase();
-            let last_letter = info.name.chars().last().unwrap().to_uppercase();
+    pub fn new(
+        code: Option<String>,
+        jury: Option<domain::Adult>,
+        info: domain::ParticipantInfo,
+        answers: HashMap<String, String>,
+    ) -> Self {
+        let code = code.unwrap_or({
+            let letters = Self::random_code();
             let number = rand::thread_rng().gen_range(1000..9999);
-            format!("{first_letter}{last_letter}-{number}")
-        };
+            format!("{letters}-{number}")
+        });
 
         Self {
             code,
@@ -83,8 +88,23 @@ impl NewParticipant {
             email: info.email,
             responsible_adult_name: info.responsible_adult_name,
             responsible_adult_phone_number: info.responsible_adult_phone_number,
+            jury_id: jury.map(|jury| jury.id.0),
             answers: serde_json::to_value(answers).unwrap(),
         }
+    }
+
+    fn random_code() -> String {
+        let rng = &mut rand::thread_rng();
+
+        let first = ['А', 'Я', 'О', 'У', 'Ю', 'И', 'Э', 'Б', 'В']
+            .choose(rng)
+            .unwrap();
+
+        let second = ['Ф', 'Ш', 'С', 'П', 'Р', 'Е', 'М', 'Д']
+            .choose(rng)
+            .unwrap();
+
+        format!("{first}{second}")
     }
 }
 

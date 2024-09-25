@@ -23,9 +23,13 @@ import {
   EyeOutline,
   EyeInvisibleOutline,
   ArrowLeftOutline,
-  RocketOutline
+  RocketOutline,
+  DownloadOutline,
+  RollbackOutline,
+  SaveOutline
 } from '@ant-design/icons-angular/icons';
 import { unauthorizedInterceptor } from './interceptors/unauthorized.interceptor';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 registerLocaleData(ru);
 
@@ -49,11 +53,15 @@ export const appConfig: ApplicationConfig = {
       EyeOutline,
       EyeInvisibleOutline,
       ArrowLeftOutline,
-      RocketOutline
+      RocketOutline,
+      DownloadOutline,
+      RollbackOutline,
+      SaveOutline
     ]),
     provideNzI18n(ru_RU),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([unauthorizedInterceptor]),),
+    provideHttpClient(withInterceptors([unauthorizedInterceptor])),
+    NzModalService,
   ],
 };

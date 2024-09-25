@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AnonymousParticipant } from '../models/api/anonymous-participant.interface';
 import { JuryRate } from '../models/api/participant.interface';
 import { environment } from '../environments/environment.local';
+import { Sort } from '../models/api/sort.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,14 @@ import { environment } from '../environments/environment.local';
 export class JuryService {
   private readonly http: HttpClient = inject(HttpClient);
 
-  getParticipants(): Observable<AnonymousParticipant[]> {
-    return this.http.get<AnonymousParticipant[]>(`${environment.API_URL}/jury/participants`, { withCredentials: true });
+  getParticipants(sort: Sort): Observable<AnonymousParticipant[]> {
+    // TODO: енамы
+    const params: HttpParams = new HttpParams().append('order', sort);
+    
+    return this.http.get<AnonymousParticipant[]>(`${environment.API_URL}/jury/participants`, { 
+      params, 
+      withCredentials: true 
+    });
   }
 
   getParticipantById(id: number): Observable<AnonymousParticipant | null> {

@@ -21,8 +21,11 @@ impl Participants {
 
     pub async fn create(
         &self,
+        code: Option<String>,
+        jury: Option<Adult>,
         info: ParticipantInfo,
         answers: HashMap<String, String>,
+        rates: Option<HashMap<AdultId, Option<ParticipantRate>>>,
     ) -> Result<(ParticipantId, String)> {
         self.transact(move |conn| {
             use schema::{
@@ -32,7 +35,9 @@ impl Participants {
 
             let (participant_id, participant_code): (i32, String) =
                 diesel::insert_into(participants::table)
-                    .values(super::models::NewParticipant::new(info, answers))
+                    .values(super::models::NewParticipant::new(
+                        code, jury, info, answers,
+                    ))
                     .returning((participants::id, participants::code))
                     .get_result(conn)?;
 
@@ -46,9 +51,17 @@ impl Participants {
             let records = jury_ids
                 .into_iter()
                 .map(|jury_id| {
+                    let (salary, comment) = rates
+                        .as_ref()
+                        .and_then(|rates| rates.get(&AdultId(jury_id)).cloned().flatten())
+                        .map(|ParticipantRate { salary, comment }| (salary, comment))
+                        .unzip();
+
                     (
                         rates::participant_id.eq(participant_id),
                         rates::jury_id.eq(jury_id),
+                        rates::salary.eq(salary),
+                        rates::comment.eq(comment),
                     )
                 })
                 .collect::<Vec<_>>();
@@ -68,7 +81,11 @@ impl Participants {
 
             let participant: Option<models::Participant> = participants::table
                 .select(models::Participant::as_select())
-                .filter(participants::id.eq(id.0))
+                .filter({
+                    let id = participants::id.eq(id.0);
+                    let not_deleted = participants::deleted_by.is_null();
+                    id.and(not_deleted)
+                })
                 .first(conn)
                 .optional()?;
 
@@ -118,20 +135,24 @@ impl Participants {
                     responsible_adult_name: participant.responsible_adult_name,
                     responsible_adult_phone_number: participant.responsible_adult_phone_number,
                 },
-                answers,
+                answers: Self::sanitize_answers(answers),
                 rates,
             }))
         })
         .await
     }
 
-    pub async fn get_all(&self) -> Result<Vec<Participant>> {
+    pub async fn get_all(
+        &self,
+        search: Option<String>,
+        sort: Sort,
+        order: Order,
+    ) -> Result<Vec<Participant>> {
         self.transact(move |conn| {
             use schema::{adults, participant_rates as rates, participants};
 
             let adults: HashMap<AdultId, Adult> = adults::table
                 .select(super::models::Adult::as_select())
-                .order_by(adults::id.asc())
                 .load(conn)?
                 .into_iter()
                 .map(|adult| Adult::try_from(adult).map(|adult| (adult.id, adult)))
@@ -145,10 +166,59 @@ impl Participants {
                 Self::group_rates(rates)
             };
 
-            let participants: Vec<models::Participant> = participants::table
+            let mut query = participants::table
                 .select(models::Participant::as_select())
-                .order_by(participants::id.asc())
-                .load(conn)?;
+                .filter(participants::deleted_by.is_null())
+                .into_boxed();
+
+            if let Some(search) = search {
+                use participants::{
+                    city, code, district, edu_org, email, name, phone_number,
+                    responsible_adult_name, responsible_adult_phone_number,
+                };
+
+                let like = format!("%{search}%");
+                let like_code = code.ilike(like.clone());
+                let like_name = name.ilike(like.clone());
+                let like_city = city.ilike(like.clone());
+                let like_district = district.ilike(like.clone());
+                let like_edu_org = edu_org.ilike(like.clone());
+                let like_phone_number = phone_number.ilike(like.clone());
+                let like_email = email.ilike(like.clone());
+                let like_adult_name = responsible_adult_name.ilike(like.clone());
+                let like_adult_phone_number = responsible_adult_phone_number.ilike(like.clone());
+
+                query = query.filter(
+                    like_code
+                        .or(like_name)
+                        .or(like_city)
+                        .or(like_district)
+                        .or(like_edu_org)
+                        .or(like_phone_number)
+                        .or(like_email)
+                        .or(like_adult_name)
+                        .or(like_adult_phone_number),
+                );
+            }
+
+            let participants: Vec<models::Participant> = match sort {
+                Sort::Id => match order {
+                    Order::Asc => query.order_by(participants::id.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::id.desc()).load(conn)?,
+                },
+                Sort::Name => match order {
+                    Order::Asc => query.order_by(participants::name.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::name.desc()).load(conn)?,
+                },
+                Sort::District => match order {
+                    Order::Asc => query.order_by(participants::district.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::district.desc()).load(conn)?,
+                },
+                Sort::City => match order {
+                    Order::Asc => query.order_by(participants::city.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::city.desc()).load(conn)?,
+                },
+            };
 
             participants
                 .into_iter()
@@ -171,12 +241,14 @@ impl Participants {
                             responsible_adult_phone_number: participant
                                 .responsible_adult_phone_number,
                         },
-                        answers: serde_json::from_value(participant.answers).map_err(|_| {
-                            DataSourceError::DbError(DieselError::DeserializationError(
-                                format!("invalid answers at participant id {}", participant.id)
-                                    .into(),
-                            ))
-                        })?,
+                        answers: Self::sanitize_answers(
+                            serde_json::from_value(participant.answers).map_err(|_| {
+                                DataSourceError::DbError(DieselError::DeserializationError(
+                                    format!("invalid answers at participant id {}", participant.id)
+                                        .into(),
+                                ))
+                            })?,
+                        ),
                         rates: rates
                             .remove(&ParticipantId(participant.id))
                             .unwrap_or_default(),
@@ -208,6 +280,14 @@ impl Participants {
         output
     }
 
+    fn sanitize_answers(mut answers: HashMap<String, String>) -> HashMap<String, String> {
+        for answer in answers.values_mut() {
+            *answer = answer.trim().to_owned();
+        }
+
+        answers
+    }
+
     pub async fn set_info(&self, id: ParticipantId, info: ParticipantInfo) -> Result<()> {
         self.transact(move |conn| {
             use schema::participants;
@@ -237,7 +317,7 @@ impl Participants {
             }
 
             if let Some(jury_id) = jury_id {
-                let jury_exists = Self::jury_exists(conn, jury_id)?;
+                let jury_exists = Self::adult_exists(conn, jury_id, AdultRole::Jury)?;
                 if !jury_exists {
                     return Err(DataSourceError::UnknownAdult(jury_id));
                 }
@@ -267,7 +347,7 @@ impl Participants {
                 return Err(DataSourceError::UnknownParticipant(id));
             }
 
-            let jury_exists = Self::jury_exists(conn, jury_id)?;
+            let jury_exists = Self::adult_exists(conn, jury_id, AdultRole::Jury)?;
             if !jury_exists {
                 return Err(DataSourceError::UnknownAdult(jury_id));
             }
@@ -288,22 +368,48 @@ impl Participants {
         .await
     }
 
+    pub async fn delete(&self, id: ParticipantId, adult_id: AdultId) -> Result<()> {
+        self.transact(move |conn| {
+            use schema::participants;
+
+            let participant_exists = Self::participant_exists(conn, id)?;
+            if !participant_exists {
+                return Err(DataSourceError::UnknownParticipant(id));
+            }
+
+            let adult_exists = Self::adult_exists(conn, adult_id, AdultRole::Org)?;
+            if !adult_exists {
+                return Err(DataSourceError::UnknownAdult(adult_id));
+            }
+
+            diesel::update(participants::table)
+                .filter(participants::id.eq(id.0))
+                .set(participants::deleted_by.eq(adult_id.0))
+                .execute(conn)?;
+
+            Ok(())
+        })
+        .await
+    }
+
     fn participant_exists(conn: &mut PgConnection, id: ParticipantId) -> Result<bool> {
         use diesel::dsl::{exists, select};
         use schema::participants::dsl;
 
-        select(exists(dsl::participants.filter(dsl::id.eq(id.0))))
-            .get_result::<bool>(conn)
-            .map_err(Into::into)
+        select(exists(
+            dsl::participants.filter(dsl::id.eq(id.0).and(dsl::deleted_by.is_null())),
+        ))
+        .get_result::<bool>(conn)
+        .map_err(Into::into)
     }
 
-    fn jury_exists(conn: &mut PgConnection, id: AdultId) -> Result<bool> {
+    fn adult_exists(conn: &mut PgConnection, id: AdultId, role: AdultRole) -> Result<bool> {
         use diesel::dsl::{exists, select};
         use schema::adults::dsl;
 
         select(exists(dsl::adults.filter({
             let id = dsl::id.eq(id.0);
-            let jury = dsl::role.eq(AdultRole::Jury.to_string());
+            let jury = dsl::role.eq(role.to_string());
             id.and(jury)
         })))
         .get_result::<bool>(conn)

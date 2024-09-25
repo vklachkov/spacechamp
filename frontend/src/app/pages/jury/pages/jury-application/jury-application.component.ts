@@ -1,22 +1,23 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { ROOT_ROUTE_PATHS } from '../../../../app.routes';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { EMPTY, of, switchMap, takeUntil } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../../../components/base/base.component';
-import { EvaluateApplicationModalComponent } from '../../../../components/evaluate-application-modal/evaluate-application-modal.component';
 import { AnonymousParticipant } from '../../../../models/api/anonymous-participant.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AuthService } from '../../../../services/auth.service';
 import { JuryService } from '../../../../services/jury.service';
 import { JuryRate } from '../../../../models/api/participant.interface';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { LocalStorageService } from '../../../../services/local-storage.service';
+import { AnswersComponent } from '../../../../components/answers/answers.component';
+import { RateApplicationModalComponent } from '../../../../components/rate-application-modal/rate-application-modal.component';
+import { MainButtonComponent } from '../../../../components/main-button/main-button.component';
+import { LogoutButtonComponent } from '../../../../components/logout-button/logout-button.component';
+import { HeaderComponent } from "../../../../components/header/header.component";
 
 @Component({
   standalone: true,
@@ -28,22 +29,23 @@ import { LocalStorageService } from '../../../../services/local-storage.service'
     NzIconModule,
     NzSpinComponent,
     AsyncPipe,
-  ],
+    AnswersComponent,
+    LogoutButtonComponent,
+    MainButtonComponent,
+    HeaderComponent
+],
   providers: [NzModalService],
   templateUrl: './jury-application.component.html',
   styleUrls: ['./jury-application.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JuryApplicationPage extends BaseComponent {
-  private readonly router: Router = inject(Router);
-  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly modalService: NzModalService = inject(NzModalService);
-  private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
-  private readonly authService: AuthService = inject(AuthService);
-  private readonly juryService: JuryService = inject(JuryService);
-
   participant: AnonymousParticipant | null = null;
   isParticipantLoading: boolean = false;
+
+  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private readonly modalService: NzModalService = inject(NzModalService);
+  private readonly juryService: JuryService = inject(JuryService);
 
   private loadParticipant(): void {
     this.activatedRoute.paramMap
@@ -79,24 +81,10 @@ export class JuryApplicationPage extends BaseComponent {
     this.loadParticipant();
   }
 
-  goToLogin(): void {
-    this.authService.logout()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.localStorageService.clearAuthData();
-          this.router.navigate([ROOT_ROUTE_PATHS.Login]);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.showErrorNotification('Ошибка при выходе', err);
-        }
-      });
-  }
-
-  openEvaluateModal(): void {
-    this.modalService.create<EvaluateApplicationModalComponent, AnonymousParticipant | null, JuryRate>({
+  openRateModal(): void {
+    this.modalService.create<RateApplicationModalComponent, AnonymousParticipant | null, JuryRate>({
       nzTitle: 'Оценка',
-      nzContent: EvaluateApplicationModalComponent,
+      nzContent: RateApplicationModalComponent,
       nzData: this.participant
     }).afterClose
       .pipe(
@@ -122,9 +110,5 @@ export class JuryApplicationPage extends BaseComponent {
           this.showErrorNotification('Ошибка при оценке участника', err);
         }
       });
-  }
-
-  goToApplications(): void {
-    this.router.navigate([ROOT_ROUTE_PATHS.Index]);
   }
 }

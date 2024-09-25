@@ -87,3 +87,19 @@ pub struct ParticipantRate {
     pub salary: i32,
     pub comment: String,
 }
+
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Order {
+    Asc,
+    Desc,
+}
+
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Sort {
+    Id,
+    Name,
+    District,
+    City,
+}

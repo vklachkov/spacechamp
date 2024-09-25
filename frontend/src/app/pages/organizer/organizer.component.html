@@ -1,7 +1,7 @@
-<nz-layout class="app-layout">
-    <nz-header>
-        <div id="search-panel" [formGroup]="filterForm">
-            <div id="search-bar">
+<nz-layout class="nz-layout">
+    <nz-header class="nz-header">
+        <app-header>
+            <form header-left class="filter" [formGroup]="filterForm">
                 <nz-input-group [nzSuffix]="suffixIconSearch">
                     <input nz-input type="text" placeholder="Поиск участника" formControlName="search" />
                 </nz-input-group>
@@ -9,56 +9,54 @@
                 <ng-template #suffixIconSearch>
                     <span nz-icon nzType="search"></span>
                 </ng-template>
-            </div>
+        
+                <button 
+                    nz-button
+                    nz-popover
+                    nzPopoverTrigger="click"
+                    nzPopoverPlacement="bottom"
+                    [nzPopoverContent]="contentTemplate"
+                    [(nzPopoverVisible)]="filterVisible"
+                    (nzPopoverVisibleChange)="changeFilterVisible($event)"
+                >
+                    <span nz-icon nzType="filter" nzTheme="outline"></span>
+                    Фильтр
+                </button>
     
-            <button 
-                nz-button
-                id="filter-button" 
-                nz-popover
-                nzPopoverTrigger="click"
-                nzPopoverPlacement="bottom"
-                [nzPopoverContent]="contentTemplate"
-                [(nzPopoverVisible)]="filterVisible"
-                (nzPopoverVisibleChange)="changeFilterVisible($event)"
-            >
-                <span nz-icon nzType="filter" nzTheme="outline"></span>
-                Фильтр
-            </button>
+                <ng-template #contentTemplate>
+                    <nz-radio-group class="filter__options" formControlName="status">
+                        <label nz-radio [nzValue]="null">Все</label>
+                        <label nz-radio [nzValue]="ParticipantStatus.NotRated">Без оценок</label>
+                        <label nz-radio [nzValue]="ParticipantStatus.PartiallyRated">Частично оценненые</label>
+                        <label nz-radio [nzValue]="ParticipantStatus.FullRated">Полностью оценненые</label>
+                        <label nz-radio [nzValue]="ParticipantStatus.InTeam">В команде</label>
+                    </nz-radio-group>
+                </ng-template>
+            </form>
 
-            <ng-template #contentTemplate>
-                <nz-radio-group class="filter-options" formControlName="status">
-                    <label nz-radio [nzValue]="null">Все</label>
-                    <label nz-radio [nzValue]="ParticipantStatus.NotRated">Без оценок</label>
-                    <label nz-radio [nzValue]="ParticipantStatus.PartiallyRated">Частично оценненые</label>
-                    <label nz-radio [nzValue]="ParticipantStatus.FullRated">Полностью оценненые</label>
-                    <label nz-radio [nzValue]="ParticipantStatus.InTeam">В команде</label>
-                </nz-radio-group>
-              </ng-template>
-        </div>
-
-        <div id="actions-bar">
-            <button nz-button id="juri-button" (click)="goToJuryPanel()">
+            <button nz-button header-right (click)="goToJuryPanel()">
                 <span nz-icon nzType="star" nzTheme="outline"></span>
                 Аккаунты
             </button>
 
-            <button nz-button id="logout-button" (click)="goToLogin()">
-                <span nz-icon nzType="logout" nzTheme="outline"></span>
-                Выход
-            </button>
-        </div>
+            <app-logout-button header-right></app-logout-button>
+        </app-header>
     </nz-header>
 
-    <nz-content>
-        @if (isParticipantsLoading) {
-            <nz-spin></nz-spin>
-        } @else {   
-            @for (participant of participants; track participant.id) {
-                <app-known-participant-card 
-                [participant]="participant"
-                (click)="goToParticipant(participant.id)"
-                ></app-known-participant-card>
+    <nz-content class="nz-content">
+        <div class="container h-100">
+            @if (isParticipantsLoading) {
+                <nz-spin class="spin spin-height-100"></nz-spin>
+            } @else {
+                <div class="content h-100">
+                    @for (participant of participants; track participant.id) {
+                        <app-participant-card   
+                            class="participant-card"
+                            [participant]="participant"
+                        ></app-participant-card>
+                    }
+                </div>
             }
-        }
+        </div>
     </nz-content>
 </nz-layout>

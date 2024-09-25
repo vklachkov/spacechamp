@@ -1,0 +1,27 @@
+.adult {
+    &.current {
+        .adult__content {
+            border: 2px solid var(--primary-ng-zorro);
+        }
+    }
+
+    &__content {
+        padding: .6em 1em;
+        min-width: 30em;
+    
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &-info {
+            display: flex;
+            flex-direction: column;
+            gap: .1em;
+        }
+    }
+}
+
+.star {
+    color: var(--star-color);
+    margin-left: 0.3em;
+}

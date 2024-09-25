@@ -1,0 +1,64 @@
+.actions {
+  display: flex;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.participant-card {
+  margin-bottom: 0.5em;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+
+    padding: 1em;
+  }
+}
+
+.avatar {
+  position: relative;
+
+  &:hover {
+    .avatar__button {
+      display: block;
+    }
+  }
+
+  &__button {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    z-index: 100;
+    display: none;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  &__item {
+    margin: 0;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+
+  &__item {
+    margin: 0;
+  }
+
+  &__label {
+    min-width: 7em;
+    text-align: left;
+  }
+
+  &__control {
+    min-width: 23em;
+  }
+}

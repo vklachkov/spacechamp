@@ -1,12 +1,12 @@
 <div class="login">
   <div class="logo">
-    <img src="/logo.png" alt="logo">
+    <img class="logo__image" src="/logo.png" alt="logo">
   </div>
 
   <nz-spin [nzSpinning]="isLoginLoading">
-    <form nz-form [formGroup]="form" class="login-form" (ngSubmit)="login()">
+    <form nz-form [formGroup]="form" class="login__form" (ngSubmit)="login()">
       <nz-form-item>
-        <nz-form-control nzErrorTip="Поле является быть обязательным">
+        <nz-form-control nzErrorTip="Поле является обязательным">
           <nz-input-group nzPrefixIcon="user">
             <input
               type="text"
@@ -18,7 +18,7 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-control nzErrorTip="Поле является быть обязательным">
+        <nz-form-control nzErrorTip="Поле является обязательным">
           <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate">
             <input
               [type]="isPasswordVisible ? 'text' : 'password'"
@@ -41,12 +41,12 @@
       <button
         nz-button
         type="submit"
-        class="login-form__button"
+        class="login__form-button"
         nzType="primary"
         [disabled]="form.invalid"
       >
         Поехали
-        <span nz-icon nzType="rocket" nzTheme="outline"></span>
+        <span class="login__form-button-icon" nz-icon nzType="rocket" nzTheme="outline"></span>
       </button>
     </form>
   </nz-spin>

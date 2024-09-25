@@ -4,6 +4,7 @@ import { Role } from '../models/api/role.enum';
 import { Adult } from '../models/api/adult.interface';
 import { USER_ID_KEY } from '../models/user-id-key.constant';
 import { NAME_KEY } from '../models/name-key.constant';
+import { SCROLL_INDEX_KEY } from '../models/scroll-index.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,10 @@ export class LocalStorageService {
     this.setItem<string>(ROLE_KEY, data.role);
   }
 
+  setScrollIndex(index: number): void {
+    this.setItem<number>(SCROLL_INDEX_KEY, index);
+  }
+
   getRole(): Role {
     return this.getItem<Role>(ROLE_KEY);
   }
@@ -39,7 +44,11 @@ export class LocalStorageService {
     return this.getItem<number>(USER_ID_KEY);
   }
 
-  clearAuthData(): void {
+  getScrollIndex(): number {
+    return this.getItem<number>(SCROLL_INDEX_KEY);
+  }
+
+  clearData(): void {
     this.clear();
   }
 }

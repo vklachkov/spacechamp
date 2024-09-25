@@ -1,0 +1,29 @@
+:host {
+    display: block;
+}
+
+.answers {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+  
+    &__item {
+      background-color: var(--white);
+      padding: 1em;
+      white-space: pre-wrap;
+
+      &-text {
+        margin-bottom: 0;
+
+        font-size: 110%;
+        
+        &.empty-answer {
+          color: var(--red);
+        }
+      }
+    }
+  }

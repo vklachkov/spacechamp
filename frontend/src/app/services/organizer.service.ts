@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Participant, ParticipantInfo } from '../models/api/participant.interface';
 import { Adult } from '../models/api/adult.interface';
 import { environment } from '../environments/environment.local';
+import { Sort } from '../models/api/sort.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,13 @@ import { environment } from '../environments/environment.local';
 export class OrganizerService {
   private readonly http: HttpClient = inject(HttpClient);
 
-  getParticipants(): Observable<Participant[]> {
-    return this.http.get<Participant[]>(`${environment.API_URL}/org/participants`, { withCredentials: true });
+  getParticipants(sort: Sort): Observable<Participant[]> {
+    const params: HttpParams = new HttpParams().append('order', sort).append('sort', 'id');
+
+    return this.http.get<Participant[]>(`${environment.API_URL}/org/participants`, { 
+      params, 
+      withCredentials: true 
+    });
   }
 
   getParticipantById(id: number): Observable<Participant | null> {
@@ -27,6 +33,10 @@ export class OrganizerService {
 
   updateParticipantInfo(participantId: number, info: ParticipantInfo): Observable<void> {
     return this.http.patch<void>(`${environment.API_URL}/org/participant/${participantId}/info`, info, { withCredentials: true });
+  }
+
+  removeParticipant(participantId: number): Observable<void> {
+    return this.http.delete<void>(`${environment.API_URL}/org/participant/${participantId}`, { withCredentials: true });
   }
 
   getAdults(): Observable<Adult[]> {

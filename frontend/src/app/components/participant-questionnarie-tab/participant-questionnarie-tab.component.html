@@ -1,0 +1,134 @@
+<div class="actions">
+    @switch (mode) {
+        @case (Mode.View) {
+            <button nz-button (click)="enterEditMode()">
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+                Редактировать
+            </button>
+        
+            <nz-spin [nzSpinning]="isDeleting">
+                <button 
+                    nz-button
+                    nz-popconfirm
+                    nzPopconfirmTitle="Вы уверены, что хотите удалить участника?"
+                    nzPopconfirmPlacement="bottom"
+                    nzCancelText="Нет"
+                    nzOkType="danger"
+                    nzOkText="Да"
+                    (nzOnConfirm)="remove()" 
+                >
+                        <span nz-icon nzType="delete" nzTheme="outline"></span>
+                        Удалить
+                </button>
+            </nz-spin>
+        }
+        @case (Mode.Edit) {
+            <button nz-button nzType="primary" (click)="saveChanges()">
+                <span nz-icon nzType="save" nzTheme="outline"></span>
+                Сохранить
+            </button>
+
+            <nz-spin [nzSpinning]="isDeleting">
+                <button 
+                    nz-button
+                    nz-popconfirm
+                    nzPopconfirmTitle="Вы уверены, что хотите удалить изменения?"
+                    nzPopconfirmPlacement="bottom"
+                    nzCancelText="Нет"
+                    nzOkType="danger"
+                    nzOkText="Да"
+                    (nzOnConfirm)="cancelEdit()" 
+                >
+                        <span nz-icon nzType="rollback" nzTheme="outline"></span>
+                </button>
+            </nz-spin>
+        }
+    }
+</div>
+
+<nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
+    <div class="participant-card__content">
+        <!-- <div class="avatar">
+            <nz-avatar [nzSize]="150" [nzSrc]="participant.info.photo_url"></nz-avatar>
+
+            <button class="avatar__button" nzSize="small" nz-button (click)="downloadPhoto()">
+                <span nz-icon nzType="download" nzTheme="outline"></span>
+            </button>
+        </div> -->
+        
+        @if (mode === Mode.View) {
+            <div class="info">
+                <p class="info__item" nz-typography>Имя: {{ participant.info.name }}</p>
+                <p class="info__item" nz-typography>Город: {{ participant.info.city }}</p>
+                <p class="info__item" nz-typography>Регион: {{ participant.info.district }}</p>
+                <p class="info__item" nz-typography>Телефон: {{ participant.info.phone_number }}</p>
+                <p class="info__item" nz-typography>Почта: {{ participant.info.email }}</p>
+                <p class="info__item" nz-typography>Организация: {{ participant.info.edu_org }}</p>
+                <p class="info__item" nz-typography>ФИО родителя / наставника: {{ participant.info.responsible_adult_name }}</p>
+                <p class="info__item" nz-typography>Номер телефона родителя / наставника: {{ participant.info.responsible_adult_phone_number }}</p>
+            </div>
+        } @else {
+            <nz-spin [nzSpinning]="isParticipantInfoUpdating">
+                <form class="form" nz-form [formGroup]="infoForm">
+                    <nz-form-item class="form__item">
+                        <nz-form-label class="form__label" nzFor="name">Имя</nz-form-label>
+                        <nz-form-control class="form__control">
+                            <input nz-input formControlName="name" id="name" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="form__item">
+                        <nz-form-label class="form__label" nzFor="city">Город</nz-form-label>
+                        <nz-form-control class="form__control">
+                            <input nz-input formControlName="city" id="city" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="form__item">
+                        <nz-form-label class="form__label" nzFor="district">Регион</nz-form-label>
+                        <nz-form-control class="form__control">
+                            <input nz-input formControlName="district" id="district" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="form__item">
+                        <nz-form-label class="form__label" nzFor="phone_number">Телефон</nz-form-label>
+                        <nz-form-control class="form__control">
+                            <input nz-input formControlName="phone_number" id="phone_number" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="form__item">
+                        <nz-form-label class="form__label" nzFor="email">Почта</nz-form-label>
+                        <nz-form-control class="form__control">
+                            <input nz-input formControlName="email" id="email" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="form__item">
+                        <nz-form-label class="form__label" nzFor="edu_org">Организация</nz-form-label>
+                        <nz-form-control class="form__control">
+                            <input nz-input formControlName="edu_org" id="edu_org" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="form__item">
+                        <nz-form-label class="form__label" nzFor="responsible_adult_name">ФИО родителя / наставника</nz-form-label>
+                        <nz-form-control class="form__control">
+                            <input nz-input formControlName="responsible_adult_name" id="responsible_adult_name" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="form__item">
+                        <nz-form-label class="form__label" nzFor="responsible_adult_phone_number">Номер телефона родителя / наставника</nz-form-label>
+                        <nz-form-control class="form__control">
+                            <input nz-input formControlName="responsible_adult_phone_number" id="responsible_adult_phone_number" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </form>
+            </nz-spin>
+        }
+    </div>
+</nz-card>
+
+<app-answers [answers]="participant.answers"></app-answers>

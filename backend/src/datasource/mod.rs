@@ -54,18 +54,28 @@ impl DataSource {
 
     pub async fn create_participant(
         &self,
+        code: Option<String>,
+        jury: Option<Adult>,
         info: ParticipantInfo,
         answers: HashMap<String, String>,
+        rates: Option<HashMap<AdultId, Option<ParticipantRate>>>,
     ) -> Result<(ParticipantId, String)> {
-        self.participants.create(info, answers).await
+        self.participants
+            .create(code, jury, info, answers, rates)
+            .await
     }
 
     pub async fn get_participant(&self, id: ParticipantId) -> Result<Option<Participant>> {
         self.participants.get(id).await
     }
 
-    pub async fn get_all_participants(&self) -> Result<Vec<Participant>> {
-        self.participants.get_all().await
+    pub async fn get_all_participants(
+        &self,
+        search: Option<String>,
+        sort: Sort,
+        order: Order,
+    ) -> Result<Vec<Participant>> {
+        self.participants.get_all(search, sort, order).await
     }
 
     pub async fn update_participant_info(
@@ -91,6 +101,10 @@ impl DataSource {
         rate: Option<ParticipantRate>,
     ) -> Result<()> {
         self.participants.set_jury_rate(id, adult_id, rate).await
+    }
+
+    pub async fn delete_participant(&self, id: ParticipantId, adult_id: AdultId) -> Result<()> {
+        self.participants.delete(id, adult_id).await
     }
 
     pub async fn get_adult(&self, id: AdultId) -> Result<Option<Adult>> {

@@ -18,6 +18,7 @@ export function unauthorizedInterceptor(
   const localStorageService: LocalStorageService = inject(LocalStorageService);
   const router: Router = inject(Router);
 
+  // TODO: для отдельной ветки надо попробовать вот тут withCredential прокинуть
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
       // Для логина возвращаем все ошибки
@@ -28,7 +29,7 @@ export function unauthorizedInterceptor(
       // Для остальных страниц перенаправляем на страницу логина,
       // если пользователь у пользователя некорректные данные в куки
       if (err.status === HttpStatusCode.Forbidden) {
-        localStorageService.clearAuthData();
+        localStorageService.clearData();
         router.navigate([ROOT_ROUTE_PATHS.Login]);
         return EMPTY;
       }

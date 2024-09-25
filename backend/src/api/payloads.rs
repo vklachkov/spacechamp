@@ -22,8 +22,11 @@ impl From<LoginPayload> for auth::Credentials {
 
 #[derive(Deserialize)]
 pub struct NewParticipantPayload {
+    pub code: Option<String>,
+    pub jury: Option<Adult>,
     pub info: ParticipantInfo,
     pub answers: HashMap<String, String>,
+    pub rates: Option<HashMap<AdultId, Option<ParticipantRate>>>,
 }
 
 #[derive(Deserialize)]
@@ -42,4 +45,16 @@ pub struct NewAdultPayload {
     pub name: String,
     pub password: String,
     pub role: AdultRole,
+}
+
+#[derive(Deserialize)]
+pub struct GetParticipantsQuery {
+    pub search: Option<String>,
+    pub sort: Sort,
+    pub order: Order,
+}
+
+#[derive(Deserialize)]
+pub struct GetJuryParticipantsQuery {
+    pub order: Order,
 }

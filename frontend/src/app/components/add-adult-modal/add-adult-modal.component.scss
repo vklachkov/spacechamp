@@ -1,0 +1,14 @@
+.form {
+  &__item {
+    &-label {
+      min-width: 6em;
+      text-align: left;
+    }
+  }
+}
+
+.is-organizer-control {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
