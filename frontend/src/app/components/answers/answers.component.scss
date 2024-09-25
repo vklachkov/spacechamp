@@ -15,17 +15,12 @@
       background-color: var(--white);
       padding: 1em;
       white-space: pre-wrap;
-  
-      &-title {
-        line-height: 1.45;
-      }
 
       &-text {
         margin-bottom: 0;
 
-        font-size: 1.25em;
-        line-height: 1.45;
-
+        font-size: 110%;
+        
         &.empty-answer {
           color: var(--red);
         }

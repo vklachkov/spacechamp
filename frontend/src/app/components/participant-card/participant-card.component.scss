@@ -1,14 +1,23 @@
 .participant {
     display: block;
-    padding: .5em .8em;
+    padding: 1em;
 
     text-decoration: none;
     border: 1px solid var(--light-gray);
     background-color: var(--white);
 
+    &__title {
+        margin-bottom: 0em;
+    }
+
+    &__text {
+        color: black;
+        margin-bottom: 0.25em;
+    }
+
     &__status {
         font-size: small;
-        margin-bottom: 0;
+        margin: 0;
 
         &.in-team {
             color: var(--in-team-color);
