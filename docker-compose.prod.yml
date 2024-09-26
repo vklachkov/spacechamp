@@ -54,7 +54,7 @@ services:
     environment:
       - NOTISEND_TOKEN=${NOTISEND_TOKEN}
     volumes:
-      - "backend-data:/var/lib/backend"
+      - "spacechamp-backend-data:/var/lib/backend"
     networks:
       - reverse_proxy
     labels:
@@ -92,6 +92,7 @@ networks:
   postgres:
 
 volumes:
-  backend-data:
+  spacechamp-backend-data:
+    external: true
   spacechamp-postgres-data:
     external: true
