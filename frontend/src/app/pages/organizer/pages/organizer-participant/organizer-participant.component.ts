@@ -34,7 +34,6 @@ import { LogoutButtonComponent } from '../../../../components/logout-button/logo
 import { HeaderComponent } from '../../../../components/header/header.component';
 import { Mode, ParticipantQuestionnarieTabComponent } from '../../../../components/participant-questionnarie-tab/participant-questionnarie-tab.component';
 import { ParticipantRatesTabComponent } from '../../../../components/participant-rates-tab/participant-rates-tab.component';
-import { BlockNavigationIfChange } from '../../../../guards/unsaved-changes.guard';
 
 @Component({
   standalone: true,
@@ -59,9 +58,9 @@ import { BlockNavigationIfChange } from '../../../../guards/unsaved-changes.guar
   styleUrls: ['./organizer-participant.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganizerParticipantPage extends BaseComponent implements OnInit, BlockNavigationIfChange {
-  @ViewChild(ParticipantQuestionnarieTabComponent)
-  questionnarieTab!: ParticipantQuestionnarieTabComponent;
+export class OrganizerParticipantPage extends BaseComponent implements OnInit {
+  @ViewChild(ParticipantQuestionnarieTabComponent, { static: false })
+  questionnarieTab!: ParticipantQuestionnarieTabComponent | null;
 
   participant: Participant | null = null;
 
@@ -118,7 +117,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit, B
       });
   }
 
-  hasChanges(): boolean {
+  formHasChanges(): boolean {
     return this.questionnarieTab?.mode === Mode.Edit &&
       this.questionnarieTab?.infoForm?.dirty;
   }
