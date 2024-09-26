@@ -25,9 +25,8 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
 
-  # TODO: убрать хардкод на образ
   frontend:
-    image: ghcr.io/vklachkov/space-fest-ui-frontend:latest
+    image: ${FRONT_IMAGE}
     depends_on:
       - backend
     networks:
@@ -41,7 +40,7 @@ services:
       - "traefik.http.services.spacefest_frontend.loadBalancer.server.port=80"
 
   backend:
-    image: ghcr.io/vklachkov/space-fest-ui-backend:latest
+    image: ${BACK_IMAGE}
     command:
       - "--db-url"
       - "postgresql://postgres:postgres@postgres:5432/spacechamp"
