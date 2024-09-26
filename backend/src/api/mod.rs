@@ -13,7 +13,7 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
-    routing::{delete, get, patch, post},
+    routing::{delete, get, post},
     Form, Json, Router,
 };
 use std::{collections::HashMap, sync::Arc};
@@ -41,9 +41,10 @@ pub fn v1(datasource: Arc<DataSource>, tokens: Arc<BackendTokens>) -> Router {
                 .route("/participant", post(create_participant))
                 .route(
                     "/participant/:id",
-                    get(get_participant).delete(delete_participant),
+                    get(get_participant)
+                        .delete(delete_participant)
+                        .patch(patch_participant),
                 )
-                .route("/participant/:id/info", patch(patch_participant_info))
                 .route("/participant/:id/command", post(set_participant_command))
                 .route("/adults", get(adults))
                 .route("/adult", post(create_adult))
@@ -141,7 +142,12 @@ async fn new_application_webhook(
         ),
     ]);
 
-    let id = match state.datasource.create_participant(None, None, info, answers, None).await {
+    let id = match state
+        .datasource
+        .participants
+        .create(None, None, info, answers, None)
+        .await
+    {
         Ok((id, _)) => id,
         Err(err) => {
             tracing::error!("Failed to create participant from webhook: {err}");
@@ -149,7 +155,7 @@ async fn new_application_webhook(
         }
     };
 
-    if let Ok(Some(participant)) = state.datasource.get_participant(id).await {
+    if let Ok(Some(participant)) = state.datasource.participants.get(id).await {
         send_email_with_code(state, participant).await;
     }
 
@@ -247,7 +253,8 @@ async fn all_participants(
     Ok(Json(
         state
             .datasource
-            .get_all_participants(search, sort, order)
+            .participants
+            .get_all(search, sort, order)
             .await?,
     ))
 }
@@ -266,7 +273,8 @@ async fn create_participant(
 
     state
         .datasource
-        .create_participant(code, jury, info, answers, rates)
+        .participants
+        .create(code, jury, info, answers, rates)
         .await
         .map(|_| ())
         .map_err(Into::into)
@@ -276,7 +284,7 @@ async fn get_participant(
     State(state): State<Arc<BackendState>>,
     Path(id): Path<ParticipantId>,
 ) -> Result<Json<Participant>> {
-    if let Some(participant) = state.datasource.get_participant(id).await? {
+    if let Some(participant) = state.datasource.participants.get(id).await? {
         Ok(Json(participant))
     } else {
         Err(ApiError::DataSource(DataSourceError::UnknownParticipant(
@@ -293,19 +301,21 @@ async fn delete_participant(
     let authed_user_id = auth_session.user.unwrap().0.id;
     state
         .datasource
-        .delete_participant(id, authed_user_id)
+        .participants
+        .delete(id, authed_user_id)
         .await
         .map_err(Into::into)
 }
 
-async fn patch_participant_info(
+async fn patch_participant(
     State(state): State<Arc<BackendState>>,
     Path(id): Path<ParticipantId>,
-    Json(info): Json<ParticipantInfo>,
+    Json(UpdateParticipantPayload { info, answers }): Json<UpdateParticipantPayload>,
 ) -> Result<()> {
     state
         .datasource
-        .update_participant_info(id, info)
+        .participants
+        .patch(id, info, answers)
         .await
         .map_err(Into::into)
 }
@@ -317,13 +327,14 @@ async fn set_participant_command(
 ) -> Result<()> {
     state
         .datasource
-        .set_participant_command(id, jury_id)
+        .participants
+        .set_jury(id, jury_id)
         .await
         .map_err(Into::into)
 }
 
 async fn adults(State(state): State<Arc<BackendState>>) -> Result<Json<Vec<Adult>>> {
-    Ok(Json(state.datasource.get_all_adults().await?))
+    Ok(Json(state.datasource.adults.get_all().await?))
 }
 
 async fn create_adult(
@@ -336,7 +347,8 @@ async fn create_adult(
 ) -> Result<()> {
     state
         .datasource
-        .new_adult(name, password, role)
+        .adults
+        .create(name, password, role)
         .await
         .map_err(Into::into)
 }
@@ -353,7 +365,7 @@ async fn delete_adult(
         ));
     }
 
-    state.datasource.delete_adult(id).await.map_err(Into::into)
+    state.datasource.adults.delete(id).await.map_err(Into::into)
 }
 
 async fn jury_participants(
@@ -366,7 +378,8 @@ async fn jury_participants(
     Ok(Json(
         state
             .datasource
-            .get_all_participants(None, Sort::Id, order)
+            .participants
+            .get_all(None, Sort::Id, order)
             .await?
             .into_iter()
             .filter(|p| {
@@ -393,7 +406,7 @@ async fn get_jury_participant(
 ) -> Result<Json<AnonymousParticipant>> {
     let jury_id = auth_session.user.as_ref().unwrap().0.id;
 
-    let Some(mut participant) = state.datasource.get_participant(id).await? else {
+    let Some(mut participant) = state.datasource.participants.get(id).await? else {
         return Err(ApiError::from(DataSourceError::UnknownParticipant(id)));
     };
 
@@ -427,7 +440,8 @@ async fn set_participant_rate(
 
     state
         .datasource
-        .set_participant_rate(id, jury_id, payload.rate)
+        .participants
+        .set_jury_rate(id, jury_id, payload.rate)
         .await
         .map_err(Into::into)
 }

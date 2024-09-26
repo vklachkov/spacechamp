@@ -1,7 +1,8 @@
 use super::{
     models,
     result::{DataSourceError, Result},
-    schema,
+    schema::{adults, participant_rates as rates, participants},
+    utils::transact,
 };
 use crate::domain::*;
 use diesel::{prelude::*, result::Error as DieselError};
@@ -27,12 +28,7 @@ impl Participants {
         answers: HashMap<String, String>,
         rates: Option<HashMap<AdultId, Option<ParticipantRate>>>,
     ) -> Result<(ParticipantId, String)> {
-        self.transact(move |conn| {
-            use schema::{
-                adults::{self},
-                participant_rates as rates, participants,
-            };
-
+        transact(self.conn.clone(), move |conn| {
             let (participant_id, participant_code): (i32, String) =
                 diesel::insert_into(participants::table)
                     .values(super::models::NewParticipant::new(
@@ -76,9 +72,7 @@ impl Participants {
     }
 
     pub async fn get(&self, id: ParticipantId) -> Result<Option<Participant>> {
-        self.transact(move |conn| {
-            use schema::{adults, participant_rates as rates, participants};
-
+        transact(self.conn.clone(), move |conn| {
             let participant: Option<models::Participant> = participants::table
                 .select(models::Participant::as_select())
                 .filter({
@@ -148,9 +142,7 @@ impl Participants {
         sort: Sort,
         order: Order,
     ) -> Result<Vec<Participant>> {
-        self.transact(move |conn| {
-            use schema::{adults, participant_rates as rates, participants};
-
+        transact(self.conn.clone(), move |conn| {
             let adults: HashMap<AdultId, Adult> = adults::table
                 .select(super::models::Adult::as_select())
                 .load(conn)?
@@ -288,18 +280,26 @@ impl Participants {
         answers
     }
 
-    pub async fn set_info(&self, id: ParticipantId, info: ParticipantInfo) -> Result<()> {
-        self.transact(move |conn| {
-            use schema::participants;
-
+    pub async fn patch(
+        &self,
+        id: ParticipantId,
+        info: ParticipantInfo,
+        answers: HashMap<String, String>,
+    ) -> Result<()> {
+        transact(self.conn.clone(), move |conn| {
             let participant_exists = Self::participant_exists(conn, id)?;
             if !participant_exists {
                 return Err(DataSourceError::UnknownParticipant(id));
             }
 
+            let answers = serde_json::to_value(&answers).unwrap();
+
             diesel::update(participants::table)
                 .filter(participants::id.eq(id.0))
-                .set(models::ParticipantInfo::from(info))
+                .set((
+                    models::ParticipantInfo::from(info),
+                    participants::answers.eq(answers),
+                ))
                 .execute(conn)?;
 
             Ok(())
@@ -308,9 +308,7 @@ impl Participants {
     }
 
     pub async fn set_jury(&self, id: ParticipantId, jury_id: Option<AdultId>) -> Result<()> {
-        self.transact(move |conn| {
-            use schema::participants;
-
+        transact(self.conn.clone(), move |conn| {
             let participant_exists = Self::participant_exists(conn, id)?;
             if !participant_exists {
                 return Err(DataSourceError::UnknownParticipant(id));
@@ -339,9 +337,7 @@ impl Participants {
         jury_id: AdultId,
         rate: Option<ParticipantRate>,
     ) -> Result<()> {
-        self.transact(move |conn| {
-            use schema::participant_rates as rates;
-
+        transact(self.conn.clone(), move |conn| {
             let participant_exists = Self::participant_exists(conn, id)?;
             if !participant_exists {
                 return Err(DataSourceError::UnknownParticipant(id));
@@ -369,9 +365,7 @@ impl Participants {
     }
 
     pub async fn delete(&self, id: ParticipantId, adult_id: AdultId) -> Result<()> {
-        self.transact(move |conn| {
-            use schema::participants;
-
+        transact(self.conn.clone(), move |conn| {
             let participant_exists = Self::participant_exists(conn, id)?;
             if !participant_exists {
                 return Err(DataSourceError::UnknownParticipant(id));
@@ -394,7 +388,7 @@ impl Participants {
 
     fn participant_exists(conn: &mut PgConnection, id: ParticipantId) -> Result<bool> {
         use diesel::dsl::{exists, select};
-        use schema::participants::dsl;
+        use participants::dsl;
 
         select(exists(
             dsl::participants.filter(dsl::id.eq(id.0).and(dsl::deleted_by.is_null())),
@@ -404,8 +398,8 @@ impl Participants {
     }
 
     fn adult_exists(conn: &mut PgConnection, id: AdultId, role: AdultRole) -> Result<bool> {
+        use adults::dsl;
         use diesel::dsl::{exists, select};
-        use schema::adults::dsl;
 
         select(exists(dsl::adults.filter({
             let id = dsl::id.eq(id.0);
@@ -414,21 +408,5 @@ impl Participants {
         })))
         .get_result::<bool>(conn)
         .map_err(Into::into)
-    }
-
-    #[inline(always)]
-    async fn transact<F, R>(&self, f: F) -> Result<R>
-    where
-        F: FnOnce(&mut PgConnection) -> Result<R> + Send + 'static,
-        R: Send + 'static,
-    {
-        let conn = self.conn.clone();
-
-        tokio::task::spawn_blocking(move || {
-            let mut conn = conn.lock().expect("connection shouldn't be poisoned");
-            conn.transaction(move |conn| f(conn))
-        })
-        .await
-        .expect("database queries shouldn't panic")
     }
 }

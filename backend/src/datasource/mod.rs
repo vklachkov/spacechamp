@@ -3,23 +3,20 @@ mod models;
 mod participants;
 mod result;
 mod schema;
+mod utils;
 
 pub use self::result::DataSourceError;
 
-use self::{adults::Adults, participants::Participants, result::Result};
+use self::{adults::Adults, participants::Participants};
 use crate::domain::*;
 use diesel::{Connection, PgConnection};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
-use std::{
-    collections::HashMap,
-    sync::{Arc, Mutex},
-};
+use std::sync::{Arc, Mutex};
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations");
-
 pub struct DataSource {
-    participants: Participants,
-    adults: Adults,
+    pub participants: Participants,
+    pub adults: Adults,
 }
 
 impl DataSource {
@@ -50,84 +47,5 @@ impl DataSource {
         tracing::info!("Postgres is ready!");
 
         connection
-    }
-
-    pub async fn create_participant(
-        &self,
-        code: Option<String>,
-        jury: Option<Adult>,
-        info: ParticipantInfo,
-        answers: HashMap<String, String>,
-        rates: Option<HashMap<AdultId, Option<ParticipantRate>>>,
-    ) -> Result<(ParticipantId, String)> {
-        self.participants
-            .create(code, jury, info, answers, rates)
-            .await
-    }
-
-    pub async fn get_participant(&self, id: ParticipantId) -> Result<Option<Participant>> {
-        self.participants.get(id).await
-    }
-
-    pub async fn get_all_participants(
-        &self,
-        search: Option<String>,
-        sort: Sort,
-        order: Order,
-    ) -> Result<Vec<Participant>> {
-        self.participants.get_all(search, sort, order).await
-    }
-
-    pub async fn update_participant_info(
-        &self,
-        id: ParticipantId,
-        info: ParticipantInfo,
-    ) -> Result<()> {
-        self.participants.set_info(id, info).await
-    }
-
-    pub async fn set_participant_command(
-        &self,
-        id: ParticipantId,
-        adult_id: Option<AdultId>,
-    ) -> Result<()> {
-        self.participants.set_jury(id, adult_id).await
-    }
-
-    pub async fn set_participant_rate(
-        &self,
-        id: ParticipantId,
-        adult_id: AdultId,
-        rate: Option<ParticipantRate>,
-    ) -> Result<()> {
-        self.participants.set_jury_rate(id, adult_id, rate).await
-    }
-
-    pub async fn delete_participant(&self, id: ParticipantId, adult_id: AdultId) -> Result<()> {
-        self.participants.delete(id, adult_id).await
-    }
-
-    pub async fn get_adult(&self, id: AdultId) -> Result<Option<Adult>> {
-        self.adults.get(id).await
-    }
-
-    pub async fn get_all_adults(&self) -> Result<Vec<Adult>> {
-        self.adults.get_all().await
-    }
-
-    pub async fn find_adult(&self, name: String, password: String) -> Result<Option<Adult>> {
-        self.adults.find(name, password).await
-    }
-
-    pub async fn get_adult_role(&self, id: AdultId) -> Result<Option<AdultRole>> {
-        self.adults.role(id).await
-    }
-
-    pub async fn new_adult(&self, name: String, password: String, role: AdultRole) -> Result<()> {
-        self.adults.create(name, password, role).await
-    }
-
-    pub async fn delete_adult(&self, id: AdultId) -> Result<()> {
-        self.adults.delete(id).await
     }
 }

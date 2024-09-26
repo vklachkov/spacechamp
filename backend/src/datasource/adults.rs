@@ -1,6 +1,7 @@
 use super::{
     result::{DataSourceError, Result},
-    schema,
+    schema::{adults, participant_rates as rates, participants},
+    utils::transact,
 };
 use crate::domain::*;
 use diesel::prelude::*;
@@ -8,7 +9,6 @@ use std::{
     str::FromStr,
     sync::{Arc, Mutex},
 };
-
 pub(crate) struct Adults {
     conn: Arc<Mutex<PgConnection>>,
 }
@@ -19,12 +19,9 @@ impl Adults {
     }
 
     pub async fn create(&self, name: String, password: String, role: AdultRole) -> Result<()> {
-        self.transact(move |conn| {
+        transact(self.conn.clone(), move |conn| {
+            use adults::dsl;
             use diesel::dsl::{exists, select};
-            use schema::{
-                adults::{self, dsl},
-                participant_rates as rates, participants,
-            };
 
             let exists =
                 select(exists(dsl::adults.filter(dsl::name.eq(&name)))).get_result::<bool>(conn)?;
@@ -67,9 +64,7 @@ impl Adults {
     }
 
     pub async fn get(&self, id: AdultId) -> Result<Option<Adult>> {
-        self.transact(move |conn| {
-            use schema::adults;
-
+        transact(self.conn.clone(), move |conn| {
             adults::table
                 .select(super::models::Adult::as_select())
                 .filter(adults::id.eq(id.0))
@@ -83,9 +78,7 @@ impl Adults {
     }
 
     pub async fn get_all(&self) -> Result<Vec<Adult>> {
-        self.transact(move |conn| {
-            use schema::adults;
-
+        transact(self.conn.clone(), move |conn| {
             adults::table
                 .select(super::models::Adult::as_select())
                 .order_by(adults::id.asc())
@@ -99,9 +92,7 @@ impl Adults {
     }
 
     pub async fn find(&self, name: String, password: String) -> Result<Option<Adult>> {
-        self.transact(move |conn| {
-            use schema::adults;
-
+        transact(self.conn.clone(), move |conn| {
             adults::table
                 .select(super::models::Adult::as_select())
                 .filter(adults::name.eq(name).and(adults::password.eq(password)))
@@ -115,9 +106,7 @@ impl Adults {
     }
 
     pub async fn role(&self, id: AdultId) -> Result<Option<AdultRole>> {
-        self.transact(move |conn| {
-            use schema::adults;
-
+        transact(self.conn.clone(), move |conn| {
             let role: Option<String> = adults::table
                 .select(adults::role)
                 .filter(adults::id.eq(id.0))
@@ -141,9 +130,9 @@ impl Adults {
     }
 
     pub async fn delete(&self, id: AdultId) -> Result<()> {
-        self.transact(move |conn| {
+        transact(self.conn.clone(), move |conn| {
+            use adults::dsl;
             use diesel::dsl::{exists, select};
-            use schema::adults::{self, dsl};
 
             let exists: bool =
                 select(exists(dsl::adults.filter(dsl::id.eq(id.0)))).get_result(conn)?;
@@ -158,21 +147,5 @@ impl Adults {
             Ok(())
         })
         .await
-    }
-
-    #[inline(always)]
-    async fn transact<F, R>(&self, f: F) -> Result<R>
-    where
-        F: FnOnce(&mut PgConnection) -> Result<R> + Send + 'static,
-        R: Send + 'static,
-    {
-        let conn = self.conn.clone();
-
-        tokio::task::spawn_blocking(move || {
-            let mut conn = conn.lock().expect("connection shouldn't be poisoned");
-            conn.transaction(move |conn| f(conn))
-        })
-        .await
-        .expect("database queries shouldn't panic")
     }
 }

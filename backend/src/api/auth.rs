@@ -52,14 +52,16 @@ impl AuthnBackend for Backend {
         creds: Self::Credentials,
     ) -> Result<Option<Self::User>, Self::Error> {
         self.datasource
-            .find_adult(creds.name, creds.password)
+            .adults
+            .find(creds.name, creds.password)
             .await
             .map(|adult| adult.map(User))
     }
 
     async fn get_user(&self, user_id: &UserId<Self>) -> Result<Option<Self::User>, Self::Error> {
         self.datasource
-            .get_adult(*user_id)
+            .adults
+            .get(*user_id)
             .await
             .map(|adult| adult.map(User))
     }
@@ -73,7 +75,7 @@ impl AuthzBackend for Backend {
         &self,
         user: &Self::User,
     ) -> Result<HashSet<Self::Permission>, Self::Error> {
-        let role = self.datasource.get_adult_role(user.id()).await?;
+        let role = self.datasource.adults.role(user.id()).await?;
         if let Some(role) = role {
             Ok(HashSet::from([role]))
         } else {
