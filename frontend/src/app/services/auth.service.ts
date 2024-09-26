@@ -12,10 +12,10 @@ export class AuthService {
   private readonly http: HttpClient = inject(HttpClient);
 
   login(data: LoginInput): Observable<Adult> {
-    return this.http.post<Adult>(`${environment.API_URL}/login`, data, { withCredentials: true });
+    return this.http.post<Adult>(`${environment.API_URL}/login`, data);
   }
 
   logout(): Observable<void> {
-    return this.http.post<void>(`${environment.API_URL}/logout`, null, { withCredentials: true });
+    return this.http.post<void>(`${environment.API_URL}/logout`, null);
   }
 }

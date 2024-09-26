@@ -18,8 +18,10 @@ export function unauthorizedInterceptor(
   const localStorageService: LocalStorageService = inject(LocalStorageService);
   const router: Router = inject(Router);
 
-  // TODO: для отдельной ветки надо попробовать вот тут withCredential прокинуть
-  return next(req).pipe(
+  const clonedRequest: HttpRequest<unknown> = req.clone({
+    withCredentials: true
+  });
+  return next(clonedRequest).pipe(
     catchError((err: HttpErrorResponse) => {
       // Для логина возвращаем все ошибки
       if (err.url?.includes('login')) {
