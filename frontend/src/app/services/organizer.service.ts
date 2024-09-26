@@ -6,6 +6,7 @@ import { Adult } from '../models/api/adult.interface';
 import { environment } from '../environments/environment.local';
 import { FilterOptions } from '../models/api/filter-options.enum';
 import { ParticipantsQuery } from '../models/participants-query.interface';
+import { ParticipantUpdateInfo } from '../models/api/participant-update-info.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -38,8 +39,8 @@ export class OrganizerService {
     }, { withCredentials: true });
   }
 
-  updateParticipantInfo(participantId: number, info: ParticipantInfo): Observable<void> {
-    return this.http.patch<void>(`${environment.API_URL}/org/participant/${participantId}/info`, info, { withCredentials: true });
+  updateParticipantInfo(participantId: number, data: ParticipantUpdateInfo): Observable<void> {
+    return this.http.patch<void>(`${environment.API_URL}/org/participant/${participantId}`, data, { withCredentials: true });
   }
 
   removeParticipant(participantId: number): Observable<void> {

@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.answers-form {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+
+  &__item {
+    margin-bottom: 0;
+    background-color: var(--white);
+    padding: 1em;
+
+    &-label {
+      display: block;
+      overflow: initial;
+      white-space: pre-wrap;
+    }
+
+    &-textarea {
+      font-size: 1.1em;
+    }
+  }
+}

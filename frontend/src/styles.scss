@@ -82,3 +82,12 @@ button[nz-button] {
         height: 14px;
     }
 }
+// TODO: поч у меня то 4 отступа то 2
+
+.answers-label {
+    & > label {
+        height: auto!important;
+        width: 100%;
+        text-align: left;
+    }
+}

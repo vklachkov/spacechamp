@@ -6,7 +6,7 @@
             <nz-spin class="participant-header__spin" header-center [nzSpinning]="isDataLoading">
                 @if (participant) {
                     <div class="participant-header__info">
-                        <h3 nz-typography class="participant-header__info-code">Заявка "{{ participant.code }}"</h3>
+                        <h3 nz-typography class="participant-header__info-code">Заявка №{{ participant.id + 1 }}, {{ participant.code }}</h3>
                     </div>
                 }
             </nz-spin>

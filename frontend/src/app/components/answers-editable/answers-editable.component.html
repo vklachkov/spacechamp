@@ -1,0 +1,18 @@
+<form [formGroup]="answersForm" class="answers-form">
+  @for (answerControl of answersForm.controls | keyvalue; track $index) {
+    <nz-form-item class="answers-form__item">
+      <nz-form-label class="answers-form__item-label answers-label" [nzFor]="answerControl.key" [nzNoColon]="true">
+        <h5 nz-typography>{{ answerControl.key }}</h5>
+      </nz-form-label>
+      <nz-form-control>
+        <textarea
+          nz-input
+          class="answers-form__item-textarea"
+          [formControl]="answerControl.value"
+          [id]="answerControl.key"
+          [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+        ></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  }
+</form>
