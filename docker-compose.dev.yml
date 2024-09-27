@@ -48,8 +48,21 @@ services:
       - "traefik.http.routers.spacefest_backend.rule=Host(`spacechamp.localhost`) && PathPrefix(`/api/v1`)"
       - "traefik.http.services.spacefest_backend.loadBalancer.server.port=80"
     depends_on:
+      # report-generator
       postgres:
         condition: service_healthy
+
+  report-generator:
+    build:
+      context: ./report-generator
+      dockerfile: ./Dockerfile
+    command:
+      - "--host"
+      - "127.0.0.1"
+      - "--port"
+      - "8866"
+    networks:
+      - reverse_proxy
   
   postgres:
     image: postgres:latest
