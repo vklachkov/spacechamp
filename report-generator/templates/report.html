@@ -49,11 +49,11 @@
         <tr>
           <td>{{ participant['number'] }}</td>
           <td>{{ participant['code'] }}</td>
-          <td>{{ participant['rate']['1D'] }}</td>
-          <td>{{ participant['rate']['Салют'] }}</td>
-          <td>{{ participant['rate']['Звёздное'] }}</td>
-          <td>{{ participant['rate']['Родное'] }}</td>
-          <td>{{ participant['rate']['Око'] }}</td>
+          <td>{{ participant['rates']['1D'] or '' }}</td>
+          <td>{{ participant['rates']['Салют'] or '' }}</td>
+          <td>{{ participant['rates']['Звёздное'] or '' }}</td>
+          <td>{{ participant['rates']['Родное'] or '' }}</td>
+          <td>{{ participant['rates']['Око'] or '' }}</td>
         </tr>
         {% else %}
         <tr>
