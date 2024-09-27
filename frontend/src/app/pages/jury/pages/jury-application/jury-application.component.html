@@ -9,10 +9,16 @@
                     <nz-spin header-left class="jury-application-header__spin"></nz-spin>
                 } @else {
                     @if (participant?.in_command) {
-                        <button nz-button nzType="default" header-left (click)="openRateModal()">Посмотреть оценку</button>
+                        <button nz-button nzType="default" header-left (click)="openRateModal()">
+                            <span nz-icon nzType="dollar" nzTheme="outline"></span>
+                            Посмотреть оценку
+                        </button>
                     } @else {
                         @if (participant?.rate) {
-                            <button nz-button nzType="default" header-left (click)="openRateModal()">Изменить оценку</button>
+                            <button nz-button nzType="default" header-left (click)="openRateModal()">
+                                <span nz-icon nzType="dollar" nzTheme="outline"></span>
+                                Изменить оценку
+                            </button>
                         } @else {
                             <button nz-button nzType="primary" header-left (click)="openRateModal()">
                                 <span nz-icon nzType="dollar" nzTheme="outline"></span>
@@ -23,7 +29,7 @@
                 }   
             </div>
 
-            <app-logout-button header-right></app-logout-button>
+            <app-logout-button class="jury-application-header__logout-button" header-right></app-logout-button>
         </app-header>
     </nz-header>
 
@@ -33,17 +39,13 @@
                 <nz-spin class="spin-height-100"></nz-spin>
             } @else {
                 @if (participant) {
-                    <div class="questionnarie">
-                        <h2 nz-typography class="questionnarie__name">
-                            <strong>
-                                Заявка "{{ participant.code }}"
-                            </strong>
-                        </h2>
+                    <h2 nz-typography>
+                        <strong>
+                            Заявка "{{ participant.code }}"
+                        </strong>
+                    </h2>
 
-                        <h3 nz-typography class="questionnarie__title">Анкета</h3>
-
-                        <app-answers [answers]="participant.answers"></app-answers>
-                    </div>                    
+                    <app-answers [answers]="participant.answers"></app-answers>               
                 }
             }
         </div>

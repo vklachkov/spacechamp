@@ -1,6 +1,12 @@
 @switch (role) {
   @case (Role.Organizer) {
-    <app-organizer-page></app-organizer-page>
+    @if (isMobile) {
+      <div class="mobile-device-stub">
+        <p nz-typography>Админка не работает с телефона</p>
+      </div>
+    } @else {
+      <app-organizer-page></app-organizer-page>
+    }
   }
   @case (Role.Jury) {
     <app-jury-page></app-jury-page>
