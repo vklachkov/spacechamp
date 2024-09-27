@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Участники Космического Чемпионата 2024</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap&subset=latin,cyrillic" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  {% for page in pages %}
+  <div class="page">
+    <header class="title">
+      <div class="title-logo">
+        <img src="{{ url_for('static', filename='logo.png') }}">
+      </div>
+
+      <p class="title-text">
+        Промежуточные результаты оценки резюме Кандидатов<br>
+        на зачисление в Конструкторские Бюро
+      </p>
+
+      <p class="title-city">
+        г. Пермь
+      </p>
+    </header>
+    
+    <table class="results">
+      <thead>
+        <tr>
+          <th rowspan="2">№</th>
+          <th rowspan="2">ШИФР<br>УЧАСТНИКА</th>
+          <th colspan="5">ОЦЕНКА ОТ КОНСТРУКТОРСКОГО БЮРО</th>
+        </tr>
+        <tr>
+          <th>1D</th>
+          <th>Салют</th>
+          <th>Звёздное</th>
+          <th>Родное</th>
+          <th>Око</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for participant in page['participants'] %}
+        {% if (participant != {}) %}
+        <tr>
+          <td>{{ participant['number'] }}</td>
+          <td>{{ participant['code'] }}</td>
+          <td>{{ participant['rate']['1D'] }}</td>
+          <td>{{ participant['rate']['Салют'] }}</td>
+          <td>{{ participant['rate']['Звёздное'] }}</td>
+          <td>{{ participant['rate']['Родное'] }}</td>
+          <td>{{ participant['rate']['Око'] }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <footer>
+      <p class="last-update">
+        {{ '%02d' % date['day'] }}.{{ '%02d' % date['month'] }}.{{ '%02d' % date['year'] }}
+      </p>
+
+      <div class="spacer"></div>
+
+      <p class="page-number">
+        №{{page['number']}}
+      </p>
+    </footer>
+  </div>
+  {% endfor %}
+</body>
+
+</html>

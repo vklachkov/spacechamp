@@ -1,0 +1,12 @@
+[project]
+name = "html2pdf"
+version = "0.1.0"
+description = "Converts html to pdf remotely"
+requires-python = ">=3.11"
+dependencies = [
+    "flask>=3.0.3",
+    "waitress>=3.0.0",
+]
+
+[tool.setuptools]
+py-modules = []
