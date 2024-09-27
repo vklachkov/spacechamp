@@ -126,7 +126,12 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          script: docker compose -f /tmp/${{ env.DOCKER_COMPOSE_FILE }} down
+          # Необходимо установить хоть какие-то значения, чтобы команда сработала
+          script: |
+            NOTISEND_TOKEN="-" \
+              FRONT_IMAGE="-" \
+              BACK_IMAGE="-" \
+              docker compose -f /tmp/${{ env.DOCKER_COMPOSE_FILE }} down
       - name: Copy docker compose to remote server
         uses: appleboy/scp-action@v0.1.7
         with:
