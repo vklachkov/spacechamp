@@ -1,7 +1,7 @@
 <nz-layout class="nz-layout">
     <nz-header class="nz-header participant-header">
         <app-header>
-            <app-main-button header-left></app-main-button>
+            <app-main-button header-left />
 
             <nz-spin class="participant-header__spin" header-center [nzSpinning]="isDataLoading">
                 @if (participant) {
@@ -11,7 +11,7 @@
                 }
             </nz-spin>
 
-            <app-logout-button header-right></app-logout-button>
+            <app-logout-button header-right />
         </app-header>
     </nz-header>
 
@@ -24,11 +24,11 @@
                 @if (participant) {
                     <nz-tabset>
                         <nz-tab nzTitle="Анкета">
-                            <app-participant-questionnarie-tab [participant]="participant"></app-participant-questionnarie-tab>
+                            <app-participant-questionnarie-tab [participant]="participant" />
                         </nz-tab>
                         
                         <nz-tab nzTitle="Оценки">
-                            <app-participant-rates-tab [participant]="participant" [juries]="juries"></app-participant-rates-tab>
+                            <app-participant-rates-tab [participant]="participant" [juries]="juries" />
                         </nz-tab>
                     </nz-tabset>
                 }

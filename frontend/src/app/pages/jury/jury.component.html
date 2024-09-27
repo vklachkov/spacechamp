@@ -3,7 +3,7 @@
         <app-header>
             <h3 nz-typography header-left class="jury-header__title">Заявки</h3>
 
-            <app-logout-button header-right></app-logout-button>
+            <app-logout-button header-right />
         </app-header>
     </nz-header>
 
@@ -14,24 +14,15 @@
             } @else {
                 <div class="groups">
                     @if (inTeamParticipants.length > 0) {
-                        <app-applications-group 
-                            [participants]="inTeamParticipants" 
-                            title="В команде"
-                        ></app-applications-group>
+                        <app-applications-group [participants]="inTeamParticipants" title="В команде" />
                     }
 
                     @if (notRatedParticipants.length > 0) {
-                        <app-applications-group 
-                            [participants]="notRatedParticipants" 
-                            title="Без оценки"
-                        ></app-applications-group>
+                        <app-applications-group [participants]="notRatedParticipants" title="Без оценки" />
                     }
                     
                     @if (ratedParticipants.length > 0) {
-                        <app-applications-group 
-                            [participants]="ratedParticipants" 
-                            title="Оценённые"
-                        ></app-applications-group>
+                        <app-applications-group [participants]="ratedParticipants" title="Оценённые" />
                     }
                 </div>
             }

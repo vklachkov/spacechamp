@@ -142,11 +142,10 @@
     </div>
 </nz-card>
 
-<!-- TODO: можно у кастом компонентов не добавлять закрывающийся тег -->
 @if (mode === Mode.View) {
-    <app-answers [answers]="participant.answers"></app-answers>
+    <app-answers [answers]="participant.answers" />
 } @else {
     <nz-spin [nzSpinning]="isParticipantInfoUpdating">
-        <app-answers-editable [formGroup]="getAnswersForm()"></app-answers-editable>
+        <app-answers-editable [formGroup]="getAnswersForm()" />
     </nz-spin>
 }
