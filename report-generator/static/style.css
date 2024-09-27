@@ -2,7 +2,13 @@
   font-family: 'TTOctosquares';
   font-style: normal;
   font-weight: 600;
-  src: url(https://static.tildacdn.com/tild3066-6139-4933-a230-356266346333/TTOctosquares-Medium.woff) format('woff');
+  src: url('TTOctosquares Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  src: url('PT Sans.ttf') format('truetype');
 }
 
 @page {
