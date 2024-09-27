@@ -96,6 +96,8 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
   ascSortLabel: string = '';
   descSortLabel: string = '';
 
+  isDownloadingReport: boolean = false;
+
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
   private readonly queryManager: BindQueryParamsFactory = inject(BindQueryParamsFactory);
@@ -246,6 +248,35 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
 
   changeFilterVisible(value: boolean): void {
     this.filterVisible = value;
+  }
+
+  getReport(): void {
+    this.isDownloadingReport = true;
+    this.cdr.markForCheck();
+  
+    this.organizerService.getParticipantsReport()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (pdf) => {
+          // TODO: Обобщить с DownloadService
+          // TODO: Удалить <a>
+          const blob = new Blob([pdf], {type: 'application/pdf'});
+          const link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.style.display = 'none';
+          link.download = 'Отчёт_Кандидаты_КЧ.pdf';
+          link.click();
+          
+          this.isDownloadingReport = false;
+          this.cdr.markForCheck();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isDownloadingReport = false;
+          this.cdr.markForCheck();
+
+          this.showErrorNotification('Внутренняя ошибка при генерации отчёта', err);
+        }
+      });
   }
 
   override ngOnDestroy(): void {

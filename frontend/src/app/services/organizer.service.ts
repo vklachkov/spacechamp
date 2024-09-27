@@ -28,6 +28,12 @@ export class OrganizerService {
     });
   }
 
+  getParticipantsReport(): Observable<ArrayBuffer> {
+    return this.http.get(`${environment.API_URL}/org/participants/report`, {
+      responseType: 'arraybuffer'
+    })
+  }
+
   getParticipantById(id: number): Observable<Participant | null> {
     return this.http.get<Participant | null>(`${environment.API_URL}/org/participant/${id}`);
   }
