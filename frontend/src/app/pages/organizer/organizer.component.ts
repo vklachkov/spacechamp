@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs';
+import { BindQueryParamsFactory, BindQueryParamsManager } from '@ngneat/bind-query-params';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -13,18 +14,16 @@ import { NzPopoverDirective } from 'ng-zorro-antd/popover';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
-import { JuryRate, Participant } from '../../models/api/participant.interface';
-import { OrganizerService } from '../../services/organizer.service';
-import { BaseComponent } from '../../components/base/base.component';
-import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
-import { ParticipantStatus } from '../../models/participant-status.enum';
-import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
-import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
-import { HeaderComponent } from '../../components/header/header.component';
-import { Order } from '../../models/api/order.enum';
-import { Sort } from '../../models/api/sort.enum';
-import { ParticipantsQuery } from '../../models/participants-query.interface';
-import { BindQueryParamsFactory, BindQueryParamsManager } from '@ngneat/bind-query-params';
+import { BaseComponent } from '@components/base/base.component';
+import { ParticipantCardComponent } from '@components/participant-card/participant-card.component';
+import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
+import { HeaderComponent } from '@components/header/header.component';
+import { OrganizerService } from '@services/organizer.service';
+import { ParticipantStatus } from '@models/participant-status.enum';
+import { Order } from '@models/api/order.enum';
+import { Sort } from '@models/api/sort.enum';
+import { JuryRate, Participant } from '@models/api/participant.interface';
+import { ParticipantsQuery } from '@models/participants-query.interface';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -67,8 +66,6 @@ const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
     ParticipantCardComponent,
     AsyncPipe,
     FormsModule,
-    NzListComponent,
-    NzListItemComponent,
     ReactiveFormsModule,
     LogoutButtonComponent,
     HeaderComponent

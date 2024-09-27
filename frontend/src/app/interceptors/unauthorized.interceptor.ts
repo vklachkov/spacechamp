@@ -9,7 +9,7 @@ import {
 } from '@angular/common/http';
 import { catchError, EMPTY, Observable } from 'rxjs';
 import { ROOT_ROUTE_PATHS } from '../app.routes';
-import { LocalStorageService } from '../services/local-storage.service';
+import { LocalStorageService } from '@services/local-storage.service';
 
 export function unauthorizedInterceptor(
   req: HttpRequest<unknown>,

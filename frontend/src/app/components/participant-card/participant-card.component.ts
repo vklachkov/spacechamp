@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { JuryRate, Participant } from '../../models/api/participant.interface';
-import { ParticipantStatus } from '../../models/participant-status.enum';
 import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
+import { JuryRate, Participant } from '@models/api/participant.interface';
+import { ParticipantStatus } from '@models/participant-status.enum';
 
 @Component({
   selector: 'app-participant-card',

@@ -5,8 +5,8 @@ import {
   UrlTree,
 } from '@angular/router';
 import { inject } from '@angular/core';
-import { LocalStorageService } from '../services/local-storage.service';
-import { Role } from '../models/api/role.enum';
+import { LocalStorageService } from '@services/local-storage.service';
+import { Role } from '@models/api/role.enum';
 import { ROOT_ROUTE_PATHS } from '../app.routes';
 
 export function organizerGuard(): CanActivateFn {

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ROLE_KEY } from '../models/role-key.constant';
-import { Role } from '../models/api/role.enum';
-import { Adult } from '../models/api/adult.interface';
-import { USER_ID_KEY } from '../models/user-id-key.constant';
-import { NAME_KEY } from '../models/name-key.constant';
-import { SCROLL_INDEX_KEY } from '../models/scroll-index.constant';
+import { ROLE_KEY } from '@models/role-key.constant';
+import { Role } from '@models/api/role.enum';
+import { Adult } from '@models/api/adult.interface';
+import { USER_ID_KEY } from '@models/user-id-key.constant';
+import { NAME_KEY } from '@models/name-key.constant';
+import { SCROLL_INDEX_KEY } from '@models/scroll-index.constant';
 
 @Injectable({
   providedIn: 'root',

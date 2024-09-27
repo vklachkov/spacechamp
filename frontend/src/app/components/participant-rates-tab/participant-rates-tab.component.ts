@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
-import { BaseComponent } from '../base/base.component';
-import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { CommonModule } from '@angular/common';
-import { JuryRate, Participant } from '../../models/api/participant.interface';
-import { Adult } from '../../models/api/adult.interface';
-import { debounceTime, switchMap, takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { OrganizerService } from '../../services/organizer.service';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, switchMap, takeUntil } from 'rxjs';
+import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
+import { NzSpinComponent } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import { BaseComponent } from '@components/base/base.component';
+import { OrganizerService } from '@services/organizer.service';
+import { JuryRate, Participant } from '@models/api/participant.interface';
+import { Adult } from '@models/api/adult.interface';
 
 interface TableData {
   name: string, 

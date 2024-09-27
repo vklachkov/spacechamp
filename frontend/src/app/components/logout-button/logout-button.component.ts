@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { takeUntil } from 'rxjs';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { takeUntil } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { BaseComponent } from '../base/base.component';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
+import { BaseComponent } from '@components/base/base.component';
+import { LocalStorageService } from '@services/local-storage.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-logout-button',

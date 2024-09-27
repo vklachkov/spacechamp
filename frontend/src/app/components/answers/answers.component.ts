@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { NzTypographyComponent } from 'ng-zorro-antd/typography';
-import { Answers } from '../../models/api/participant.interface';
 import { KeyValuePipe } from '@angular/common';
+import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import { Answers } from '@models/api/participant.interface';
 
 export const EMPTY_ANSWER: string = 'Нет ответа';
 

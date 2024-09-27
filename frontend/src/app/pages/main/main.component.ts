@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
-import { BaseComponent } from '../../components/base/base.component';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { Role } from '../../models/api/role.enum';
-import { OrganizerPage } from '../organizer/organizer.component';
-import { JuryPage } from '../jury/jury.component';
+import { OrganizerPage } from '@pages/organizer/organizer.component';
+import { JuryPage } from '@pages/jury/jury.component';
+import { BaseComponent } from '@components/base/base.component';
+import { LocalStorageService } from '@services/local-storage.service';
+import { Role } from '@models/api/role.enum';
 
 @Component({
   selector: 'app-main',

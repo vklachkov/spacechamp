@@ -1,21 +1,21 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EMPTY, switchMap, takeUntil } from 'rxjs';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { EMPTY, switchMap, takeUntil } from 'rxjs';
-import { Adult } from '../../../../models/api/adult.interface';
-import { BaseComponent } from '../../../../components/base/base.component';
-import { OrganizerService } from '../../../../services/organizer.service';
-import { AddAdultModalComponent } from '../../../../components/add-adult-modal/add-adult-modal.component';
-import { AdultCardComponent } from '../../../../components/adult-card/adult-card.component';
-import { MainButtonComponent } from '../../../../components/main-button/main-button.component';
-import { LogoutButtonComponent } from '../../../../components/logout-button/logout-button.component';
-import { HeaderComponent } from '../../../../components/header/header.component';
+import { BaseComponent } from '@components/base/base.component';
+import { AddAdultModalComponent } from '@components/add-adult-modal/add-adult-modal.component';
+import { AdultCardComponent } from '@components/adult-card/adult-card.component';
+import { MainButtonComponent } from '@components/main-button/main-button.component';
+import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
+import { HeaderComponent } from '@components/header/header.component';
+import { OrganizerService } from '@services/organizer.service';
+import { Adult } from '@models/api/adult.interface';
 
 @Component({
   standalone: true,
@@ -31,8 +31,7 @@ import { HeaderComponent } from '../../../../components/header/header.component'
     AdultCardComponent,
     LogoutButtonComponent,
     MainButtonComponent,
-],
-  providers: [NzModalService],
+  ],
   templateUrl: './organizer-adults.component.html',
   styleUrls: ['./organizer-adults.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

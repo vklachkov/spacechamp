@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Participant } from '../models/api/participant.interface';
-import { Adult } from '../models/api/adult.interface';
-import { environment } from '../environments/environment.local';
-import { FilterOptions } from '../models/api/filter-options.enum';
-import { ParticipantsQuery } from '../models/participants-query.interface';
-import { ParticipantUpdateInfo } from '../models/api/participant-update-info.interface';
+import { Participant } from '@models/api/participant.interface';
+import { Adult } from '@models/api/adult.interface';
+import { environment } from '@environments/environment.local';
+import { FilterOptions } from '@models/api/filter-options.enum';
+import { ParticipantsQuery } from '@models/participants-query.interface';
+import { ParticipantUpdateInfo } from '@models/api/participant-update-info.interface';
 
 @Injectable({
   providedIn: 'root',

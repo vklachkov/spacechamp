@@ -21,9 +21,9 @@ import {
 } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
-import { JuryRate } from '../../models/api/participant.interface';
-import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
-import { salaryValidator } from '../../validators/salary.validator';
+import { salaryValidator } from '@validators/salary.validator';
+import { JuryRate } from '@models/api/participant.interface';
+import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
 
 export type FormGroupType = {
   salary: FormControl<number | null>,

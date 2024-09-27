@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { takeUntil } from 'rxjs';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { takeUntil } from 'rxjs';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
-import { LoginInput } from '../../models/api/login-input.interface';
-import { AuthService } from '../../services/auth.service';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { BaseComponent } from '../../components/base/base.component';
-import { Adult } from '../../models/api/adult.interface';
+import { BaseComponent } from '@components/base/base.component';
+import { AuthService } from '@services/auth.service';
+import { LocalStorageService } from '@services/local-storage.service';
+import { LoginInput } from '@models/api/login-input.interface';
+import { Adult } from '@models/api/adult.interface';
 
 @Component({
   standalone: true,

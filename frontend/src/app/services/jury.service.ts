@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AnonymousParticipant } from '../models/api/anonymous-participant.interface';
-import { JuryRate } from '../models/api/participant.interface';
-import { environment } from '../environments/environment.local';
-import { Order } from '../models/api/order.enum';
-import { FilterOptions } from '../models/api/filter-options.enum';
+import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
+import { JuryRate } from '@models/api/participant.interface';
+import { environment } from '@environments/environment.local';
+import { Order } from '@models/api/order.enum';
+import { FilterOptions } from '@models/api/filter-options.enum';
 
 @Injectable({
   providedIn: 'root',
