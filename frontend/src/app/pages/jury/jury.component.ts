@@ -41,12 +41,12 @@ import { AnonymousParticipant } from '@models/api/anonymous-participant.interfac
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JuryPage extends BaseComponent implements OnInit {
-  userName: string = '';
+  protected userName: string = '';
   
-  isParticipantsLoading: boolean = false;
-  inTeamParticipants: AnonymousParticipant[] = [];
-  notRatedParticipants: AnonymousParticipant[] = [];
-  ratedParticipants: AnonymousParticipant[] = [];
+  protected isParticipantsLoading: boolean = false;
+  protected inTeamParticipants: AnonymousParticipant[] = [];
+  protected notRatedParticipants: AnonymousParticipant[] = [];
+  protected ratedParticipants: AnonymousParticipant[] = [];
 
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly juryService: JuryService = inject(JuryService);

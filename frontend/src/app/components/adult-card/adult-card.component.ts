@@ -26,12 +26,12 @@ import { AdultRole } from '@models/api/adult-role.enum';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdultCardComponent implements OnInit {
+  @Output() private readonly removed: EventEmitter<void> = new EventEmitter<void>();
+
+  protected userId: number = 0;
+  protected readonly AdultRole = AdultRole;
+
   @Input({ required: true }) adult!: Adult;
-  AdultRole = AdultRole;
-
-  userId: number = 0;
-
-  @Output() readonly removed: EventEmitter<void> = new EventEmitter<void>();
 
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
 

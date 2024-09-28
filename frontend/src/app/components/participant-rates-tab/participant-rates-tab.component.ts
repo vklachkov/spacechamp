@@ -18,7 +18,6 @@ interface TableData {
   comment: string
 }
 
-
 @Component({
   selector: 'app-participant-rates-tab',
   standalone: true,
@@ -37,14 +36,13 @@ interface TableData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantRatesTabComponent extends BaseComponent implements OnInit {
+  protected ratesTableData: TableData[] = [];
+  protected isSettingCommandLoading: boolean = false;
+  protected readonly teamControl: FormControl<number | null> = new FormControl<number | null>(null);
+  
   @Input({ required: true }) participant!: Participant;
   @Input({ required: true }) juries: Adult[] = [];
-
-  ratesTableData: TableData[] = [];
-
-  isSettingCommandLoading: boolean = false;
-  teamControl: FormControl<number | null> = new FormControl<number | null>(null);
-
+  
   private readonly organizerService: OrganizerService = inject(OrganizerService);
 
   ngOnInit(): void {

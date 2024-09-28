@@ -36,12 +36,12 @@ import { Adult } from '@models/api/adult.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginPage extends BaseComponent {
-  form = new FormGroup({
+  protected readonly form = new FormGroup({
     name: new FormControl<string | null>(null, [Validators.required]),
     password: new FormControl<string | null>(null, [Validators.required])
   });
-  isLoginLoading: boolean = false;
-  isPasswordVisible: boolean = false;
+  protected isLoginLoading: boolean = false;
+  protected isPasswordVisible: boolean = false;
 
   private readonly authService: AuthService = inject(AuthService);
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
@@ -76,7 +76,6 @@ export class LoginPage extends BaseComponent {
           console.error('Ошибка при логине: ', err);
           this.cdr.markForCheck();
         }
-      })
-
+      });
   }
 }

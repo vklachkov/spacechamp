@@ -23,7 +23,7 @@ import { AnswersFormType } from '@components/participant-questionnarie-tab/parti
   styleUrl: './answers-editable.component.scss'
 })
 export class AnswersEditableComponent implements OnInit {
-  answersForm!: FormGroup<AnswersFormType>;
+  protected answersForm!: FormGroup<AnswersFormType>;
 
   private readonly controlContainer: ControlContainer = inject(ControlContainer);
 

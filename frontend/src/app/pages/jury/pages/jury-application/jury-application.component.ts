@@ -39,8 +39,8 @@ import { JuryRate } from '@models/api/participant.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JuryApplicationPage extends BaseComponent {
-  participant: AnonymousParticipant | null = null;
-  isParticipantLoading: boolean = false;
+  protected participant: AnonymousParticipant | null = null;
+  protected isParticipantLoading: boolean = false;
 
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly modalService: NzModalService = inject(NzModalService);

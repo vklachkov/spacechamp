@@ -76,25 +76,25 @@ const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
-  ParticipantStatus = ParticipantStatus;
-  Sort = Sort;
-  Order = Order;
-  filterForm: FormGroup<FilterForm> = new FormGroup({
+  protected readonly ParticipantStatus = ParticipantStatus;
+  protected readonly Sort = Sort;
+  protected readonly Order = Order;
+  protected readonly filterForm: FormGroup<FilterForm> = new FormGroup({
     search: new FormControl<string | null>(null),
     status: new FormControl<ParticipantStatus | null>(null),
     sort: new FormControl<Sort | null>(DEFAULT_SORT),
     order: new FormControl<Order | null>(DEFAULT_ORDER),
   });
 
-  participants: Participant[] = [];
-  isParticipantsLoading: boolean = false;
+  protected participants: Participant[] = [];
+  protected isParticipantsLoading: boolean = false;
 
-  filterVisible: boolean = false;
+  protected filterVisible: boolean = false;
 
-  ascSortLabel: string = '';
-  descSortLabel: string = '';
+  protected ascSortLabel: string = '';
+  protected descSortLabel: string = '';
 
-  isDownloadingReport: boolean = false;
+  protected isDownloadingReport: boolean = false;
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);

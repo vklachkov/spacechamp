@@ -59,20 +59,16 @@ import { AdultRole } from '@models/api/adult-role.enum';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizerParticipantPage extends BaseComponent implements OnInit {
-  @ViewChild(ParticipantQuestionnarieTabComponent, { static: false })
-  questionnarieTab!: ParticipantQuestionnarieTabComponent | null;
+  protected participant: Participant | null = null;
+  
+  protected isDataLoading: boolean = false;
+  protected juries: Adult[] = [];
 
-  participant: Participant | null = null;
-
-  isDataLoading: boolean = false;
-  juries: Adult[] = [];
-
+  @ViewChild(ParticipantQuestionnarieTabComponent, { static: false }) 
+  readonly questionnarieTab!: ParticipantQuestionnarieTabComponent | null;
+  
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
-
-  ngOnInit(): void {
-    this.loadData();
-  }
 
   private loadData(): void {
     const participant$: Observable<Participant | null> =
@@ -115,6 +111,10 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
           );
         },
       });
+  }
+
+  ngOnInit(): void {
+    this.loadData();
   }
 
   formHasChanges(): boolean {

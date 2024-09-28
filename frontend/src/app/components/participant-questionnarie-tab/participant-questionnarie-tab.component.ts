@@ -71,15 +71,13 @@ type FormValue = Omit<ParticipantInfo, 'photo_url'> & { answers: Answers };
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantQuestionnarieTabComponent extends BaseComponent implements OnDestroy {
-  @Input({ required: true }) participant!: Participant;
-
-  isDeleting: boolean = false;
-
+  protected isDeleting: boolean = false;
+  protected isParticipantInfoUpdating: boolean = false;
+  
+  protected readonly Mode = Mode;
+  
   mode: Mode = Mode.View;
-  Mode = Mode;
-
-  isParticipantInfoUpdating: boolean = false;
-  infoForm: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
+  readonly infoForm: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null),
     city: new FormControl<string | null>(null),
     district: new FormControl<string | null>(null),
@@ -91,6 +89,8 @@ export class ParticipantQuestionnarieTabComponent extends BaseComponent implemen
     answers: new FormGroup<AnswersFormType>({})
   });
 
+  @Input({ required: true }) participant!: Participant;
+  
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
   private readonly downloadService: DownloadService = inject(DownloadService);

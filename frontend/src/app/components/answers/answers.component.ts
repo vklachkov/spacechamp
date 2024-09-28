@@ -16,7 +16,6 @@ export const EMPTY_ANSWER: string = 'Нет ответа';
   styleUrl: './answers.component.scss'
 })
 export class AnswersComponent {
-  // TODO: протектед мб бахнуть всем?
-  @Input({ required: true }) answers!: Answers;
   protected readonly EMPTY_ANSWER: string = EMPTY_ANSWER;
+  @Input({ required: true }) answers!: Answers;
 }

@@ -15,8 +15,8 @@ import { AnonymousParticipant } from '@models/api/anonymous-participant.interfac
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationsGroupComponent extends BaseComponent {
+  protected readonly applicationPath: string = JURY_ROOT_PATHS.Application;
+  
   @Input({ required: true }) title!: string;
   @Input({ required: true }) participants!: AnonymousParticipant[];
-
-  applicationPath: string = JURY_ROOT_PATHS.Application;
 }

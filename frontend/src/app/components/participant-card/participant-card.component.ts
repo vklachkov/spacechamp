@@ -16,14 +16,12 @@ import { ParticipantStatus } from '@models/participant-status.enum';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantCardComponent implements OnInit {
+  protected status: ParticipantStatus | null = null;
+  protected readonly ParticipantStatus = ParticipantStatus;
+  protected readonly participantPath: string = ORGANIZER_ROOT_PATHS.Participant;
+  protected text: string = '';
+  
   @Input({ required: true }) participant!: Participant;
-
-  status: ParticipantStatus | null = null;
-  ParticipantStatus = ParticipantStatus;
-
-  participantPath: string = ORGANIZER_ROOT_PATHS.Participant;
-
-  text: string = '';
 
   private getStatus(): ParticipantStatus | null {
     if (this.participant.jury?.id) {

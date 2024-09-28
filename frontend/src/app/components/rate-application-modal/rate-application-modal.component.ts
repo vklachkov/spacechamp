@@ -59,7 +59,7 @@ export const MAX_SALARY: number = 1300;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RateApplicationModalComponent implements OnInit {
-  form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
+  protected readonly form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     salary: new FormControl<number | null>(null, [
       Validators.required,
       salaryValidator(MIN_SALARY, MAX_SALARY),

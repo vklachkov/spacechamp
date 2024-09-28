@@ -19,16 +19,11 @@ import { Role } from '@models/api/role.enum';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainPage extends BaseComponent implements OnInit {
-  role!: Role;
-  Role = Role;
+  protected role!: Role;
+  protected readonly Role = Role;
   protected isMobile: boolean = false;
   
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
-
-  ngOnInit(): void {
-    this.role = this.localStorageService.getRole();
-    this.isMobile = this.checkIsMobile();
-  }
 
   private checkIsMobile(): boolean {
     // https://stackoverflow.com/a/11381730
@@ -46,5 +41,10 @@ export class MainPage extends BaseComponent implements OnInit {
     }
 
     return false;
+  }
+
+  ngOnInit(): void {
+    this.role = this.localStorageService.getRole();
+    this.isMobile = this.checkIsMobile();
   }
 }

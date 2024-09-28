@@ -44,7 +44,7 @@ export type FormGroupValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddAdultModalComponent {
-  form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
+  protected readonly form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null, [Validators.required]),
     password: new FormControl<string | null>({
       value: this.generatePassword(),

@@ -37,8 +37,8 @@ import { Adult } from '@models/api/adult.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerAdultsPage extends BaseComponent implements OnInit {
-  adults: Adult[] = []; 
-  isAdultsLoading: boolean = false;
+  protected adults: Adult[] = []; 
+  protected isAdultsLoading: boolean = false;
 
   private readonly modalService: NzModalService = inject(NzModalService);
   private readonly organizerService: OrganizerService = inject(OrganizerService);

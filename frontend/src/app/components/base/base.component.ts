@@ -15,7 +15,7 @@ export class BaseComponent implements OnDestroy {
   protected readonly messageService: NzMessageService = inject(NzMessageService);
   protected readonly destroy$: Subject<void> = new Subject<void>();
 
-  showErrorNotification(notificationTitle: string, err: HttpErrorResponse): void {
+  protected showErrorNotification(notificationTitle: string, err: HttpErrorResponse): void {
     this.notificationService.error('Ошибка', err.message ?? notificationTitle);
     console.error(`${notificationTitle}: `, err);
   }

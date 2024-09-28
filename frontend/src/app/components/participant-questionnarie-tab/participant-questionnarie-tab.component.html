@@ -67,7 +67,6 @@
                 <p class="info__item" nz-typography>
                     ФИО родителя / наставника:
                     <span [class.text-red]="!participant.info.responsible_adult_name">
-                        <!-- TODO: Вот эту говну мб в отдельный компонент -->
                         {{ participant.info.responsible_adult_name || 'Нет данных' }}
                     </span>
                 </p>
