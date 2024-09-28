@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Участники Космического Чемпионата 2024</title>
+
+  <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body>
+  {% for page in pages %}
+  <div class="page">
+    <header class="title">
+      <div class="title-logo">
+        <img src="static/logo.png">
+      </div>
+
+      <p class="title-text">
+        Промежуточные результаты оценки резюме Кандидатов<br>
+        на зачисление в Конструкторские Бюро
+      </p>
+
+      <p class="title-city">
+        г. Пермь
+      </p>
+    </header>
+    
+    <table class="results">
+      <thead>
+        <tr>
+          <th rowspan="2">№</th>
+          <th rowspan="2">ШИФР<br>УЧАСТНИКА</th>
+          <th colspan="5">ОЦЕНКА ОТ КОНСТРУКТОРСКОГО БЮРО</th>
+        </tr>
+        <tr>
+          <th>1D</th>
+          <th>Салют</th>
+          <th>Звёздное</th>
+          <th>Родное</th>
+          <th>Око</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for participant in page['participants'] %}
+        {% if (participant != {}) %}
+        <tr>
+          <td>{{ participant['number'] }}</td>
+          <td>{{ participant['code'] }}</td>
+          <td>{{ participant['rates']['1D'] or '' }}</td>
+          <td>{{ participant['rates']['Салют'] or '' }}</td>
+          <td>{{ participant['rates']['Звёздное'] or '' }}</td>
+          <td>{{ participant['rates']['Родное'] or '' }}</td>
+          <td>{{ participant['rates']['Око'] or '' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <footer>
+      <p class="last-update">
+        {{ '%02d' % date['day'] }}.{{ '%02d' % date['month'] }}.{{ '%02d' % date['year'] }}
+      </p>
+
+      <div class="spacer"></div>
+
+      <p class="page-number">
+        №{{page['number']}}
+      </p>
+    </footer>
+  </div>
+  {% endfor %}
+</body>
+
+</html>

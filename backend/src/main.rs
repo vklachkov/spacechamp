@@ -2,7 +2,7 @@ mod api;
 mod datasource;
 mod domain;
 
-use api::BackendTokens;
+use api::{BackendTokens, Services};
 use argh::FromArgs;
 use axum::Router;
 use axum_login::{tower_sessions::SessionManagerLayer, AuthManagerLayerBuilder};
@@ -93,6 +93,12 @@ async fn run(
     notisend_token: String,
 ) {
     let datasource = Arc::new(datasource);
+    let services = Arc::new(Services {
+        #[cfg(debug_assertions)]
+        report_generator: url::Url::parse("http://127.0.0.1:8866/").unwrap(),
+        #[cfg(not(debug_assertions))]
+        report_generator: url::Url::parse("http://report-generator:8866/").unwrap(),
+    });
     let tokens = Arc::new(BackendTokens {
         notisend: notisend_token,
     });
@@ -106,7 +112,7 @@ async fn run(
     let cors_layer = CorsLayer::very_permissive();
 
     let app = Router::new()
-        .nest("/api/v1", api::v1(datasource, tokens))
+        .nest("/api/v1", api::v1(datasource, services, tokens))
         .layer(auth_layer)
         .layer(cors_layer);
 

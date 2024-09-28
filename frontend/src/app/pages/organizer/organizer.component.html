@@ -61,6 +61,13 @@
                 </ng-template>
             </form>
 
+            <nz-spin header-left [nzSpinning]="isDownloadingReport">
+                <button nz-button nzType="default" (click)="getReport()">
+                    <span nz-icon nzType="download" nzTheme="outline"></span>
+                    Отчёт
+                </button>
+            </nz-spin>
+
             <button nz-button header-right (click)="goToJuryPanel()">
                 <span nz-icon nzType="star" nzTheme="outline"></span>
                 Аккаунты
