@@ -19,6 +19,7 @@ import { ParticipantCardComponent } from '@components/participant-card/participa
 import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
 import { HeaderComponent } from '@components/header/header.component';
 import { OrganizerService } from '@services/organizer.service';
+import { DownloadService } from '@services/download.service';
 import { ParticipantStatus } from '@models/participant-status.enum';
 import { Order } from '@models/api/order.enum';
 import { Sort } from '@models/api/sort.enum';
@@ -98,6 +99,7 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
   private readonly queryManager: BindQueryParamsFactory = inject(BindQueryParamsFactory);
+  private readonly downloadService: DownloadService = inject(DownloadService);
 
   private bindQueryParamsManager: BindQueryParamsManager<FilterFormValue> = this.queryManager.create<FilterFormValue>([
     {
@@ -254,15 +256,8 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
     this.organizerService.getParticipantsReport()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (pdf) => {
-          // TODO: Обобщить с DownloadService
-          // TODO: Удалить <a>
-          const blob = new Blob([pdf], {type: 'application/pdf'});
-          const link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.style.display = 'none';
-          link.download = 'Отчёт_Кандидаты_КЧ.pdf';
-          link.click();
+        next: (pdf: ArrayBuffer) => {
+          this.downloadService.downloadArrayBuffer('Отчёт_Кандидаты_КЧ.pdf', pdf);
           
           this.isDownloadingReport = false;
           this.cdr.markForCheck();
@@ -271,7 +266,8 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
           this.isDownloadingReport = false;
           this.cdr.markForCheck();
 
-          this.showErrorNotification('Внутренняя ошибка при генерации отчёта', err);
+          this.notificationService.error('Ошибка', 'Внутренняя ошибка при генерации отчёта');
+          console.error('Внутренняя ошибка при генерации отчёта: ', err);
         }
       });
   }
