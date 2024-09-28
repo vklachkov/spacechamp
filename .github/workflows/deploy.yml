@@ -8,6 +8,7 @@ env:
   IMAGE_TAG: latest
   FRONTEND_PATH: ./frontend
   BACKEND_PATH: ./backend
+  REPORT_GENERATOR_PATH: ./report-generator
   DOCKER_COMPOSE_FILE: docker-compose.prod.yml
 
 jobs:
@@ -90,6 +91,40 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }},${{ steps.image-name.outputs.IMAGE_NAME }}
         labels: ${{ steps.meta.outputs.labels }}
     
+  build-and-push-report-gen-image:
+    needs: [form-repository-lowercase-name]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image-name: ${{ steps.image-name.outputs.IMAGE_NAME }}
+    steps:
+    - name: Get repository code
+      uses: actions/checkout@v4
+    - name: Log in container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ github.repository }}
+    - name: Output Report Geneator Docker image name
+      id: image-name
+      run: echo "IMAGE_NAME=${{ env.REGISTRY }}/${{ needs.form-repository-lowercase-name.outputs.repository_name_lowercase }}-report-gen:${{ env.IMAGE_TAG }}" >> "$GITHUB_OUTPUT"
+    - name: Build and push Report Geneator Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ env.REPORT_GENERATOR_PATH }}
+        file: ${{ env.REPORT_GENERATOR_PATH }}/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }},${{ steps.image-name.outputs.IMAGE_NAME }}
+        labels: ${{ steps.meta.outputs.labels }}
+
   pull-frontend-image:
     needs: [build-and-push-frontend-image]
     runs-on: ubuntu-latest
@@ -114,8 +149,26 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         script: docker pull ${{ needs.build-and-push-backend-image.outputs.image-name }}
 
+  pull-report-gen-image:
+    needs: [build-and-push-report-gen-image]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pull latest Report Generator Docker image
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        script: docker pull ${{ needs.build-and-push-report-gen-image.outputs.image-name }}
+
   deploy:
-    needs: [build-and-push-frontend-image, build-and-push-backend-image, pull-frontend-image, pull-backend-image]
+    needs:
+      - build-and-push-frontend-image
+      - build-and-push-backend-image
+      - build-and-push-report-gen-image
+      - pull-frontend-image
+      - pull-backend-image
+      - pull-report-gen-image
     runs-on: ubuntu-latest
     steps:
       - name: Get repository code
@@ -129,9 +182,10 @@ jobs:
           # Необходимо установить хоть какие-то значения, чтобы команда сработала
           script: |
             NOTISEND_TOKEN="-" \
-              FRONT_IMAGE="-" \
-              BACK_IMAGE="-" \
-              docker compose -f /tmp/${{ env.DOCKER_COMPOSE_FILE }} down
+            FRONT_IMAGE="-" \
+            BACK_IMAGE="-" \
+            REPORT_GEN_IMAGE="-" \
+            docker compose -f /tmp/${{ env.DOCKER_COMPOSE_FILE }} down
       - name: Copy docker compose to remote server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -148,6 +202,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             NOTISEND_TOKEN=${{ secrets.NOTISEND_TOKEN }} \
-              FRONT_IMAGE=${{ needs.build-and-push-frontend-image.outputs.image-name }} \
-              BACK_IMAGE=${{ needs.build-and-push-backend-image.outputs.image-name }} \
-              docker compose -f /tmp/${{ env.DOCKER_COMPOSE_FILE }} up -d
+            FRONT_IMAGE=${{ needs.build-and-push-frontend-image.outputs.image-name }} \
+            BACK_IMAGE=${{ needs.build-and-push-backend-image.outputs.image-name }} \
+            REPORT_GEN_IMAGE=${{ needs.build-and-push-report-gen-image.outputs.image-name }} \
+            docker compose -f /tmp/${{ env.DOCKER_COMPOSE_FILE }} up -d

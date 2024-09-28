@@ -66,7 +66,7 @@ services:
         condition: service_healthy
 
   report-generator:
-    image: ghcr.io/vklachkov/spacechamp-report-generator:latest
+    image: ${REPORT_GEN_IMAGE}
     command:
       - "--host"
       - "127.0.0.1"
