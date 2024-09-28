@@ -29,7 +29,6 @@ pub struct ParticipantInfo {
 #[derive(Clone, Debug, Serialize)]
 pub struct AnonymousParticipant {
     pub id: ParticipantId,
-    pub code: String,
     pub in_command: bool,
     pub answers: HashMap<String, String>,
     pub rate: Option<ParticipantRate>,

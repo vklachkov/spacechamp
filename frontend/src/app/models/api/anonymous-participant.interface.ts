@@ -4,8 +4,6 @@ import { Answers, JuryRate } from './participant.interface';
 export interface AnonymousParticipant {
   // Идентификатор
   id: number;
-  // Шифр
-  code: string,
   // Находится ли в команде
   in_command: boolean;
   // Ответы

@@ -302,6 +302,7 @@ async fn participants_report(State(state): State<Arc<BackendState>>) -> Result<R
 
     let data = participants
         .into_iter()
+        .rev()
         .map(|p| AnonymousRate {
             rates: HashMap::from_iter([
                 ("1D", get_design_bureau_rate(&p, "Матюхин Андрей")),
@@ -469,7 +470,6 @@ async fn jury_participants(
             })
             .map(|mut p| AnonymousParticipant {
                 id: p.id,
-                code: p.code,
                 in_command: p.jury.is_some(),
                 answers: p.answers,
                 rate: p.rates.remove(&jury_id).flatten(),
@@ -499,7 +499,6 @@ async fn get_jury_participant(
 
     Ok(Json(AnonymousParticipant {
         id: participant.id,
-        code: participant.code,
         in_command: participant.jury.is_some(),
         answers: participant.answers,
         rate: participant
