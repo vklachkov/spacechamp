@@ -28,7 +28,7 @@ import {
   SaveOutline,
   SettingOutline
 } from '@ant-design/icons-angular/icons';
-import { unauthorizedInterceptor } from './interceptors/unauthorized.interceptor';
+import { unauthorizedInterceptor } from '@interceptors/unauthorized.interceptor';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 registerLocaleData(ru);

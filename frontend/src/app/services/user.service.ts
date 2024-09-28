@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Adult } from '../models/api/adult.interface';
+import { Adult } from '@models/api/adult.interface';
 
 @Injectable({
   providedIn: 'root',

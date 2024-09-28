@@ -7,8 +7,8 @@ import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent, NzFo
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzSwitchComponent } from 'ng-zorro-antd/switch';
 import { NzInputDirective } from 'ng-zorro-antd/input';
-import { Adult } from '../../models/api/adult.interface';
-import { AdultRole } from '../../models/api/adult-role.enum';
+import { Adult } from '@models/api/adult.interface';
+import { AdultRole } from '@models/api/adult-role.enum';
 
 export type FormGroupType = {
   name: FormControl<string | null>;
@@ -44,7 +44,7 @@ export type FormGroupValue = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddAdultModalComponent {
-  form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
+  protected readonly form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null, [Validators.required]),
     password: new FormControl<string | null>({
       value: this.generatePassword(),

@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { LoginInput } from '../models/api/login-input.interface';
-import { Adult } from '../models/api/adult.interface';
-import { environment } from '../environments/environment.local';
+import { LoginInput } from '@models/api/login-input.interface';
+import { Adult } from '@models/api/adult.interface';
+import { environment } from '@environments/environment.local';
 
 @Injectable({
   providedIn: 'root',

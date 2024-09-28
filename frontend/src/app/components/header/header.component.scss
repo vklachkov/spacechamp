@@ -1,21 +1,21 @@
 :host {
-    width: 100%;
+  width: 100%;
 }
 
 .header {
-    &__left,
-    &__center,
-    &__right {
-        display: flex;
-        align-items: center;
-        gap: 1em;
-    }
+  &__left,
+  &__center,
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+  }
 
-    &__center {
-        justify-content: center;
-    }
+  &__center {
+    justify-content: center;
+  }
 
-    &__right {
-        justify-content: flex-end;
-    }
+  &__right {
+    justify-content: flex-end;
+  }
 }

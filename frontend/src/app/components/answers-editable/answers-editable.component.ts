@@ -4,7 +4,7 @@ import { ControlContainer, FormGroup, FormsModule, ReactiveFormsModule } from '@
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { AnswersFormType } from '../participant-questionnarie-tab/participant-questionnarie-tab.component';
+import { AnswersFormType } from '@components/participant-questionnarie-tab/participant-questionnarie-tab.component';
 
 @Component({
   selector: 'app-answers-editable',
@@ -23,7 +23,7 @@ import { AnswersFormType } from '../participant-questionnarie-tab/participant-qu
   styleUrl: './answers-editable.component.scss'
 })
 export class AnswersEditableComponent implements OnInit {
-  answersForm!: FormGroup<AnswersFormType>;
+  protected answersForm!: FormGroup<AnswersFormType>;
 
   private readonly controlContainer: ControlContainer = inject(ControlContainer);
 

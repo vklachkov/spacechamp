@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { BaseComponent } from '../base/base.component';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
-import { NavigationService } from '../../services/navigation.service';
+import { BaseComponent } from '@components/base/base.component';
+import { NavigationService } from '@services/navigation.service';
 
 @Component({
   selector: 'app-main-button',

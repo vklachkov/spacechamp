@@ -2,22 +2,21 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { takeUntil } from 'rxjs';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { takeUntil } from 'rxjs';
-import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
-import { JuryService } from '../../services/jury.service';
-import { BaseComponent } from '../../components/base/base.component';
-import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
-import { HeaderComponent } from "../../components/header/header.component";
-import { ApplicationsGroupComponent } from "../../components/applications-group/applications-group.component";
+import { ParticipantCardComponent } from '@components/participant-card/participant-card.component';
+import { BaseComponent } from '@components/base/base.component';
+import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
+import { HeaderComponent } from "@components/header/header.component";
+import { ApplicationsGroupComponent } from '@components/applications-group/applications-group.component';
+import { JuryService } from '@services/jury.service';
+import { LocalStorageService } from '@services/local-storage.service';
+import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
 
 @Component({
   selector: 'app-jury-page',
@@ -36,18 +35,18 @@ import { ApplicationsGroupComponent } from "../../components/applications-group/
     LogoutButtonComponent,
     HeaderComponent,
     ApplicationsGroupComponent
-],
+  ],
   templateUrl: './jury.component.html',
   styleUrls: ['./jury.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JuryPage extends BaseComponent implements OnInit {
-  userName: string = '';
+  protected userName: string = '';
   
-  isParticipantsLoading: boolean = false;
-  inTeamParticipants: AnonymousParticipant[] = [];
-  notRatedParticipants: AnonymousParticipant[] = [];
-  ratedParticipants: AnonymousParticipant[] = [];
+  protected isParticipantsLoading: boolean = false;
+  protected inTeamParticipants: AnonymousParticipant[] = [];
+  protected notRatedParticipants: AnonymousParticipant[] = [];
+  protected ratedParticipants: AnonymousParticipant[] = [];
 
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly juryService: JuryService = inject(JuryService);

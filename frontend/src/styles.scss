@@ -1,93 +1,92 @@
 *,
 *::after,
 *::before {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 :root {
-    --primary-background: #f6f7f8;
-    --primary-ng-zorro: #6c5994;
-    --primary-ng-zorro-rgb: 108, 89, 148;
-    --star-color: #ffdd2d;
-    
-    --black: rgba(0, 0, 0, 0.85);
-    --white: #fff;
-    --red: #e9202a;
-    --light-gray: rgba(0, 0, 0, .06);
+  --primary-background: #f6f7f8;
+  --primary-ng-zorro: #6c5994;
+  --primary-ng-zorro-rgb: 108, 89, 148;
+  --star-color: #ffdd2d;
+  
+  --black: rgba(0, 0, 0, 0.85);
+  --white: #fff;
+  --red: #e9202a;
+  --light-gray: rgba(0, 0, 0, .06);
 
-    --logo-size: 256px;
+  --logo-size: 256px;
 
-    --hover-box-shadow: 0 0 0 2px rgba(var(--primary-ng-zorro-rgb), .6);
+  --hover-box-shadow: 0 0 0 2px rgba(var(--primary-ng-zorro-rgb), .6);
 
-    --in-team-color: #062ffa;
-    --not-rated-color: #ff2400;
-    --partially-rated-color: #ffa500;
-    --full-rated-color: #419d48;
+  --in-team-color: #062ffa;
+  --not-rated-color: #ff2400;
+  --partially-rated-color: #ffa500;
+  --full-rated-color: #419d48;
 
-    --container-width: 1200px;
+  --container-width: 1200px;
 }
 
 @font-face {
-    font-family: 'TTOctosquares';
-    font-style: normal;
-    font-weight: 600;
-    src: url(https://static.tildacdn.com/tild3066-6139-4933-a230-356266346333/TTOctosquares-Medium.woff) format('woff');
+  font-family: 'TTOctosquares';
+  font-style: normal;
+  font-weight: 600;
+  src: url(https://static.tildacdn.com/tild3066-6139-4933-a230-356266346333/TTOctosquares-Medium.woff) format('woff');
 }
 
 h1, h2, h3, h4, h5, h6, button {
-    font-family: 'TTOctosquares', sans-serif!important;
-    font-weight: 600;
+  font-family: 'TTOctosquares', sans-serif!important;
+  font-weight: 600;
 }
 
 .container {
-    width: 100%;
-    max-width: var(--container-width);
-    margin: 0 auto;
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
 }
 
 .h-100 {
-    height: 100%;
+  height: 100%;
 }
 
 .nz-layout {
-    height: 100vh;
+  height: 100vh;
 }
 
 .nz-header {
-    display: flex;
-    padding: 2em!important;
-    align-items: center;
-    background-color: var(--white)!important;
-    box-shadow: 0px 2px 4px gray;
-    z-index: 1;
+  display: flex;
+  padding: 2em!important;
+  align-items: center;
+  background-color: var(--white)!important;
+  box-shadow: 0px 2px 4px gray;
+  z-index: 1;
 }
 
 .nz-content {
-    background-color: var(--primary-background);
+  background-color: var(--primary-background);
 }
 
 .spin-height-100 {
-    height: 100%;
+  height: 100%;
 
-    .ant-spin-container {
-        height: 100%;
-    }
+  .ant-spin-container {
+    height: 100%;
+  }
 }
 
 // Патч для кнопок с иконками (чтобы иконки были по центру)
 button[nz-button] {
-    line-height: 1;
+  line-height: 1;
 
-    span[nz-icon] {
-        height: 14px;
-    }
+  span[nz-icon] {
+    height: 14px;
+  }
 }
-// TODO: поч у меня то 4 отступа то 2
 
 .answers-label {
-    & > label {
-        height: auto!important;
-        width: 100%;
-        text-align: left;
-    }
+  & > label {
+    height: auto!important;
+    width: 100%;
+    text-align: left;
+  }
 }

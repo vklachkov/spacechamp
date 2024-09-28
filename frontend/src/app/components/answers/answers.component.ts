@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { NzTypographyComponent } from 'ng-zorro-antd/typography';
-import { Answers } from '../../models/api/participant.interface';
 import { KeyValuePipe } from '@angular/common';
+import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import { Answers } from '@models/api/participant.interface';
 
 export const EMPTY_ANSWER: string = 'Нет ответа';
 
@@ -16,7 +16,6 @@ export const EMPTY_ANSWER: string = 'Нет ответа';
   styleUrl: './answers.component.scss'
 })
 export class AnswersComponent {
-  // TODO: протектед мб бахнуть всем?
-  @Input({ required: true }) answers!: Answers;
   protected readonly EMPTY_ANSWER: string = EMPTY_ANSWER;
+  @Input({ required: true }) answers!: Answers;
 }

@@ -1,7 +1,7 @@
 <nz-layout class="nz-layout">
     <nz-header class="nz-header jury-application-header">
         <app-header>
-            <app-main-button header-left></app-main-button>
+            <app-main-button header-left />
 
             <!-- Почему-то без оборачивания во что-либо не работает -->
             <div header-left class="jury-application-header__wrap">
@@ -29,7 +29,7 @@
                 }   
             </div>
 
-            <app-logout-button class="jury-application-header__logout-button" header-right></app-logout-button>
+            <app-logout-button class="jury-application-header__logout-button" header-right />
         </app-header>
     </nz-header>
 
@@ -45,7 +45,7 @@
                         </strong>
                     </h2>
 
-                    <app-answers [answers]="participant.answers"></app-answers>               
+                    <app-answers [answers]="participant.answers" />               
                 }
             }
         </div>

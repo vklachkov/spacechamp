@@ -73,7 +73,7 @@
                 Аккаунты
             </button>
 
-            <app-logout-button header-right></app-logout-button>
+            <app-logout-button header-right />
         </app-header>
     </nz-header>
 
@@ -84,10 +84,7 @@
             } @else {
                 <div class="content h-100">
                     @for (participant of participants; track participant.id) {
-                        <app-participant-card   
-                            class="participant-card"
-                            [participant]="participant"
-                        ></app-participant-card>
+                        <app-participant-card class="participant-card" [participant]="participant" />
                     }
                 </div>
             }

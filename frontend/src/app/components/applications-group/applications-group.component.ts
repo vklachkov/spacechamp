@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
-import { BaseComponent } from '../base/base.component';
-import { JURY_ROOT_PATHS } from '../../app.routes';
-import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { JURY_ROOT_PATHS } from '../../app.routes';
+import { BaseComponent } from '@components/base/base.component';
+import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
 
 @Component({
   selector: 'app-applications-group',
@@ -15,8 +15,8 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationsGroupComponent extends BaseComponent {
+  protected readonly applicationPath: string = JURY_ROOT_PATHS.Application;
+  
   @Input({ required: true }) title!: string;
   @Input({ required: true }) participants!: AnonymousParticipant[];
-
-  applicationPath: string = JURY_ROOT_PATHS.Application;
 }

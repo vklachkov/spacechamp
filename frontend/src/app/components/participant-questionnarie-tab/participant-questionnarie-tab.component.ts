@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject, Input, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
+import { takeUntil } from 'rxjs';
 import { NzCardComponent } from 'ng-zorro-antd/card';
 import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
 import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
@@ -11,16 +11,16 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { NzFormControlComponent, NzFormItemComponent, NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
-import { Answers, Participant, ParticipantInfo } from '../../models/api/participant.interface';
-import { OrganizerService } from '../../services/organizer.service';
-import { BaseComponent } from '../base/base.component';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
-import { DownloadService } from '../../services/download.service';
-import { AnswersComponent } from '../answers/answers.component';
 import { ROOT_ROUTE_PATHS } from '../../app.routes';
-import { environment } from '../../environments/environment.local';
-import { AnswersEditableComponent } from '../answers-editable/answers-editable.component';
-import { ParticipantUpdateInfo } from '../../models/api/participant-update-info.interface';
+import { environment } from '@environments/environment.local';
+import { BaseComponent } from '@components/base/base.component';
+import { AnswersComponent } from '@components/answers/answers.component';
+import { AnswersEditableComponent } from '@components/answers-editable/answers-editable.component';
+import { OrganizerService } from '@services/organizer.service';
+import { DownloadService } from '@services/download.service';
+import { Answers, Participant, ParticipantInfo } from '@models/api/participant.interface';
+import { ParticipantUpdateInfo } from '@models/api/participant-update-info.interface';
 
 export enum Mode {
   View,
@@ -71,15 +71,13 @@ type FormValue = Omit<ParticipantInfo, 'photo_url'> & { answers: Answers };
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantQuestionnarieTabComponent extends BaseComponent implements OnDestroy {
-  @Input({ required: true }) participant!: Participant;
-
-  isDeleting: boolean = false;
-
+  protected isDeleting: boolean = false;
+  protected isParticipantInfoUpdating: boolean = false;
+  
+  protected readonly Mode = Mode;
+  
   mode: Mode = Mode.View;
-  Mode = Mode;
-
-  isParticipantInfoUpdating: boolean = false;
-  infoForm: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
+  readonly infoForm: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     name: new FormControl<string | null>(null),
     city: new FormControl<string | null>(null),
     district: new FormControl<string | null>(null),
@@ -91,6 +89,8 @@ export class ParticipantQuestionnarieTabComponent extends BaseComponent implemen
     answers: new FormGroup<AnswersFormType>({})
   });
 
+  @Input({ required: true }) participant!: Participant;
+  
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
   private readonly downloadService: DownloadService = inject(DownloadService);

@@ -8,9 +8,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzTypographyComponent } from 'ng-zorro-antd/typography';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import {
   combineLatest,
   map,
@@ -20,20 +17,23 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzTypographyComponent } from 'ng-zorro-antd/typography';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTabComponent, NzTabSetComponent } from 'ng-zorro-antd/tabs';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
-import { Participant } from '../../../../models/api/participant.interface';
-import { OrganizerService } from '../../../../services/organizer.service';
-import { BaseComponent } from '../../../../components/base/base.component';
-import { Adult } from '../../../../models/api/adult.interface';
-import { AdultRole } from '../../../../models/api/adult-role.enum';
-import { AnswersComponent } from '../../../../components/answers/answers.component';
-import { MainButtonComponent } from '../../../../components/main-button/main-button.component';
-import { LogoutButtonComponent } from '../../../../components/logout-button/logout-button.component';
-import { HeaderComponent } from '../../../../components/header/header.component';
-import { Mode, ParticipantQuestionnarieTabComponent } from '../../../../components/participant-questionnarie-tab/participant-questionnarie-tab.component';
-import { ParticipantRatesTabComponent } from '../../../../components/participant-rates-tab/participant-rates-tab.component';
+import { BaseComponent } from '@components/base/base.component';
+import { AnswersComponent } from '@components/answers/answers.component';
+import { MainButtonComponent } from '@components/main-button/main-button.component';
+import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
+import { HeaderComponent } from '@components/header/header.component';
+import { Mode, ParticipantQuestionnarieTabComponent } from '@components/participant-questionnarie-tab/participant-questionnarie-tab.component';
+import { ParticipantRatesTabComponent } from '@components/participant-rates-tab/participant-rates-tab.component';
+import { OrganizerService } from '@services/organizer.service';
+import { Participant } from '@models/api/participant.interface';
+import { Adult } from '@models/api/adult.interface';
+import { AdultRole } from '@models/api/adult-role.enum';
 
 @Component({
   standalone: true,
@@ -59,20 +59,16 @@ import { ParticipantRatesTabComponent } from '../../../../components/participant
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizerParticipantPage extends BaseComponent implements OnInit {
-  @ViewChild(ParticipantQuestionnarieTabComponent, { static: false })
-  questionnarieTab!: ParticipantQuestionnarieTabComponent | null;
+  protected participant: Participant | null = null;
+  
+  protected isDataLoading: boolean = false;
+  protected juries: Adult[] = [];
 
-  participant: Participant | null = null;
-
-  isDataLoading: boolean = false;
-  juries: Adult[] = [];
-
+  @ViewChild(ParticipantQuestionnarieTabComponent, { static: false }) 
+  readonly questionnarieTab!: ParticipantQuestionnarieTabComponent | null;
+  
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
-
-  ngOnInit(): void {
-    this.loadData();
-  }
 
   private loadData(): void {
     const participant$: Observable<Participant | null> =
@@ -115,6 +111,10 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
           );
         },
       });
+  }
+
+  ngOnInit(): void {
+    this.loadData();
   }
 
   formHasChanges(): boolean {

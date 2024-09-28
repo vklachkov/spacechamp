@@ -21,9 +21,9 @@ import {
 } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
-import { JuryRate } from '../../models/api/participant.interface';
-import { AnonymousParticipant } from '../../models/api/anonymous-participant.interface';
-import { salaryValidator } from '../../validators/salary.validator';
+import { salaryValidator } from '@validators/salary.validator';
+import { JuryRate } from '@models/api/participant.interface';
+import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
 
 export type FormGroupType = {
   salary: FormControl<number | null>,
@@ -59,7 +59,7 @@ export const MAX_SALARY: number = 1300;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RateApplicationModalComponent implements OnInit {
-  form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
+  protected readonly form: FormGroup<FormGroupType> = new FormGroup<FormGroupType>({
     salary: new FormControl<number | null>(null, [
       Validators.required,
       salaryValidator(MIN_SALARY, MAX_SALARY),

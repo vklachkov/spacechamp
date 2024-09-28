@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { JuryRate, Participant } from '../../models/api/participant.interface';
-import { ParticipantStatus } from '../../models/participant-status.enum';
 import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
+import { JuryRate, Participant } from '@models/api/participant.interface';
+import { ParticipantStatus } from '@models/participant-status.enum';
 
 @Component({
   selector: 'app-participant-card',
@@ -16,14 +16,12 @@ import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParticipantCardComponent implements OnInit {
+  protected status: ParticipantStatus | null = null;
+  protected readonly ParticipantStatus = ParticipantStatus;
+  protected readonly participantPath: string = ORGANIZER_ROOT_PATHS.Participant;
+  protected text: string = '';
+  
   @Input({ required: true }) participant!: Participant;
-
-  status: ParticipantStatus | null = null;
-  ParticipantStatus = ParticipantStatus;
-
-  participantPath: string = ORGANIZER_ROOT_PATHS.Participant;
-
-  text: string = '';
 
   private getStatus(): ParticipantStatus | null {
     if (this.participant.jury?.id) {

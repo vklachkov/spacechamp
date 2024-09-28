@@ -1,9 +1,9 @@
 
 import { CanDeactivateFn } from '@angular/router';
-import { Observable, Subscriber } from 'rxjs';
 import { inject } from '@angular/core';
+import { Observable, Subscriber } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { OrganizerParticipantPage } from '../pages/organizer/pages/organizer-participant/organizer-participant.component';
+import { OrganizerParticipantPage } from '@pages/organizer/pages/organizer-participant/organizer-participant.component';
 
 export function unsavedFormChangesGuard(): CanDeactivateFn<OrganizerParticipantPage> {
   return (component: OrganizerParticipantPage) => {

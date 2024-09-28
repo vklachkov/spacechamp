@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
-import { BaseComponent } from '../../components/base/base.component';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { Role } from '../../models/api/role.enum';
-import { OrganizerPage } from '../organizer/organizer.component';
-import { JuryPage } from '../jury/jury.component';
+import { OrganizerPage } from '@pages/organizer/organizer.component';
+import { JuryPage } from '@pages/jury/jury.component';
+import { BaseComponent } from '@components/base/base.component';
+import { LocalStorageService } from '@services/local-storage.service';
+import { Role } from '@models/api/role.enum';
 
 @Component({
   selector: 'app-main',
@@ -19,16 +19,11 @@ import { JuryPage } from '../jury/jury.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainPage extends BaseComponent implements OnInit {
-  role!: Role;
-  Role = Role;
+  protected role!: Role;
+  protected readonly Role = Role;
   protected isMobile: boolean = false;
   
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
-
-  ngOnInit(): void {
-    this.role = this.localStorageService.getRole();
-    this.isMobile = this.checkIsMobile();
-  }
 
   private checkIsMobile(): boolean {
     // https://stackoverflow.com/a/11381730
@@ -46,5 +41,10 @@ export class MainPage extends BaseComponent implements OnInit {
     }
 
     return false;
+  }
+
+  ngOnInit(): void {
+    this.role = this.localStorageService.getRole();
+    this.isMobile = this.checkIsMobile();
   }
 }

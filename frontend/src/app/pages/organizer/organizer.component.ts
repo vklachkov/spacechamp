@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs';
+import { BindQueryParamsFactory, BindQueryParamsManager } from '@ngneat/bind-query-params';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -13,18 +14,17 @@ import { NzPopoverDirective } from 'ng-zorro-antd/popover';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
 import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
-import { JuryRate, Participant } from '../../models/api/participant.interface';
-import { OrganizerService } from '../../services/organizer.service';
-import { BaseComponent } from '../../components/base/base.component';
-import { ParticipantCardComponent } from '../../components/participant-card/participant-card.component';
-import { ParticipantStatus } from '../../models/participant-status.enum';
-import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
-import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
-import { HeaderComponent } from '../../components/header/header.component';
-import { Order } from '../../models/api/order.enum';
-import { Sort } from '../../models/api/sort.enum';
-import { ParticipantsQuery } from '../../models/participants-query.interface';
-import { BindQueryParamsFactory, BindQueryParamsManager } from '@ngneat/bind-query-params';
+import { BaseComponent } from '@components/base/base.component';
+import { ParticipantCardComponent } from '@components/participant-card/participant-card.component';
+import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
+import { HeaderComponent } from '@components/header/header.component';
+import { OrganizerService } from '@services/organizer.service';
+import { DownloadService } from '@services/download.service';
+import { ParticipantStatus } from '@models/participant-status.enum';
+import { Order } from '@models/api/order.enum';
+import { Sort } from '@models/api/sort.enum';
+import { JuryRate, Participant } from '@models/api/participant.interface';
+import { ParticipantsQuery } from '@models/participants-query.interface';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -67,8 +67,6 @@ const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
     ParticipantCardComponent,
     AsyncPipe,
     FormsModule,
-    NzListComponent,
-    NzListItemComponent,
     ReactiveFormsModule,
     LogoutButtonComponent,
     HeaderComponent
@@ -78,29 +76,30 @@ const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
-  ParticipantStatus = ParticipantStatus;
-  Sort = Sort;
-  Order = Order;
-  filterForm: FormGroup<FilterForm> = new FormGroup({
+  protected readonly ParticipantStatus = ParticipantStatus;
+  protected readonly Sort = Sort;
+  protected readonly Order = Order;
+  protected readonly filterForm: FormGroup<FilterForm> = new FormGroup({
     search: new FormControl<string | null>(null),
     status: new FormControl<ParticipantStatus | null>(null),
     sort: new FormControl<Sort | null>(DEFAULT_SORT),
     order: new FormControl<Order | null>(DEFAULT_ORDER),
   });
 
-  participants: Participant[] = [];
-  isParticipantsLoading: boolean = false;
+  protected participants: Participant[] = [];
+  protected isParticipantsLoading: boolean = false;
 
-  filterVisible: boolean = false;
+  protected filterVisible: boolean = false;
 
-  ascSortLabel: string = '';
-  descSortLabel: string = '';
+  protected ascSortLabel: string = '';
+  protected descSortLabel: string = '';
 
-  isDownloadingReport: boolean = false;
+  protected isDownloadingReport: boolean = false;
 
   private readonly router: Router = inject(Router);
   private readonly organizerService: OrganizerService = inject(OrganizerService);
   private readonly queryManager: BindQueryParamsFactory = inject(BindQueryParamsFactory);
+  private readonly downloadService: DownloadService = inject(DownloadService);
 
   private bindQueryParamsManager: BindQueryParamsManager<FilterFormValue> = this.queryManager.create<FilterFormValue>([
     {
@@ -257,15 +256,8 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
     this.organizerService.getParticipantsReport()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (pdf) => {
-          // TODO: Обобщить с DownloadService
-          // TODO: Удалить <a>
-          const blob = new Blob([pdf], {type: 'application/pdf'});
-          const link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.style.display = 'none';
-          link.download = 'Отчёт_Кандидаты_КЧ.pdf';
-          link.click();
+        next: (pdf: ArrayBuffer) => {
+          this.downloadService.downloadArrayBuffer('Отчёт_Кандидаты_КЧ.pdf', pdf);
           
           this.isDownloadingReport = false;
           this.cdr.markForCheck();
@@ -274,7 +266,8 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
           this.isDownloadingReport = false;
           this.cdr.markForCheck();
 
-          this.showErrorNotification('Внутренняя ошибка при генерации отчёта', err);
+          this.notificationService.error('Ошибка', 'Внутренняя ошибка при генерации отчёта');
+          console.error('Внутренняя ошибка при генерации отчёта: ', err);
         }
       });
   }
