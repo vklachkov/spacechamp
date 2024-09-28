@@ -94,7 +94,10 @@ async fn run(
 ) {
     let datasource = Arc::new(datasource);
     let services = Arc::new(Services {
+        #[cfg(debug_assertions)]
         report_generator: url::Url::parse("http://127.0.0.1:8866/").unwrap(),
+        #[cfg(not(debug_assertions))]
+        report_generator: url::Url::parse("http://report-generator:8866/").unwrap(),
     });
     let tokens = Arc::new(BackendTokens {
         notisend: notisend_token,
