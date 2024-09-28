@@ -37,7 +37,7 @@ pub struct BackendTokens {
 #[derive(Serialize)]
 struct AnonymousRate {
     pub code: String,
-    pub rates: HashMap<&'static str, Option<String>>,
+    pub rates: HashMap<&'static str, Option<i32>>,
 }
 
 pub fn v1(
@@ -297,7 +297,7 @@ async fn participants_report(State(state): State<Arc<BackendState>>) -> Result<R
             .map(|adult| adult.id)
             .and_then(|adult_id| participant.rates.get(&adult_id).cloned())
             .flatten()
-            .map(|rate| rate.salary.to_string())
+            .map(|rate| rate.salary)
     };
 
     let data = participants

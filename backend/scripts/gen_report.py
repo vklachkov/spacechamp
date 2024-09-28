@@ -22,16 +22,16 @@ report_data = []
 for participant in json.loads(participants_request.content):
     code = participant['code']
     rates = {
-        '1D': str(participant['rates']['9']['salary']) if participant['rates']['9'] else None,
-        'Салют': str(participant['rates']['4']['salary']) if participant['rates']['4'] else None,
-        'Звёздное': str(participant['rates']['5']['salary']) if participant['rates']['5'] else None,
-        'Родное': str(participant['rates']['8']['salary']) if participant['rates']['8'] else None,
-        'Око': str(participant['rates']['10']['salary']) if participant['rates']['10'] else None,
+        '1D': participant['rates']['9']['salary'] if participant['rates']['9'] else None,
+        'Салют': participant['rates']['4']['salary'] if participant['rates']['4'] else None,
+        'Звёздное': participant['rates']['5']['salary'] if participant['rates']['5'] else None,
+        'Родное': participant['rates']['8']['salary'] if participant['rates']['8'] else None,
+        'Око': participant['rates']['10']['salary'] if participant['rates']['10'] else None,
     }
 
     report_data.append({ 'code': code, 'rates': rates })
 
 report = requests.post(generator_host, json=report_data)
 
-with open('report.pdf', 'wb') as doc:
+with open('Отчёт_Кандидаты_КЧ.pdf', 'wb') as doc:
     doc.write(report.content)
