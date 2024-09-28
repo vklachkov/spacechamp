@@ -55,9 +55,18 @@ def render_html_to_pdf(html):
     with open(report_html_path, 'w') as doc:
         doc.write(html)
 
+    # TODO: Replace chromium with always running firefox because chromium is very heavy and slow...
     subprocess.run(['chromium',
                     '--headless',
-                    '--disable-gpu', '--run-all-compositor-stages-before-draw',
+                    '--no-zygote',
+                    '--no-sandbox',
+                    '--use-fake-device-for-media-stream',
+                    '--allow-file-access-from-files',
+                    '--disable-web-security',
+                    '--disable-features=IsolateOrigins',
+                    '--disable-site-isolation-trials',
+                    '--disable-gpu',
+                    '--run-all-compositor-stages-before-draw',
                     '--no-margins', '--no-pdf-header-footer',
                     '--virtual-time-budget=1000',
                     f'--print-to-pdf={report_pdf_path}',
@@ -69,6 +78,8 @@ def render_html_to_pdf(html):
 def prepare_files():
     global report_html_path
     global report_pdf_path
+    
+    print('Initializing...')
 
     base = '/tmp/spacechamp-report-generator'
 
