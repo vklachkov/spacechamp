@@ -13,16 +13,20 @@
                 <nz-spin class="spin-height-100"></nz-spin>
             } @else {
                 <div class="groups">
-                    @if (inTeamParticipants.length > 0) {
-                        <app-applications-group [participants]="inTeamParticipants" title="В команде" />
-                    }
-
                     @if (notRatedParticipants.length > 0) {
                         <app-applications-group [participants]="notRatedParticipants" title="Без оценки" />
                     }
                     
+                    @if (inTeamParticipants.length > 0) {
+                        <app-applications-group [participants]="inTeamParticipants" title="В команде" />
+                    }
+
                     @if (ratedParticipants.length > 0) {
                         <app-applications-group [participants]="ratedParticipants" title="Оценённые" />
+                    }
+
+                    @if (zeroRatedParticipants.length > 0) {
+                        <app-applications-group [participants]="zeroRatedParticipants" title="0 баллов" />
                     }
                 </div>
             }

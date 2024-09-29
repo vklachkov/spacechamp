@@ -47,6 +47,7 @@ export class JuryPage extends BaseComponent implements OnInit {
   protected inTeamParticipants: AnonymousParticipant[] = [];
   protected notRatedParticipants: AnonymousParticipant[] = [];
   protected ratedParticipants: AnonymousParticipant[] = [];
+  protected zeroRatedParticipants: AnonymousParticipant[] = [];
 
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly juryService: JuryService = inject(JuryService);
@@ -57,12 +58,18 @@ export class JuryPage extends BaseComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: AnonymousParticipant[]) => {
-          this.inTeamParticipants = data.filter((item: AnonymousParticipant) => item.in_command);
-          const inTeamIds: number[] = this.inTeamParticipants.map((item: AnonymousParticipant) => item.id);
-
-          this.ratedParticipants = data.filter((item: AnonymousParticipant) => !inTeamIds.includes(item.id) && item.rate);
-          this.notRatedParticipants = data.filter((item: AnonymousParticipant) => !inTeamIds.includes(item.id) && !item.rate);
-
+          for (const participant of data) {
+            if (participant.in_command) {
+              this.inTeamParticipants.push(participant);    
+            } else if (participant.rate && participant.rate.salary > 0) {
+              this.ratedParticipants.push(participant);  
+            } else if (participant.rate) {
+              this.zeroRatedParticipants.push(participant);
+            } else {
+              this.notRatedParticipants.push(participant);
+            }
+          }
+          
           this.isParticipantsLoading = false;
           this.cdr.markForCheck();
         },
