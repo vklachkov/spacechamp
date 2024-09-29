@@ -4,7 +4,11 @@
     <nz-spin [nzSpinning]="isSettingCommandLoading">
         <nz-select class="team__select" nzPlaceHolder="Не выбрано" [nzAllowClear]="true" [formControl]="teamControl">
             @for (jury of juries; track jury.id) {
-                <nz-option [nzValue]="jury.id" [nzLabel]="jury.name" [nzDisabled]="!participant.rates[jury.id]"></nz-option>
+                <nz-option
+                    [nzValue]="jury.id"
+                    [nzLabel]="jury.name"
+                    [nzDisabled]="!participant.rates[jury.id] || participant.rates[jury.id]?.salary === 0">
+                </nz-option>
             }
         </nz-select>
     </nz-spin>

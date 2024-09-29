@@ -35,7 +35,7 @@ export type FormGroupValue = {
   comment: string | null
 }
 
-export const MIN_SALARY: number = 1;
+export const MIN_SALARY: number = 0;
 export const MAX_SALARY: number = 1300;
 
 @Component({
