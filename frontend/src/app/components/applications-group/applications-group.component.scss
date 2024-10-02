@@ -24,3 +24,13 @@
     }
   }
 }
+
+.item-container {
+  p {
+    margin: 0;
+  }
+
+  &__comment {
+    color: var(--primary-ng-zorro);
+  }
+}

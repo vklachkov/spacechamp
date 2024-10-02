@@ -3,7 +3,19 @@
     
     @for (participant of participants; track participant.id) {
         <a title="" class="application-group__item" [routerLink]="[applicationPath, participant.id]">
-            №{{ participant.id + 1 }}
+            <div class="item-container">
+                <p class="item-container__number">
+                    №{{ participant.id + 1 }}
+
+                    @if (participant.rate?.salary) {
+                        <span class="item-container__salary">с зарплатой {{ participant.rate!.salary }}</span>
+                    }
+                </p>
+
+                <p class="item-container__comment">
+                    {{ participant.rate?.comment || "—" }}
+                </p>
+            </div>
         </a>
     }
 </div>
