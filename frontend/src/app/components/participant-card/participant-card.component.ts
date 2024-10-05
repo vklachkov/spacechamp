@@ -6,11 +6,12 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
 import { JuryRate, Participant } from '@models/api/participant.interface';
 import { ParticipantStatus } from '@models/participant-status.enum';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-participant-card',
   standalone: true,
-  imports: [CommonModule, NzCardModule, NzAvatarModule, RouterLink],
+  imports: [CommonModule, NzCardModule, NzAvatarModule, RouterLink, NzIconModule],
   templateUrl: './participant-card.component.html',
   styleUrl: './participant-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

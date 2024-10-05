@@ -32,6 +32,7 @@ type FilterForm = {
   status: FormControl<ParticipantStatus | null>;
   sort: FormControl<Sort | null>;
   order: FormControl<Order | null>;
+  getDeleted: FormControl<boolean | null>;
 };
 
 type FilterFormValue = {
@@ -39,6 +40,7 @@ type FilterFormValue = {
   status?: ParticipantStatus | null;
   sort?: Sort | null;
   order?: Order | null;
+  getDeleted?: boolean | null;
 }
 
 const DEFAULT_SORT: Sort = Sort.Id;
@@ -86,6 +88,7 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
     status: new FormControl<ParticipantStatus | null>(null),
     sort: new FormControl<Sort | null>(DEFAULT_SORT),
     order: new FormControl<Order | null>(DEFAULT_ORDER),
+    getDeleted: new FormControl<boolean | null>(false),
   });
 
   get isFilterChanged() {
@@ -94,7 +97,8 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
     const isDefault = controls.search.value === null &&
       controls.status.value === null &&
       controls.sort.value === DEFAULT_SORT &&
-      controls.order.value === DEFAULT_ORDER;
+      controls.order.value === DEFAULT_ORDER &&
+      controls.getDeleted.value === false;
 
     return !isDefault;
   }
@@ -138,6 +142,12 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
       type: 'string',
       syncInitialControlValue: false,
       syncInitialQueryParamValue: true
+    },
+    {
+      queryKey: 'getDeleted',
+      type: 'boolean',
+      syncInitialControlValue: false,
+      syncInitialQueryParamValue: true
     }
   ]).connect(this.filterForm);
 
@@ -167,18 +177,23 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
       return participants;
     }
 
+    const existsParticipants = participants.filter((p: Participant) => p.deleted_by === null);
+
     switch (this.filterForm.value.status) {
+      case ParticipantStatus.Deleted: {
+        return participants.filter((p: Participant) => p.deleted_by !== null);
+      }
       case ParticipantStatus.InTeam: {
-        return participants.filter((item: Participant) => item.jury);
+        return existsParticipants.filter((item: Participant) => item.jury);
       }
       case ParticipantStatus.NotRated: {
-        return participants.filter((item: Participant) => Object.values(item.rates).every((rate: JuryRate | null) => !rate));
+        return existsParticipants.filter((item: Participant) => Object.values(item.rates).every((rate: JuryRate | null) => !rate));
       }
       case ParticipantStatus.FullRated: {
-        return participants.filter((item: Participant) => !item.jury && Object.values(item.rates).every((rate: JuryRate | null) => rate));
+        return existsParticipants.filter((item: Participant) => !item.jury && Object.values(item.rates).every((rate: JuryRate | null) => rate));
       }
       case ParticipantStatus.PartiallyRated: {
-        return participants.filter((item: Participant) => 
+        return existsParticipants.filter((item: Participant) => 
           Object.values(item.rates).some((rate: JuryRate | null) => !rate) &&
           Object.values(item.rates).some((rate: JuryRate | null) => rate));
       }
@@ -189,7 +204,10 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
     return {
       sort: this.filterForm.value.sort ?? DEFAULT_SORT,
       order: this.filterForm.value.order ?? DEFAULT_ORDER,
-      search: this.filterForm.value.search
+      search: this.filterForm.value.search,
+      get_deleted: 
+        (this.filterForm.value.status === ParticipantStatus.Deleted) ||
+        (this.filterForm.value.getDeleted ?? false),
     }
   }
 

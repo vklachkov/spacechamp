@@ -1,26 +1,34 @@
 <div class="actions">
     @switch (mode) {
         @case (Mode.View) {
-            <button nz-button (click)="enterEditMode()">
-                <span nz-icon nzType="edit" nzTheme="outline"></span>
-                Редактировать
-            </button>
-        
-            <nz-spin [nzSpinning]="isDeleting">
-                <button 
-                    nz-button
-                    nz-popconfirm
-                    nzPopconfirmTitle="Вы уверены, что хотите удалить участника?"
-                    nzPopconfirmPlacement="bottom"
-                    nzCancelText="Нет"
-                    nzOkType="danger"
-                    nzOkText="Да"
-                    (nzOnConfirm)="remove()" 
-                >
-                        <span nz-icon nzType="delete" nzTheme="outline"></span>
-                        Удалить
+            @if (participant.deleted_by) {
+                <nz-card class="actions__deleted-by" [nzBodyStyle]="{'padding': '0'}">
+                    <div class="actions__deleted-by__content">
+                        Заявка удалена организатором "{{ participant.deleted_by.name }}"
+                    </div>
+                </nz-card>
+            } @else {
+                <button nz-button (click)="enterEditMode()">
+                    <span nz-icon nzType="edit" nzTheme="outline"></span>
+                    Редактировать
                 </button>
-            </nz-spin>
+
+                <nz-spin [nzSpinning]="isDeleting">
+                    <button 
+                        nz-button
+                        nz-popconfirm
+                        nzPopconfirmTitle="Вы уверены, что хотите удалить участника?"
+                        nzPopconfirmPlacement="bottom"
+                        nzCancelText="Нет"
+                        nzOkType="danger"
+                        nzOkText="Да"
+                        (nzOnConfirm)="remove()" 
+                    >
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                            Удалить
+                    </button>
+                </nz-spin>
+            }
         }
         @case (Mode.Edit) {
             <button nz-button nzType="primary" (click)="saveChanges()">

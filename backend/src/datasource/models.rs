@@ -124,6 +124,7 @@ pub struct Participant {
     pub responsible_adult_name: String,
     pub responsible_adult_phone_number: String,
     pub jury_id: Option<i32>,
+    pub deleted_by: Option<i32>,
     pub answers: serde_json::Value,
 }
 

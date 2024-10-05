@@ -270,13 +270,14 @@ async fn all_participants(
         search,
         sort,
         order,
+        get_deleted,
     }): Query<GetParticipantsQuery>,
 ) -> Result<Json<Vec<Participant>>> {
     Ok(Json(
         state
             .datasource
             .participants
-            .get_all(search, sort, order)
+            .get_all(search, sort, order, get_deleted)
             .await?,
     ))
 }
@@ -285,7 +286,7 @@ async fn participants_report(State(state): State<Arc<BackendState>>) -> Result<R
     let participants = state
         .datasource
         .participants
-        .get_all(None, Sort::Id, Order::Asc)
+        .get_all(None, Sort::Id, Order::Asc, false)
         .await?;
 
     let adults = state.datasource.adults.get_all().await?;
@@ -459,7 +460,7 @@ async fn jury_participants(
         state
             .datasource
             .participants
-            .get_all(None, Sort::Id, order)
+            .get_all(None, Sort::Id, order, false)
             .await?
             .into_iter()
             .filter(|p| {

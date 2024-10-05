@@ -19,7 +19,7 @@
                         nzPopoverTrigger="click"
                         nzPopoverPlacement="bottom"
                         [nzPopoverContent]="contentTemplate"
-                        [nzPopoverOverlayStyle]="{'width': '34em'}"
+                        [nzPopoverOverlayStyle]="{'width': '46em'}"
                         [(nzPopoverVisible)]="filterVisible"
                         (nzPopoverVisibleChange)="changeFilterVisible($event)"
                     >
@@ -39,6 +39,7 @@
                                 <label nz-radio [nzValue]="ParticipantStatus.PartiallyRated">Частично оценненые</label>
                                 <label nz-radio [nzValue]="ParticipantStatus.FullRated">Полностью оценненые</label>
                                 <label nz-radio [nzValue]="ParticipantStatus.InTeam">В команде</label>
+                                <label nz-radio [nzValue]="ParticipantStatus.Deleted">Только удалённые</label>
                             </nz-radio-group>
                         </div>
 
@@ -59,6 +60,15 @@
                             <nz-radio-group class="filter__options-group" formControlName="order">
                                 <label nz-radio [nzValue]="Order.ASC">{{ ascSortLabel }}</label>
                                 <label nz-radio [nzValue]="Order.DESC">{{ descSortLabel }}</label>
+                            </nz-radio-group>
+                        </div>
+
+                        <div class="filter__options-item">
+                            <p nz-typography class="filter__options-item-title">Удалённые</p>
+
+                            <nz-radio-group class="filter__options-group" formControlName="getDeleted">
+                                <label nz-radio [nzValue]="true">Показать</label>
+                                <label nz-radio [nzValue]="false">Скрыть</label>
                             </nz-radio-group>
                         </div>
                     </div>

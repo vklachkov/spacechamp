@@ -8,6 +8,7 @@ pub struct Participant {
     pub id: ParticipantId,
     pub code: String,
     pub jury: Option<Adult>,
+    pub deleted_by: Option<Adult>,
     pub info: ParticipantInfo,
     pub answers: HashMap<String, String>,
     pub rates: HashMap<AdultId, Option<ParticipantRate>>,

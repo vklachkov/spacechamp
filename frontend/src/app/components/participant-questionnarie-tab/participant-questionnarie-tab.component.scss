@@ -2,6 +2,15 @@
   display: flex;
   gap: 0.5em;
   margin-bottom: 0.5em;
+
+  &__deleted-by {
+    width: 100%;
+
+    &__content {
+      padding: 1em;
+      color: var(--red);
+    }
+  }
 }
 
 .participant-card {

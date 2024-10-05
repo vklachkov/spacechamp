@@ -75,11 +75,7 @@ impl Participants {
         transact(self.conn.clone(), move |conn| {
             let participant: Option<models::Participant> = participants::table
                 .select(models::Participant::as_select())
-                .filter({
-                    let id = participants::id.eq(id.0);
-                    let not_deleted = participants::deleted_by.is_null();
-                    id.and(not_deleted)
-                })
+                .filter(participants::id.eq(id.0))
                 .first(conn)
                 .optional()?;
 
@@ -93,17 +89,17 @@ impl Participants {
                 )));
             };
 
-            let jury: Option<Adult> = if let Some(jury_id) = participant.jury_id {
-                adults::table
-                    .select(super::models::Adult::as_select())
-                    .filter(adults::id.eq(jury_id))
-                    .first(conn)
-                    .optional()?
-                    .map(TryInto::try_into)
-                    .transpose()?
-            } else {
-                None
-            };
+            let jury = participant
+                .jury_id
+                .map(|id| Self::get_adult(conn, id))
+                .transpose()?
+                .flatten();
+
+            let deleted_by = participant
+                .deleted_by
+                .map(|id| Self::get_adult(conn, id))
+                .transpose()?
+                .flatten();
 
             let rates = {
                 let rates: Vec<models::ParticipantRate> = rates::table
@@ -118,6 +114,7 @@ impl Participants {
                 id: ParticipantId(participant.id),
                 code: participant.code,
                 jury,
+                deleted_by,
                 info: ParticipantInfo {
                     name: participant.name,
                     photo_url: participant.photo_url,
@@ -136,11 +133,22 @@ impl Participants {
         .await
     }
 
+    fn get_adult(conn: &mut PgConnection, jury_id: i32) -> Result<Option<Adult>> {
+        Ok(adults::table
+            .select(super::models::Adult::as_select())
+            .filter(adults::id.eq(jury_id))
+            .first(conn)
+            .optional()?
+            .map(TryInto::try_into)
+            .transpose()?)
+    }
+
     pub async fn get_all(
         &self,
         search: Option<String>,
         sort: Sort,
         order: Order,
+        get_deleted: bool,
     ) -> Result<Vec<Participant>> {
         transact(self.conn.clone(), move |conn| {
             let adults: HashMap<AdultId, Adult> = adults::table
@@ -160,8 +168,11 @@ impl Participants {
 
             let mut query = participants::table
                 .select(models::Participant::as_select())
-                .filter(participants::deleted_by.is_null())
                 .into_boxed();
+
+            if !get_deleted {
+                query = query.filter(participants::deleted_by.is_null());
+            }
 
             if let Some(search) = search {
                 use participants::{
@@ -220,6 +231,9 @@ impl Participants {
                         code: participant.code,
                         jury: participant
                             .jury_id
+                            .map(|jury_id| adults.get(&AdultId(jury_id)).cloned().unwrap()),
+                        deleted_by: participant
+                            .deleted_by
                             .map(|jury_id| adults.get(&AdultId(jury_id)).cloned().unwrap()),
                         info: ParticipantInfo {
                             name: participant.name,

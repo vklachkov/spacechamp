@@ -17,7 +17,8 @@ export class OrganizerService {
   getParticipants(query: ParticipantsQuery): Observable<Participant[]> {
     let params: HttpParams = new HttpParams()
       .append(FilterOptions.Order, query.order)
-      .append(FilterOptions.Sort, query.sort);
+      .append(FilterOptions.Sort, query.sort)
+      .append(FilterOptions.GetDeleted, query.get_deleted);
 
     if (query.search) {
       params = params.append(FilterOptions.Search, query.search);
