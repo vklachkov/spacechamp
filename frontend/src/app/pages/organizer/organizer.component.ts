@@ -86,6 +86,19 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
     order: new FormControl<Order | null>(DEFAULT_ORDER),
   });
 
+  get isFilterChanged() {
+    let isChanged: boolean = false;
+
+    Object.keys(this.filterForm.controls).forEach(key => {
+      const control = this.filterForm.get(key) as any;
+      if (control?.value !== control?.defaultValue) {
+        isChanged = true;
+      }
+    });
+
+    return isChanged;
+  }
+
   protected participants: Participant[] = [];
   protected isParticipantsLoading: boolean = false;
 

@@ -10,9 +10,10 @@
                     <span nz-icon nzType="search"></span>
                 </ng-template>
         
-                <button 
+                <button
                     class="filter__show-options"
                     nz-button
+                    [nzType]="isFilterChanged ? 'primary' : 'default'"
                     nz-popover
                     nzPopoverTrigger="click"
                     nzPopoverPlacement="bottom"
@@ -22,6 +23,7 @@
                     (nzPopoverVisibleChange)="changeFilterVisible($event)"
                 >
                     <span nz-icon nzType="setting" nzTheme="outline"></span>
+                    Фильтр
                 </button>
     
                 <ng-template #contentTemplate>
