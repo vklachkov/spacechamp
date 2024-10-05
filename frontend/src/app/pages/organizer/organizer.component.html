@@ -10,21 +10,23 @@
                     <span nz-icon nzType="search"></span>
                 </ng-template>
         
-                <button
-                    class="filter__show-options"
-                    nz-button
-                    [nzType]="isFilterChanged ? 'primary' : 'default'"
-                    nz-popover
-                    nzPopoverTrigger="click"
-                    nzPopoverPlacement="bottom"
-                    [nzPopoverContent]="contentTemplate"
-                    [nzPopoverOverlayStyle]="{'width': '34em'}"
-                    [(nzPopoverVisible)]="filterVisible"
-                    (nzPopoverVisibleChange)="changeFilterVisible($event)"
-                >
-                    <span nz-icon nzType="setting" nzTheme="outline"></span>
-                    Фильтр
-                </button>
+                <!-- TODO: Set own red color -->
+                <nz-badge [nzDot]="isFilterChanged">
+                    <button
+                        class="filter__show-options"
+                        nz-button
+                        nz-popover
+                        nzPopoverTrigger="click"
+                        nzPopoverPlacement="bottom"
+                        [nzPopoverContent]="contentTemplate"
+                        [nzPopoverOverlayStyle]="{'width': '34em'}"
+                        [(nzPopoverVisible)]="filterVisible"
+                        (nzPopoverVisibleChange)="changeFilterVisible($event)"
+                    >
+                        <span nz-icon nzType="setting" nzTheme="outline"></span>
+                        Фильтр
+                    </button>
+                </nz-badge>
     
                 <ng-template #contentTemplate>
                     <div class="filter__options">

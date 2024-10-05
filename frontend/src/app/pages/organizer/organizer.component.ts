@@ -25,6 +25,7 @@ import { Order } from '@models/api/order.enum';
 import { Sort } from '@models/api/sort.enum';
 import { JuryRate, Participant } from '@models/api/participant.interface';
 import { ParticipantsQuery } from '@models/participants-query.interface';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -69,7 +70,8 @@ const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
     FormsModule,
     ReactiveFormsModule,
     LogoutButtonComponent,
-    HeaderComponent
+    HeaderComponent,
+    NzBadgeModule,
   ],
   templateUrl: './organizer.component.html',
   styleUrls: ['./organizer.component.scss'],
@@ -87,16 +89,14 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
   });
 
   get isFilterChanged() {
-    let isChanged: boolean = false;
+    const controls = this.filterForm.controls;
 
-    Object.keys(this.filterForm.controls).forEach(key => {
-      const control = this.filterForm.get(key) as any;
-      if (control?.value !== control?.defaultValue) {
-        isChanged = true;
-      }
-    });
+    const isDefault = controls.search.value === null &&
+      controls.status.value === null &&
+      controls.sort.value === DEFAULT_SORT &&
+      controls.order.value === DEFAULT_ORDER;
 
-    return isChanged;
+    return !isDefault;
   }
 
   protected participants: Participant[] = [];
