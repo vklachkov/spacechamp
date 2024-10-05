@@ -303,7 +303,7 @@ async fn participants_report(State(state): State<Arc<BackendState>>) -> Result<R
 
     let data = participants
         .into_iter()
-        .rev()
+        .filter(|p| p.jury.is_none())
         .map(|p| AnonymousRate {
             rates: HashMap::from_iter([
                 ("1D", get_design_bureau_rate(&p, "Матюхин Андрей")),
