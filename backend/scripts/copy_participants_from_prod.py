@@ -19,7 +19,7 @@ if target_login_request.status_code != 200:
     print(f'Failed to login on target. Status code: {target_login_request.status_code}')
     sys.exit(1)
 
-participants_request = requests.get(f'{source_host}/api/v1/org/participants', cookies=source_login_request.cookies)
+participants_request = requests.get(f'{source_host}/api/v1/org/participants?sort=id&order=desc', cookies=source_login_request.cookies)
 if participants_request.status_code != 200:
     print(f'Failed to fetch participants. Status code: {participants_request.status_code}')
     sys.exit(1)
