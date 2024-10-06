@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { KeyValuePipe } from '@angular/common';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { Answers } from '@models/api/participant.interface';
+import { decode } from 'he'
 
 export const EMPTY_ANSWER: string = 'Нет ответа';
 
@@ -25,4 +26,8 @@ export class AnswersComponent {
   ];
 
   @Input({ required: true }) answers!: Answers;
+
+  textDecode(text: string): string {
+    return decode(text);
+  }
 }
