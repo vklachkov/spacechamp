@@ -9,7 +9,6 @@
   }
 }
 
-
 .filter {
   display: flex;
   gap: 1em;
@@ -39,18 +38,29 @@
 }
 
 .content {
-  padding: 2em 2px;
-  scrollbar-width: none;
   overflow-y: scroll;
-}
 
-.participant-card {
-  display: block;
-  margin-bottom: .5em;
-  transition: box-shadow .15s ease-in-out;
+  &__cards-container {
+    position: relative;
+    width: 100%;
+    max-width: var(--container-width); 
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 2em 0em;
 
-  &:hover {
-    box-shadow: var(--hover-box-shadow);
-    cursor: pointer;
+    app-participant-card {
+      display: block;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+
+      &:hover {
+        box-shadow: var(--hover-box-shadow);
+        transition: box-shadow .15s ease-in-out;
+        cursor: pointer;
+      }
+    }
   }
 }

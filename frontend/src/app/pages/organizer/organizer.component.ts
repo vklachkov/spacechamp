@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EnvironmentInjector, inject, OnDestroy, OnInit, runInInjectionContext, viewChild } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime, delay, takeUntil } from 'rxjs';
 import { BindQueryParamsFactory, BindQueryParamsManager } from '@ngneat/bind-query-params';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
@@ -25,6 +25,7 @@ import { Order } from '@models/api/order.enum';
 import { Sort } from '@models/api/sort.enum';
 import { JuryRate, Participant } from '@models/api/participant.interface';
 import { ParticipantsQuery } from '@models/participants-query.interface';
+import { AngularVirtualizer, injectVirtualizer } from '@tanstack/angular-virtual';
 
 type FilterForm = {
   search: FormControl<string | null>;
@@ -47,6 +48,10 @@ const ASC_SORT_NUMERIC_LABEL: string = 'От старых к новым';
 const DESC_SORT_NUMBERIC_LABEL: string = 'От новых к старым';
 const ASC_SORT_LETTER_LABEL: string = 'От А до Я';
 const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
+
+const CARD_HEIGHT: number = 102;
+const CARDS_GAP: number = 8;
+const CARDS_OVERSCAN: number = 5;
 
 @Component({
   selector: 'app-organizer-page',
@@ -79,6 +84,9 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
   protected readonly ParticipantStatus = ParticipantStatus;
   protected readonly Sort = Sort;
   protected readonly Order = Order;
+
+  private environmentInjector = inject(EnvironmentInjector);
+
   protected readonly filterForm: FormGroup<FilterForm> = new FormGroup({
     search: new FormControl<string | null>(null),
     status: new FormControl<ParticipantStatus | null>(null),
@@ -88,6 +96,9 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
 
   protected participants: Participant[] = [];
   protected isParticipantsLoading: boolean = false;
+
+  protected scrollElement = viewChild<ElementRef<HTMLDivElement>>('scrollElement')
+  protected virtualizer: AngularVirtualizer<HTMLDivElement, Element>| null = null;
 
   protected filterVisible: boolean = false;
 
@@ -138,13 +149,25 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data: Participant[]) => {
           this.participants = this.filterByStatus(data);
+
+          runInInjectionContext(this.environmentInjector, () => {
+            this.virtualizer = injectVirtualizer(() => ({
+              scrollElement: this.scrollElement(),
+              count: this.participants.length,
+              estimateSize: () => CARD_HEIGHT,
+              gap: CARDS_GAP,
+              overscan: CARDS_OVERSCAN,
+            }));
+          });
+
           this.isParticipantsLoading = false;
           this.cdr.markForCheck();
         },
         error: (err: HttpErrorResponse) => {
+          this.showErrorNotification('Ошибка при получении данных об участниках', err);
+          
           this.isParticipantsLoading = false;
           this.cdr.markForCheck();
-          this.showErrorNotification('Ошибка при получении данных об участниках', err);
         }
       });
   }

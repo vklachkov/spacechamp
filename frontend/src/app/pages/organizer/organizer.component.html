@@ -78,13 +78,18 @@
     </nz-header>
 
     <nz-content class="nz-content">
-        <div class="container h-100">
+        <div #scrollElement class="content h-100">
             @if (isParticipantsLoading) {
+                <!-- TODO(vklachkov): Wrap cards-container witgh nz-spin and remove if's and style hacks -->
                 <nz-spin class="spin spin-height-100"></nz-spin>
-            } @else {
-                <div class="content h-100">
-                    @for (participant of participants; track participant.id) {
-                        <app-participant-card class="participant-card" [participant]="participant" />
+            } @else if (virtualizer) {
+                <div class="content__cards-container" [style.height.px]="virtualizer.getTotalSize()">
+                    @for (row of virtualizer.getVirtualItems(); track row.index) {
+                        <app-participant-card
+                            [attr.data-index]="row.index"
+                            [style.height.px]="row.size"
+                            [style.transform]="'translateY(' + row.start + 'px)'"
+                            [participant]="participants[row.index]" />
                     }
                 </div>
             }
