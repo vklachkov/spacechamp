@@ -44,6 +44,36 @@ $mobile-width: 500px;
   padding: 2em;
 }
 
+.salary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  
+  margin-bottom: 0.5em;
+  
+  background-color: var(--white);
+  padding: 1em;
+
+  &__item {
+    margin: 0;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  
+  margin-bottom: 0.5em;
+  
+  background-color: var(--white);
+  padding: 1em;
+
+  &__item {
+    margin: 0;
+  }
+}
+
 @media (max-width: $mobile-width) {
   .jury-application-header {
     padding: 1em!important;

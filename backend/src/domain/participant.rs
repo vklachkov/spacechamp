@@ -31,6 +31,7 @@ pub struct ParticipantInfo {
 pub struct AnonymousParticipant {
     pub id: ParticipantId,
     pub in_command: bool,
+    pub info: Option<ParticipantInfo>,
     pub answers: HashMap<String, String>,
     pub rate: Option<ParticipantRate>,
 }

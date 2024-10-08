@@ -472,6 +472,7 @@ async fn jury_participants(
             .map(|mut p| AnonymousParticipant {
                 id: p.id,
                 in_command: p.jury.is_some(),
+                info: p.jury.is_some().then_some(p.info),
                 answers: p.answers,
                 rate: p.rates.remove(&jury_id).flatten(),
             })
@@ -501,6 +502,7 @@ async fn get_jury_participant(
     Ok(Json(AnonymousParticipant {
         id: participant.id,
         in_command: participant.jury.is_some(),
+        info: participant.jury.is_some().then_some(participant.info),
         answers: participant.answers,
         rate: participant
             .rates

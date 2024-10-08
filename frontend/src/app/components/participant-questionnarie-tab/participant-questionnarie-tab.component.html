@@ -57,6 +57,7 @@
 <nz-card class="participant-card" [nzBodyStyle]="{'padding': '0'}">
     <div class="participant-card__content">        
         @if (mode === Mode.View) {
+            <!-- TODO(vklachkov): Вынести в компонент -->
             <div class="info">
                 <p class="info__item" nz-typography>Имя: {{ participant.info.name }}</p>
                 <p class="info__item" nz-typography>Город: {{ participant.info.city }}</p>
