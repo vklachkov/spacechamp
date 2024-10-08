@@ -2,8 +2,8 @@
     @switch (mode) {
         @case (Mode.View) {
             @if (participant.deleted_by) {
-                <nz-card class="actions__deleted-by" [nzBodyStyle]="{'padding': '0'}">
-                    <div class="actions__deleted-by__content">
+                <nz-card class="deleted-card" [nzBodyStyle]="{'padding': '0'}">
+                    <div class="deleted-card__content">
                         Заявка удалена организатором "{{ participant.deleted_by.name }}"
                     </div>
                 </nz-card>

@@ -5,5 +5,5 @@ export interface ParticipantsQuery {
   order: Order;
   sort: Sort;
   search?: string | null;
-  get_deleted: boolean;
+  deleted: boolean;
 }

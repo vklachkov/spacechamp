@@ -1,6 +1,7 @@
 @if (participant.deleted_by) {
-    <nz-card class="deleted-by" [nzBodyStyle]="{'padding': '0'}">
-        <div class="deleted-by__content">
+    <!-- TODO(vklachkov): Вынести в отдельный компонент -->
+    <nz-card class="deleted-card" [nzBodyStyle]="{'padding': '0'}">
+        <div class="deleted-card__content">
             Заявка удалена организатором "{{ participant.deleted_by.name }}"
         </div>
     </nz-card>

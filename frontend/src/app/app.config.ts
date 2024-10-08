@@ -1,35 +1,35 @@
-import { ApplicationConfig, importProvidersFrom, inject, InjectionToken, provideExperimentalZonelessChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
-import { provideNzIcons } from 'ng-zorro-antd/icon';
-import { ru_RU, provideNzI18n } from 'ng-zorro-antd/i18n';
 import { DOCUMENT, registerLocaleData } from '@angular/common';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import ru from '@angular/common/locales/ru';
+import { ApplicationConfig, importProvidersFrom, inject, InjectionToken, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import {
-  LogoutOutline,
-  StarOutline,
-  StarFill,
   AppstoreOutline,
+  ArrowLeftOutline,
   BarsOutline,
   DeleteOutline,
-  PlusCircleOutline,
-  UserOutline,
-  LockOutline,
   DollarOutline,
-  EyeOutline,
-  EyeInvisibleOutline,
-  ArrowLeftOutline,
-  RocketOutline,
   DownloadOutline,
+  EyeInvisibleOutline,
+  EyeOutline,
+  LockOutline,
+  LogoutOutline,
+  PlusCircleOutline,
+  RocketOutline,
   RollbackOutline,
   SaveOutline,
-  SettingOutline
+  SettingOutline,
+  StarFill,
+  StarOutline,
+  UserOutline
 } from '@ant-design/icons-angular/icons';
 import { unauthorizedInterceptor } from '@interceptors/unauthorized.interceptor';
+import { provideNzI18n, ru_RU } from 'ng-zorro-antd/i18n';
+import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { routes } from './app.routes';
 
 registerLocaleData(ru);
 

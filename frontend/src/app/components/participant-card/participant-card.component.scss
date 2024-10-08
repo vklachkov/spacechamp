@@ -20,7 +20,7 @@
         margin: 0;
 
         &.deleted {
-            color: var(--not-rated-color);
+            color: var(--deleted-color);
         }
 
         &.in-team {

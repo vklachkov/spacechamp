@@ -148,7 +148,7 @@ impl Participants {
         search: Option<String>,
         sort: Sort,
         order: Order,
-        get_deleted: bool,
+        deleted: bool,
     ) -> Result<Vec<Participant>> {
         transact(self.conn.clone(), move |conn| {
             let adults: HashMap<AdultId, Adult> = adults::table
@@ -170,7 +170,7 @@ impl Participants {
                 .select(models::Participant::as_select())
                 .into_boxed();
 
-            if !get_deleted {
+            if !deleted {
                 query = query.filter(participants::deleted_by.is_null());
             }
 

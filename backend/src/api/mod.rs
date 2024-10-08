@@ -270,14 +270,14 @@ async fn all_participants(
         search,
         sort,
         order,
-        get_deleted,
+        deleted,
     }): Query<GetParticipantsQuery>,
 ) -> Result<Json<Vec<Participant>>> {
     Ok(Json(
         state
             .datasource
             .participants
-            .get_all(search, sort, order, get_deleted)
+            .get_all(search, sort, order, deleted)
             .await?,
     ))
 }
