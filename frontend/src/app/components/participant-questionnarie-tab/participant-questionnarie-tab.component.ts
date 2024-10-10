@@ -21,6 +21,7 @@ import { OrganizerService } from '@services/organizer.service';
 import { DownloadService } from '@services/download.service';
 import { Answers, Participant, ParticipantInfo } from '@models/api/participant.interface';
 import { ParticipantUpdateInfo } from '@models/api/participant-update-info.interface';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 export enum Mode {
   View,
@@ -64,7 +65,8 @@ type FormValue = Omit<ParticipantInfo, 'photo_url'> & { answers: Answers };
     FormsModule, 
     ReactiveFormsModule,
     AnswersComponent,
-    AnswersEditableComponent
+    AnswersEditableComponent,
+    NzCheckboxModule,
   ],
   templateUrl: './participant-questionnarie-tab.component.html',
   styleUrl: './participant-questionnarie-tab.component.scss',
@@ -72,6 +74,7 @@ type FormValue = Omit<ParticipantInfo, 'photo_url'> & { answers: Answers };
 })
 export class ParticipantQuestionnarieTabComponent extends BaseComponent implements OnDestroy {
   protected isDeleting: boolean = false;
+  protected isCalling: boolean = false;
   protected isParticipantInfoUpdating: boolean = false;
   
   protected readonly Mode = Mode;
@@ -154,9 +157,32 @@ export class ParticipantQuestionnarieTabComponent extends BaseComponent implemen
     this.cdr.markForCheck();
   }
 
+  callParticipant(): void {
+    this.isCalling = true;
+    this.cdr.markForCheck();
+
+    this.organizerService.setParticipantHasCall(this.participant.id, this.participant.has_call)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isCalling = false;
+          this.cdr.markForCheck();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isCalling = false;
+          this.participant.has_call = !this.participant.has_call;
+          this.cdr.markForCheck();
+
+          this.showErrorNotification('Ошибка при вызове участника', err);
+        }
+      });
+  }
+
   remove(): void {
     this.isDeleting = true;
-    this.organizerService.removeParticipant((<Participant>this.participant).id)
+    this.cdr.markForCheck();
+
+    this.organizerService.removeParticipant(this.participant.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
@@ -165,6 +191,7 @@ export class ParticipantQuestionnarieTabComponent extends BaseComponent implemen
         error: (err: HttpErrorResponse) => {
           this.isDeleting = false;
           this.cdr.markForCheck();
+
           this.showErrorNotification('Ошибка при удалении участника', err);
         }
       });

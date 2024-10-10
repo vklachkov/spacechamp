@@ -39,6 +39,12 @@ export class OrganizerService {
     return this.http.get<Participant | null>(`${environment.API_URL}/org/participant/${id}`);
   }
 
+  setParticipantHasCall(participantId: number, hasCall: boolean): Observable<void> {
+    return this.http.post<void>(`${environment.API_URL}/org/participant/${participantId}/call`, {
+      has_call: hasCall
+    });
+  }
+
   setParticipantCommand(participantId: number, juryId: number | null): Observable<void> {
     return this.http.post<void>(`${environment.API_URL}/org/participant/${participantId}/command`, {
       jury_id: juryId

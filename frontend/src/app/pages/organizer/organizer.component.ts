@@ -51,6 +51,8 @@ const ASC_SORT_NUMERIC_LABEL: string = 'От старых к новым';
 const DESC_SORT_NUMBERIC_LABEL: string = 'От новых к старым';
 const ASC_SORT_LETTER_LABEL: string = 'От А до Я';
 const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
+const ASC_SORT_CALL_LABEL: string = 'Сначала без вызова';
+const DESC_SORT_CALL_LABEL: string = 'Сначала с вызовом';
 
 @Component({
   selector: 'app-organizer-page',
@@ -237,6 +239,11 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
       case Sort.Name: {
         this.ascSortLabel = ASC_SORT_LETTER_LABEL;
         this.descSortLabel = DESC_SORT_LETTER_LABEL;
+        break;
+      }
+      case Sort.HasCall: {
+        this.ascSortLabel = ASC_SORT_CALL_LABEL;
+        this.descSortLabel = DESC_SORT_CALL_LABEL;
         break;
       }
     }

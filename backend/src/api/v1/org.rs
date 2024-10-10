@@ -88,6 +88,19 @@ pub async fn patch_participant(
         .map_err(Into::into)
 }
 
+pub async fn call_participant(
+    State(state): State<Arc<BackendState>>,
+    Path(id): Path<ParticipantId>,
+    Json(ParticipantCallPayload { has_call }): Json<ParticipantCallPayload>,
+) -> Result<()> {
+    state
+        .datasource
+        .participants
+        .set_has_call(id, has_call)
+        .await
+        .map_err(Into::into)
+}
+
 pub async fn set_command(
     State(state): State<Arc<BackendState>>,
     Path(id): Path<ParticipantId>,

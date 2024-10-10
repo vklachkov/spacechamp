@@ -125,6 +125,7 @@ pub struct Participant {
     pub responsible_adult_phone_number: String,
     pub jury_id: Option<i32>,
     pub deleted_by: Option<i32>,
+    pub has_call: bool,
     pub answers: serde_json::Value,
 }
 

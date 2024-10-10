@@ -115,6 +115,7 @@ impl Participants {
                 code: participant.code,
                 jury,
                 deleted_by,
+                has_call: participant.has_call,
                 info: ParticipantInfo {
                     name: participant.name,
                     photo_url: participant.photo_url,
@@ -221,6 +222,10 @@ impl Participants {
                     Order::Asc => query.order_by(participants::city.asc()).load(conn)?,
                     Order::Desc => query.order_by(participants::city.desc()).load(conn)?,
                 },
+                Sort::HasCall => match order {
+                    Order::Asc => query.order_by(participants::has_call.asc()).load(conn)?,
+                    Order::Desc => query.order_by(participants::has_call.desc()).load(conn)?,
+                },
             };
 
             participants
@@ -235,6 +240,7 @@ impl Participants {
                         deleted_by: participant
                             .deleted_by
                             .map(|jury_id| adults.get(&AdultId(jury_id)).cloned().unwrap()),
+                        has_call: participant.has_call,
                         info: ParticipantInfo {
                             name: participant.name,
                             photo_url: participant.photo_url,
@@ -314,6 +320,23 @@ impl Participants {
                     models::ParticipantInfo::from(info),
                     participants::answers.eq(answers),
                 ))
+                .execute(conn)?;
+
+            Ok(())
+        })
+        .await
+    }
+
+    pub async fn set_has_call(&self, id: ParticipantId, has_call: bool) -> Result<()> {
+        transact(self.conn.clone(), move |conn| {
+            let participant_exists = Self::participant_exists(conn, id)?;
+            if !participant_exists {
+                return Err(DataSourceError::UnknownParticipant(id));
+            }
+
+            diesel::update(participants::table)
+                .filter(participants::id.eq(id.0))
+                .set(participants::has_call.eq(has_call))
                 .execute(conn)?;
 
             Ok(())

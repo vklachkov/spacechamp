@@ -37,6 +37,11 @@ pub struct UpdateParticipantPayload {
 }
 
 #[derive(Deserialize)]
+pub struct ParticipantCallPayload {
+    pub has_call: bool,
+}
+
+#[derive(Deserialize)]
 pub struct SetParticipantCommandPayload {
     pub jury_id: Option<AdultId>,
 }
