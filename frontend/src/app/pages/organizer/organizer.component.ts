@@ -1,36 +1,38 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, takeUntil } from 'rxjs';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { BaseComponent } from '@components/base/base.component';
+import { HeaderComponent } from '@components/header/header.component';
+import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
+import { ParticipantCardComponent } from '@components/participant-card/participant-card.component';
+import { Order } from '@models/api/order.enum';
+import { JuryRate, Participant } from '@models/api/participant.interface';
+import { Sort } from '@models/api/sort.enum';
+import { ParticipantStatus } from '@models/participant-status.enum';
+import { ParticipantsQuery } from '@models/participants-query.interface';
 import { BindQueryParamsFactory, BindQueryParamsManager } from '@ngneat/bind-query-params';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { DownloadService } from '@services/download.service';
+import { OrganizerService } from '@services/organizer.service';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzFlexModule } from 'ng-zorro-antd/flex';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzPopoverDirective } from 'ng-zorro-antd/popover';
 import { NzRadioComponent, NzRadioGroupComponent } from 'ng-zorro-antd/radio';
 import { NzSpinComponent } from 'ng-zorro-antd/spin';
+import { debounceTime, takeUntil } from 'rxjs';
 import { ORGANIZER_ROOT_PATHS } from '../../app.routes';
-import { BaseComponent } from '@components/base/base.component';
-import { ParticipantCardComponent } from '@components/participant-card/participant-card.component';
-import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
-import { HeaderComponent } from '@components/header/header.component';
-import { OrganizerService } from '@services/organizer.service';
-import { DownloadService } from '@services/download.service';
-import { ParticipantStatus } from '@models/participant-status.enum';
-import { Order } from '@models/api/order.enum';
-import { Sort } from '@models/api/sort.enum';
-import { JuryRate, Participant } from '@models/api/participant.interface';
-import { ParticipantsQuery } from '@models/participants-query.interface';
 
 type FilterForm = {
   search: FormControl<string | null>;
   status: FormControl<ParticipantStatus | null>;
   sort: FormControl<Sort | null>;
   order: FormControl<Order | null>;
+  deleted: FormControl<boolean | null>;
 };
 
 type FilterFormValue = {
@@ -38,10 +40,12 @@ type FilterFormValue = {
   status?: ParticipantStatus | null;
   sort?: Sort | null;
   order?: Order | null;
+  deleted?: boolean | null;
 }
 
 const DEFAULT_SORT: Sort = Sort.Id;
 const DEFAULT_ORDER: Order = Order.DESC;
+const DEFAULT_DELETED: boolean = false;
 
 const ASC_SORT_NUMERIC_LABEL: string = 'От старых к новым';
 const DESC_SORT_NUMBERIC_LABEL: string = 'От новых к старым';
@@ -69,7 +73,8 @@ const DESC_SORT_LETTER_LABEL: string = 'От Я до А';
     FormsModule,
     ReactiveFormsModule,
     LogoutButtonComponent,
-    HeaderComponent
+    HeaderComponent,
+    NzBadgeModule,
   ],
   templateUrl: './organizer.component.html',
   styleUrls: ['./organizer.component.scss'],
@@ -84,7 +89,20 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
     status: new FormControl<ParticipantStatus | null>(null),
     sort: new FormControl<Sort | null>(DEFAULT_SORT),
     order: new FormControl<Order | null>(DEFAULT_ORDER),
+    deleted: new FormControl<boolean | null>(DEFAULT_DELETED),
   });
+
+  protected get isFilterChanged(): boolean {
+    const { search, sort, status, order, deleted } = this.filterForm.value;
+
+    const isDefault = search === null &&
+      status === null &&
+      sort === DEFAULT_SORT &&
+      order === DEFAULT_ORDER &&
+      deleted === DEFAULT_DELETED;
+
+    return !isDefault;
+  }
 
   protected participants: Participant[] = [];
   protected isParticipantsLoading: boolean = false;
@@ -125,6 +143,12 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
       type: 'string',
       syncInitialControlValue: false,
       syncInitialQueryParamValue: true
+    },
+    {
+      queryKey: 'deleted',
+      type: 'boolean',
+      syncInitialControlValue: false,
+      syncInitialQueryParamValue: true
     }
   ]).connect(this.filterForm);
 
@@ -154,18 +178,23 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
       return participants;
     }
 
+    const existedParticipants = participants.filter((p: Participant) => p.deleted_by === null);
+
     switch (this.filterForm.value.status) {
+      case ParticipantStatus.Deleted: {
+        return participants.filter((p: Participant) => p.deleted_by !== null);
+      }
       case ParticipantStatus.InTeam: {
-        return participants.filter((item: Participant) => item.jury);
+        return existedParticipants.filter((item: Participant) => item.jury);
       }
       case ParticipantStatus.NotRated: {
-        return participants.filter((item: Participant) => Object.values(item.rates).every((rate: JuryRate | null) => !rate));
+        return existedParticipants.filter((item: Participant) => Object.values(item.rates).every((rate: JuryRate | null) => !rate));
       }
       case ParticipantStatus.FullRated: {
-        return participants.filter((item: Participant) => !item.jury && Object.values(item.rates).every((rate: JuryRate | null) => rate));
+        return existedParticipants.filter((item: Participant) => !item.jury && Object.values(item.rates).every((rate: JuryRate | null) => rate));
       }
       case ParticipantStatus.PartiallyRated: {
-        return participants.filter((item: Participant) => 
+        return existedParticipants.filter((item: Participant) => 
           Object.values(item.rates).some((rate: JuryRate | null) => !rate) &&
           Object.values(item.rates).some((rate: JuryRate | null) => rate));
       }
@@ -176,7 +205,10 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
     return {
       sort: this.filterForm.value.sort ?? DEFAULT_SORT,
       order: this.filterForm.value.order ?? DEFAULT_ORDER,
-      search: this.filterForm.value.search
+      search: this.filterForm.value.search,
+      deleted: 
+        (this.filterForm.value.status === ParticipantStatus.Deleted) ||
+        (this.filterForm.value.deleted ?? false),
     }
   }
 

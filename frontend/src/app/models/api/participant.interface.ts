@@ -8,6 +8,8 @@ export interface Participant {
   code: string,
   // Жюри (если есть, значит он в команде)
   jury: Adult | null,
+  // Жюри, который удалил участника
+  deleted_by: Adult | null,
   // Базовая информация
   info: ParticipantInfo;
   // Ответы

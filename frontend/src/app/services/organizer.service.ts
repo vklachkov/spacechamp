@@ -1,12 +1,12 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Participant } from '@models/api/participant.interface';
-import { Adult } from '@models/api/adult.interface';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment.local';
+import { Adult } from '@models/api/adult.interface';
 import { FilterOptions } from '@models/api/filter-options.enum';
-import { ParticipantsQuery } from '@models/participants-query.interface';
 import { ParticipantUpdateInfo } from '@models/api/participant-update-info.interface';
+import { Participant } from '@models/api/participant.interface';
+import { ParticipantsQuery } from '@models/participants-query.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,8 @@ export class OrganizerService {
   getParticipants(query: ParticipantsQuery): Observable<Participant[]> {
     let params: HttpParams = new HttpParams()
       .append(FilterOptions.Order, query.order)
-      .append(FilterOptions.Sort, query.sort);
+      .append(FilterOptions.Sort, query.sort)
+      .append(FilterOptions.Deleted, query.deleted);
 
     if (query.search) {
       params = params.append(FilterOptions.Search, query.search);

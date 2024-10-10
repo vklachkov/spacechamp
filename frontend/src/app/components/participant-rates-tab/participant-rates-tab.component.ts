@@ -11,6 +11,7 @@ import { BaseComponent } from '@components/base/base.component';
 import { OrganizerService } from '@services/organizer.service';
 import { JuryRate, Participant } from '@models/api/participant.interface';
 import { Adult } from '@models/api/adult.interface';
+import { NzCardModule } from 'ng-zorro-antd/card';
 
 interface TableData {
   name: string, 
@@ -30,6 +31,7 @@ interface TableData {
     NzTypographyComponent,
     FormsModule,
     ReactiveFormsModule,
+    NzCardModule,
   ],
   templateUrl: './participant-rates-tab.component.html',
   styleUrl: './participant-rates-tab.component.scss',

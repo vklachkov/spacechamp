@@ -7,24 +7,17 @@
             <div header-left class="jury-application-header__wrap">
                 @if (isParticipantLoading) {
                     <nz-spin header-left class="jury-application-header__spin"></nz-spin>
-                } @else {
-                    @if (participant?.in_command) {
+                } @else if (!participant?.in_command) {
+                    @if (participant?.rate) {
                         <button nz-button nzType="default" header-left (click)="openRateModal()">
                             <span nz-icon nzType="dollar" nzTheme="outline"></span>
-                            Посмотреть оценку
+                            Изменить зарплату
                         </button>
                     } @else {
-                        @if (participant?.rate) {
-                            <button nz-button nzType="default" header-left (click)="openRateModal()">
-                                <span nz-icon nzType="dollar" nzTheme="outline"></span>
-                                Изменить оценку
-                            </button>
-                        } @else {
-                            <button nz-button nzType="primary" header-left (click)="openRateModal()">
-                                <span nz-icon nzType="dollar" nzTheme="outline"></span>
-                                Оценить
-                            </button>
-                        }
+                        <button nz-button nzType="primary" header-left (click)="openRateModal()">
+                            <span nz-icon nzType="dollar" nzTheme="outline"></span>
+                            Оценить
+                        </button>
                     }
                 }   
             </div>
@@ -37,16 +30,44 @@
         <div class="container">
             @if (isParticipantLoading) {
                 <nz-spin class="spin-height-100"></nz-spin>
-            } @else {
-                @if (participant) {
-                    <h2 nz-typography>
-                        <strong>
-                            Заявка №{{ participant.id + 1 }}
-                        </strong>
-                    </h2>
+            } @else if (participant) {
+                <h2 nz-typography>
+                    <strong>
+                        Заявка №{{ participant.id + 1 }}
+                    </strong>
+                </h2>
 
-                    <app-answers [answers]="participant.answers" />               
+                @if (participant.rate) {
+                    <div class="salary">
+                        <p class="info__item" nz-typography><b>Зарплата</b>: {{ participant.rate.salary }}</p>
+                        <p class="info__item" nz-typography><b>Комментарий</b>: {{ participant.rate.comment || "—" }}</p>
+                    </div>
                 }
+
+                @if (participant.info) {
+                    <div class="info">
+                        <p class="info__item" nz-typography><b>Имя</b>: {{ participant.info.name }}</p>
+                        <p class="info__item" nz-typography><b>Город</b>: {{ participant.info.city }}</p>
+                        <p class="info__item" nz-typography><b>Регион</b>: {{ participant.info.district }}</p>
+                        <p class="info__item" nz-typography><b>Телефон</b>: {{ participant.info.phone_number }}</p>
+                        <p class="info__item" nz-typography><b>Почта</b>: {{ participant.info.email }}</p>
+                        <p class="info__item" nz-typography><b>Организация</b>: {{ participant.info.edu_org }}</p>
+                        <p class="info__item" nz-typography>
+                            <b>ФИО родителя / наставника:</b>
+                            <span [class.text-red]="!participant.info.responsible_adult_name">
+                                {{ participant.info.responsible_adult_name || 'Нет данных' }}
+                            </span>
+                        </p>
+                        <p class="info__item" nz-typography>
+                            <b>Номер телефона родителя / наставника:</b>
+                            <span [class.text-red]="!participant.info.responsible_adult_phone_number">
+                                {{ participant.info.responsible_adult_phone_number || 'Нет данных' }}
+                            </span>
+                        </p>
+                    </div>
+                }
+
+                <app-answers [answers]="participant.answers" />
             }
         </div>
     </nz-content>

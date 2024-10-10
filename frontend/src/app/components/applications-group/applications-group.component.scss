@@ -8,6 +8,7 @@
   }
 
   &__item {
+    display: block;
     margin: 0;
     padding: 1em;
   
@@ -21,6 +22,14 @@
     &:hover {
       box-shadow: var(--hover-box-shadow);
       cursor: pointer;
+    }
+
+    .number, .comment {
+      margin: 0;
+    }
+  
+    .comment {
+      color: var(--primary-ng-zorro);
     }
   }
 }

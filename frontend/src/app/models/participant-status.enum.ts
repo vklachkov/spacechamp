@@ -3,4 +3,5 @@ export enum ParticipantStatus {
   PartiallyRated = 'partially-rated',
   NotRated = 'not-rated',
   InTeam = 'in-team',
+  Deleted = 'deleted',
 }

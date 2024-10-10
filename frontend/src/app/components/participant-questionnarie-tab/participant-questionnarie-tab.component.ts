@@ -170,18 +170,6 @@ export class ParticipantQuestionnarieTabComponent extends BaseComponent implemen
       });
   }
 
-  downloadPhoto(): void {
-    const url: string = this.participant.info.photo_url;
-    this.downloadService.download(url, `Фото участника ${this.participant.code}`)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        error: (err: object) => {
-          this.notificationService.error('Ошибка', `Ошибка при скачивании файла ${url}`);
-          console.error(`Ошибка при скачивании файла ${url}: `, err);
-        }
-      });
-  }
-
   @HostListener('window:beforeunload', ['$event'])
   onRefreshPage(event: Event) {
     if (!environment.production) {

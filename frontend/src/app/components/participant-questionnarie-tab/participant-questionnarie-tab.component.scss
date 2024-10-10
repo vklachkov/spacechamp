@@ -4,6 +4,15 @@
   margin-bottom: 0.5em;
 }
 
+.deleted-card {
+  width: 100%;
+
+  &__content {
+    padding: 1em;
+    color: var(--red);
+  }
+}
+
 .participant-card {
   margin-bottom: 0.5em;
 
@@ -13,24 +22,6 @@
     gap: 2em;
 
     padding: 1em;
-  }
-}
-
-.avatar {
-  position: relative;
-
-  &:hover {
-    .avatar__button {
-      display: block;
-    }
-  }
-
-  &__button {
-    position: absolute;
-    right: 4px;
-    bottom: 4px;
-    z-index: 100;
-    display: none;
   }
 }
 

@@ -1,30 +1,43 @@
 <a title="" class="participant" [routerLink]="[participantPath, participant.id]">
     <h3 class="participant__title">
-        {{ participant.info.name }} (№{{ participant.id + 1 }}, {{ participant.code }})
+        @if (participant.deleted_by) {
+            <span nz-icon nzType="delete" nzTheme="outline"></span>
+        }
+
+        {{ participant.info.name }}
+        
+        (№{{ participant.id + 1 }}, {{ participant.code }})
     </h3>
 
     <p nz-typograpy class="participant__text">{{ text }}</p>
     
-    @switch (status) {
-        @case (ParticipantStatus.InTeam) {
-            <p class="participant__status in-team">
-                Находится в команде "{{ participant.jury?.name ?? '' }}"
-            </p>
-        }
-        @case (ParticipantStatus.NotRated) {
-            <p class="participant__status not-rated">
-                Без оценок
-            </p>
-        }
-        @case (ParticipantStatus.PartiallyRated) {
-            <p class="participant__status partially-rated">
-                Частично оценен
-            </p>
-        }
-        @case (ParticipantStatus.FullRated) {
-            <p class="participant__status full-rated">
-                Полностью оценен
-            </p>
+    @if (participant.deleted_by) {
+        <p class="participant__status deleted">
+            Удалён организатором "{{ participant.deleted_by.name }}"
+        </p>
+    }
+    @else {
+        @switch (status) {
+            @case (ParticipantStatus.InTeam) {
+                <p class="participant__status in-team">
+                    Находится в команде "{{ participant.jury?.name ?? '' }}"
+                </p>
+            }
+            @case (ParticipantStatus.NotRated) {
+                <p class="participant__status not-rated">
+                    Без оценок
+                </p>
+            }
+            @case (ParticipantStatus.PartiallyRated) {
+                <p class="participant__status partially-rated">
+                    Частично оценен
+                </p>
+            }
+            @case (ParticipantStatus.FullRated) {
+                <p class="participant__status full-rated">
+                    Полностью оценен
+                </p>
+            }
         }
     }
 </a>

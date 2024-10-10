@@ -1,11 +1,23 @@
+.deleted-card {
+  width: 100%;
+  margin-bottom: 0.5em;
+
+  &__content {
+    padding: 1em;
+    color: var(--red);
+  }
+}
+
 .team {
+  margin-bottom: 0.5em;
+
   display: flex;
   align-items: center;
   gap: 1.5em;
   margin-bottom: .5em;
 
   background-color: var(--white);
-  padding: .8em;
+  padding: 1em;
 
   &__title {
     margin-bottom: 0;

@@ -59,6 +59,7 @@ pub struct GetParticipantsQuery {
     pub search: Option<String>,
     pub sort: Sort,
     pub order: Order,
+    pub deleted: bool,
 }
 
 #[derive(Deserialize)]

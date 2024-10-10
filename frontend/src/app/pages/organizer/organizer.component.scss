@@ -20,20 +20,21 @@
   }
 
   &__options {
-    display: flex;
-    gap: 1em;
+    display: table;
 
     &-item {
+      display: table-cell;
+
       &-title {
-        font-weight: 900;
+        display: block;
+        margin-right: 2em;
         margin-bottom: .5em;
+        font-weight: 900;
       }
     }
 
-    &-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1em;
+    &-group label {
+      display: block;
     }
   }
 }

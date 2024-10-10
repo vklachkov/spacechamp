@@ -19,6 +19,10 @@
         font-size: small;
         margin: 0;
 
+        &.deleted {
+            color: var(--deleted-color);
+        }
+
         &.in-team {
             color: var(--in-team-color);
         }
