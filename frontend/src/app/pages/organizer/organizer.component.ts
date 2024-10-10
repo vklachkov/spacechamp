@@ -289,17 +289,18 @@ export class OrganizerPage extends BaseComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (pdf: ArrayBuffer) => {
-          this.downloadService.downloadArrayBuffer('Отчёт_Кандидаты_КЧ.pdf', pdf);
-          
-          this.isDownloadingReport = false;
-          this.cdr.markForCheck();
-        },
-        error: (err: HttpErrorResponse) => {
           this.isDownloadingReport = false;
           this.cdr.markForCheck();
 
+          // FIXME: Почему скачивание перед markForCheck его ломает?..
+          this.downloadService.downloadArrayBuffer('Отчёт_Кандидаты_КЧ.pdf', pdf);
+        },
+        error: (err: HttpErrorResponse) => {
           this.notificationService.error('Ошибка', 'Внутренняя ошибка при генерации отчёта');
           console.error('Внутренняя ошибка при генерации отчёта: ', err);
+
+          this.isDownloadingReport = false;
+          this.cdr.markForCheck();
         }
       });
   }
