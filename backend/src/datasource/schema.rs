@@ -35,14 +35,11 @@ diesel::table! {
         answers -> Jsonb,
         jury_id -> Nullable<Int4>,
         deleted_by -> Nullable<Int4>,
+        has_call -> Bool,
     }
 }
 
 diesel::joinable!(participant_rates -> adults (jury_id));
 diesel::joinable!(participant_rates -> participants (participant_id));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    adults,
-    participant_rates,
-    participants,
-);
+diesel::allow_tables_to_appear_in_same_query!(adults, participant_rates, participants,);

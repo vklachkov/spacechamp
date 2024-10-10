@@ -14,4 +14,5 @@ pub enum Sort {
     Name,
     District,
     City,
+    HasCall,
 }

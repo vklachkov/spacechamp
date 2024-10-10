@@ -1,6 +1,7 @@
 export enum Sort {
   Id = 'id',
   Name = 'name',
+  City = 'city',
   District = 'district',
-  City = 'city'
+  HasCall = 'has_call',
 }

@@ -20,7 +20,11 @@
         @switch (status) {
             @case (ParticipantStatus.InTeam) {
                 <p class="participant__status in-team">
-                    Находится в команде "{{ participant.jury?.name ?? '' }}"
+                    @if (participant.has_call) {
+                        Находится в команде "{{ participant.jury!.name }}". Вызов сделан
+                    } @else {
+                        Находится в команде "{{ participant.jury!.name }}"
+                    }
                 </p>
             }
             @case (ParticipantStatus.NotRated) {

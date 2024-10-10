@@ -43,6 +43,7 @@ fn orgs_methods() -> Router<Arc<BackendState>> {
                 .delete(org::delete_participant)
                 .patch(org::patch_participant),
         )
+        .route("/participant/:id/call", post(org::call_participant))
         .route("/participant/:id/command", post(org::set_command))
         .route("/adults", get(org::all_adults))
         .route("/adult", post(org::create_adult))

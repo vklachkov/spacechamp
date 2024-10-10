@@ -9,6 +9,7 @@ pub struct Participant {
     pub code: ParticipantCode,
     pub jury: Option<Adult>,
     pub deleted_by: Option<Adult>,
+    pub has_call: bool,
     pub info: ParticipantInfo,
     pub answers: ParticipantAnswers,
     pub rates: HashMap<AdultId, Option<ParticipantRate>>,
