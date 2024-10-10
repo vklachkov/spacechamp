@@ -6,13 +6,15 @@ use std::collections::HashMap;
 #[derive(Clone, Debug, Serialize)]
 pub struct Participant {
     pub id: ParticipantId,
-    pub code: String,
+    pub code: ParticipantCode,
     pub jury: Option<Adult>,
     pub deleted_by: Option<Adult>,
     pub info: ParticipantInfo,
-    pub answers: HashMap<String, String>,
+    pub answers: ParticipantAnswers,
     pub rates: HashMap<AdultId, Option<ParticipantRate>>,
 }
+
+pub type ParticipantCode = String;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ParticipantInfo {
@@ -27,12 +29,14 @@ pub struct ParticipantInfo {
     pub responsible_adult_phone_number: String,
 }
 
+pub type ParticipantAnswers = HashMap<String, String>;
+
 #[derive(Clone, Debug, Serialize)]
-pub struct AnonymousParticipant {
+pub struct JuryParticipant {
     pub id: ParticipantId,
     pub in_command: bool,
     pub info: Option<ParticipantInfo>,
-    pub answers: HashMap<String, String>,
+    pub answers: ParticipantAnswers,
     pub rate: Option<ParticipantRate>,
 }
 

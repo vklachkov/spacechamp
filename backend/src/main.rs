@@ -112,7 +112,7 @@ async fn run(
     let cors_layer = CorsLayer::very_permissive();
 
     let app = Router::new()
-        .nest("/api/v1", api::v1(datasource, services, tokens))
+        .nest("/api/v1", api::v1::router(datasource, services, tokens))
         .layer(auth_layer)
         .layer(cors_layer);
 
