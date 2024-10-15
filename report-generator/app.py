@@ -12,32 +12,50 @@ report_pdf_path = ""
 
 @app.route('/', methods=['POST'])
 def report_handler():
-    html = render_template('report.html',
-                           pages=get_rate_pages(),
-                           date=get_date())
+    prepare_files()
+
+    report = get_paged_report()
+    html = render_template(
+        'report.html',
+        bureaus=report['bureaus'],
+        bureaus_participants_count=report['bureaus_participants_count'],
+        max_participants_per_bureau=report['max_participants_per_bureau'],
+        pages=report['pages'],
+        date=get_date()
+    )
 
     pdf = render_html_to_pdf(html)
 
     return Response(pdf, mimetype='application/pdf')
 
-def get_rate_pages():
-    participants = request.get_json()
-    page_size = 15
-    pages = []
+def get_paged_report():
+    r = request.get_json()
+    bureaus = r['bureaus']
+    bureaus_participants_count = r['bureaus_participants_count']
+    max_participants_per_bureau = r['max_participants_per_bureau']
+    salaries = r['salaries']
 
-    for (i, participant) in enumerate(participants):
+    pages = []
+    page_size = 15
+
+    for (i, rate) in enumerate(salaries):
         idx = i % page_size
-        code = participant['code']
-        rates = participant['rates']
+        code = rate['code']
+        per_bureau = rate['bureaus']
 
         if idx == 0:
             page_number = (i // page_size) + 1
             page_participants = [{} for _ in range(page_size)]
             pages.append({ 'number': page_number, 'participants': page_participants })
 
-        pages[-1]['participants'][idx] = { 'number': i + 1, 'code': code, 'rates': rates }
+        pages[-1]['participants'][idx] = { 'number': i + 1, 'code': code, 'bureaus': per_bureau }
 
-    return pages
+    return {
+        'bureaus': bureaus,
+        'bureaus_participants_count': bureaus_participants_count,
+        'max_participants_per_bureau': max_participants_per_bureau,
+        'pages': pages
+    }
 
 def get_date():
     from datetime import datetime
@@ -110,5 +128,4 @@ def start_server(host: str, port: int, debug: bool):
         serve(app, host=host, port=port)
 
 if __name__ == '__main__':
-    prepare_files()
     start_server()

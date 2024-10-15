@@ -36,34 +36,44 @@
           <th colspan="5">ОЦЕНКА ОТ КОНСТРУКТОРСКОГО БЮРО</th>
         </tr>
         <tr>
-          <th>1D</th>
-          <th>Салют</th>
-          <th>Звёздное</th>
-          <th>Родное</th>
-          <th>Око</th>
+          {% for bureau in bureaus %}
+          <th class="bureau">
+            {{ bureau }}
+            <br>
+            <span class="bureau-status">
+            {% if bureaus_participants_count[bureau] >= max_participants_per_bureau %}
+            Заполнено
+            {% else %}
+            Осталось мест: {{ max_participants_per_bureau - bureaus_participants_count[bureau] }}
+            {% endif %}
+            </span>
+          </th>
+          {% endfor %}
         </tr>
       </thead>
       <tbody>
         {% for participant in page['participants'] %}
-        {% if (participant != {}) %}
+        {% if participant != {} %}
         <tr>
           <td>{{ participant['number'] }}</td>
           <td>{{ participant['code'] }}</td>
-          <td>{{ participant['rates']['1D'] or '' }}</td>
-          <td>{{ participant['rates']['Салют'] or '' }}</td>
-          <td>{{ participant['rates']['Звёздное'] or '' }}</td>
-          <td>{{ participant['rates']['Родное'] or '' }}</td>
-          <td>{{ participant['rates']['Око'] or '' }}</td>
+
+          {% for bureau in bureaus %}
+          {% if bureaus_participants_count[bureau] < max_participants_per_bureau %}
+          <td>{{ participant['bureaus'][bureau] or '' }}</td>
+          {% else %}
+          <td class="full-bureau">Нет мест</td>
+          {% endif %}
+          {% endfor %}
         </tr>
         {% else %}
         <tr>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
+          
+          {% for bureau in bureaus %}
           <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
+          {% endfor %}
         </tr>
         {% endif %}
         {% endfor %}

@@ -123,6 +123,19 @@ td {
   text-align: center;
 }
 
+.results .bureau {
+  padding: 2mm;
+  line-height: 1.0;
+}
+
+.results .bureau-status {
+  font-size: 75%;
+}
+
+.results .full-bureau {
+  color: lightgray;
+}
+
 footer {
   display: flex;
   align-items: center;
