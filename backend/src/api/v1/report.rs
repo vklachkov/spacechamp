@@ -21,44 +21,6 @@ struct Report {
     pub salaries: Vec<ParticipantSalaries>,
 }
 
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
-#[rustfmt::skip]
-enum Bureau {
-    #[serde(rename = "1D")] OneD,
-    #[serde(rename = "Салют")] Salut,
-    #[serde(rename = "Звёздное")] Zvezdnoe,
-    #[serde(rename = "Родное")] Rodnoe,
-    #[serde(rename = "Око")] Oko,
-}
-
-impl Bureau {
-    pub fn all() -> [Bureau; 5] {
-        use Bureau::*;
-        [OneD, Salut, Zvezdnoe, Rodnoe, Oko]
-    }
-
-    fn from_jury(name: &str) -> Option<Self> {
-        match name {
-            "Матюхин Андрей" => Some(Self::OneD),
-            "Кириевский Дмитрий" => Some(Self::Salut),
-            "Каменева Вероника" => Some(Self::Zvezdnoe),
-            "Овчинников Илья" => Some(Self::Rodnoe),
-            "Калинкин Александр" => Some(Self::Oko),
-            _ => None,
-        }
-    }
-
-    fn jury(self) -> &'static str {
-        match self {
-            Self::OneD => "Матюхин Андрей",
-            Self::Salut => "Кириевский Дмитрий",
-            Self::Zvezdnoe => "Каменева Вероника",
-            Self::Rodnoe => "Овчинников Илья",
-            Self::Oko => "Калинкин Александр",
-        }
-    }
-}
-
 #[derive(Serialize)]
 struct ParticipantSalaries {
     pub code: String,
@@ -76,7 +38,7 @@ pub async fn build_report(State(state): State<Arc<BackendState>>) -> Result<Resp
     let report = Report {
         bureaus: Bureau::all().to_vec(),
         bureaus_participants_count,
-        max_participants_per_bureau: MAX_PARTICIPANTS_IN_JURY,
+        max_participants_per_bureau: MAX_PARTICIPANTS_PER_BUREAU,
         salaries,
     };
 

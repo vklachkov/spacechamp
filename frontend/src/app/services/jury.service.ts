@@ -1,11 +1,12 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
-import { JuryRate } from '@models/api/participant.interface';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment.local';
-import { Order } from '@models/api/order.enum';
 import { FilterOptions } from '@models/api/filter-options.enum';
+import { JuryParticipant } from '@models/api/jury-participant.interface';
+import { BureauStats } from '@models/api/bureau-stats.interface';
+import { Order } from '@models/api/order.enum';
+import { JuryRate } from '@models/api/participant.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,16 +14,20 @@ import { FilterOptions } from '@models/api/filter-options.enum';
 export class JuryService {
   private readonly http: HttpClient = inject(HttpClient);
 
-  getParticipants(): Observable<AnonymousParticipant[]> {
+  stats(): Observable<BureauStats> {
+    return this.http.get<BureauStats>(`${environment.API_URL}/jury/stats`);
+  }
+
+  getParticipants(): Observable<JuryParticipant[]> {
     const params: HttpParams = new HttpParams().append(FilterOptions.Order, Order.ASC);
     
-    return this.http.get<AnonymousParticipant[]>(`${environment.API_URL}/jury/participants`, { 
+    return this.http.get<JuryParticipant[]>(`${environment.API_URL}/jury/participants`, { 
       params,
     });
   }
 
-  getParticipantById(id: number): Observable<AnonymousParticipant | null> {
-    return this.http.get<AnonymousParticipant | null>(`${environment.API_URL}/jury/participant/${id}`);
+  getParticipantById(id: number): Observable<JuryParticipant | null> {
+    return this.http.get<JuryParticipant | null>(`${environment.API_URL}/jury/participant/${id}`);
   }
 
   rateParticipant(participantId: number, rate: JuryRate): Observable<void> {

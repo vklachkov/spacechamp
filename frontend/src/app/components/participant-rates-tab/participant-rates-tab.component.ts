@@ -12,6 +12,13 @@ import { OrganizerService } from '@services/organizer.service';
 import { JuryRate, Participant } from '@models/api/participant.interface';
 import { Adult } from '@models/api/adult.interface';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { BureauStats } from '@models/api/bureau-stats.interface';
+
+export interface JuriesInput {
+  juries: Adult[],
+  juryBureaus: Record<string, string>,  // Имя -> Название КБ
+  bureausStats: Record<string, BureauStats>,  // Название КБ -> Статистика
+}
 
 interface TableData {
   name: string, 
@@ -43,7 +50,7 @@ export class ParticipantRatesTabComponent extends BaseComponent implements OnIni
   protected readonly teamControl: FormControl<number | null> = new FormControl<number | null>(null);
   
   @Input({ required: true }) participant!: Participant;
-  @Input({ required: true }) juries: Adult[] = [];
+  @Input({ required: true }) juries!: JuriesInput;
   
   private readonly organizerService: OrganizerService = inject(OrganizerService);
 
@@ -54,11 +61,11 @@ export class ParticipantRatesTabComponent extends BaseComponent implements OnIni
   }
 
   private initRatesTableData(): void {
-    this.ratesTableData = this.juries.map((jury: Adult) => {
+    this.ratesTableData = this.juries.juries.map((jury: Adult) => {
       const juryRate: JuryRate | null = (<Participant>this.participant).rates[jury.id];
 
       return {
-        name: jury.name,
+        name: `${this.juries.juryBureaus[jury.name] ?? 'Неизвестное КБ' } (${jury.name})`,
         salary: juryRate?.salary ?? '—',
         comment: juryRate?.comment ?? 'Нет оценки'
       }
@@ -97,5 +104,40 @@ export class ParticipantRatesTabComponent extends BaseComponent implements OnIni
           this.showErrorNotification('Ошибка при установке команды для участника', err);
         }
       });
+  }
+
+  protected bureauSelectorText(jury: Adult): string {
+    const name = this.juries.juryBureaus[jury.name] || 'Неизвестное КБ';
+    
+    let whyDisabled = null;
+    if (!this.canSelectBureau(jury)) {
+      whyDisabled = this.participant.rates[jury.id] === null
+        ? 'нет оценки'
+        : 'оценён в 0'
+    }
+
+    const stats = this.juries.bureausStats[name] ?? { max_participants: 0, participants: 0 };
+    const left = stats.max_participants - stats.participants !== 0
+      ? `осталось мест: ${stats.max_participants - stats.participants}`
+      : `нет мест`;
+
+    return whyDisabled
+      ? `${name} (${whyDisabled}, ${left})`
+      : `${name} (${left})`;
+  }
+
+  protected canSelectBureau(jury: Adult): boolean {
+    const rate = this.participant.rates[jury.id];
+    if (rate === null || rate.salary === 0) {
+      return false;
+    }
+
+    const bureauName = this.juries.juryBureaus[jury.name];
+    if (!bureauName) {
+      return false;
+    }
+
+    const bureauStats = this.juries.bureausStats[bureauName];
+    return (bureauStats.max_participants - bureauStats.participants) > 0;
   }
 }

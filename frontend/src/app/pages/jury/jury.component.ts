@@ -16,7 +16,7 @@ import { HeaderComponent } from "@components/header/header.component";
 import { ApplicationsGroupComponent } from '@components/applications-group/applications-group.component';
 import { JuryService } from '@services/jury.service';
 import { LocalStorageService } from '@services/local-storage.service';
-import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
+import { JuryParticipant } from '@models/api/jury-participant.interface';
 
 @Component({
   selector: 'app-jury-page',
@@ -44,10 +44,10 @@ export class JuryPage extends BaseComponent implements OnInit {
   protected userName: string = '';
   
   protected isParticipantsLoading: boolean = false;
-  protected inTeamParticipants: AnonymousParticipant[] = [];
-  protected notRatedParticipants: AnonymousParticipant[] = [];
-  protected ratedParticipants: AnonymousParticipant[] = [];
-  protected zeroRatedParticipants: AnonymousParticipant[] = [];
+  protected inTeamParticipants: JuryParticipant[] = [];
+  protected notRatedParticipants: JuryParticipant[] = [];
+  protected ratedParticipants: JuryParticipant[] = [];
+  protected zeroRatedParticipants: JuryParticipant[] = [];
 
   private readonly localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly juryService: JuryService = inject(JuryService);
@@ -57,7 +57,7 @@ export class JuryPage extends BaseComponent implements OnInit {
     this.juryService.getParticipants()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data: AnonymousParticipant[]) => {
+        next: (data: JuryParticipant[]) => {
           for (const participant of data) {
             if (participant.in_command) {
               this.inTeamParticipants.push(participant);    
