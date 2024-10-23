@@ -9,6 +9,29 @@ use axum::{
 };
 use std::sync::Arc;
 
+pub async fn stats(
+    auth_session: auth::AuthSession,
+    State(state): State<Arc<BackendState>>,
+) -> Result<Json<BureauStats>> {
+    let jury_id = auth_session.user.as_ref().unwrap().0.id;
+
+    let participants = state
+        .datasource
+        .participants
+        .get_all(None, Sort::Id, Order::Asc, false)
+        .await?;
+
+    let count = participants
+        .into_iter()
+        .filter(|p| p.jury.as_ref().is_some_and(|jury| jury.id == jury_id))
+        .count();
+
+    Ok(Json(BureauStats {
+        participants: count,
+        max_participants: MAX_PARTICIPANTS_PER_BUREAU,
+    }))
+}
+
 pub async fn all_participants(
     auth_session: auth::AuthSession,
     State(state): State<Arc<BackendState>>,

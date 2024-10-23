@@ -1,5 +1,5 @@
-import { Answers, ParticipantInfo } from './participant.interface';
+import { QA, ParticipantInfo } from './participant.interface';
 
 export interface ParticipantUpdateInfo extends ParticipantInfo {
-  answers: Answers;
+  answers: QA;
 }

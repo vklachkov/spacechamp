@@ -29,11 +29,12 @@ import { MainButtonComponent } from '@components/main-button/main-button.compone
 import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
 import { HeaderComponent } from '@components/header/header.component';
 import { Mode, ParticipantQuestionnarieTabComponent } from '@components/participant-questionnarie-tab/participant-questionnarie-tab.component';
-import { ParticipantRatesTabComponent } from '@components/participant-rates-tab/participant-rates-tab.component';
+import { JuriesInput, ParticipantRatesTabComponent } from '@components/participant-rates-tab/participant-rates-tab.component';
 import { OrganizerService } from '@services/organizer.service';
 import { Participant } from '@models/api/participant.interface';
 import { Adult } from '@models/api/adult.interface';
 import { AdultRole } from '@models/api/adult-role.enum';
+import { BureauStats } from '@models/api/bureau-stats.interface';
 
 @Component({
   standalone: true,
@@ -59,10 +60,9 @@ import { AdultRole } from '@models/api/adult-role.enum';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizerParticipantPage extends BaseComponent implements OnInit {
-  protected participant: Participant | null = null;
-  
   protected isDataLoading: boolean = false;
-  protected juries: Adult[] = [];
+  protected participant: Participant | null = null;
+  protected juries: JuriesInput | null = null;
 
   @ViewChild(ParticipantQuestionnarieTabComponent, { static: false }) 
   readonly questionnarieTab!: ParticipantQuestionnarieTabComponent | null;
@@ -75,7 +75,6 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
       this.activatedRoute.paramMap.pipe(
         switchMap((params: ParamMap) => {
           const id: string | null = params.get('id');
-
           if (!id) {
             return of(null);
           }
@@ -83,6 +82,7 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
           return this.organizerService.getParticipantById(+id);
         })
       );
+
     const juries$: Observable<Adult[]> = this.organizerService
       .getAdults()
       .pipe(
@@ -91,13 +91,22 @@ export class OrganizerParticipantPage extends BaseComponent implements OnInit {
         )
       );
 
+    const juryBureaus$: Observable<Record<string, string>> = this.organizerService.getJuryBureau();
+    const bureausStats$: Observable<Record<string, BureauStats>> = this.organizerService.getBureausStats();
+
     this.isDataLoading = true;
-    combineLatest([participant$, juries$])
+    this.cdr.markForCheck();
+
+    combineLatest([participant$, juries$, juryBureaus$, bureausStats$])
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe({
-        next: ([participant, juries]: [Participant | null, Adult[]]) => {
-          this.juries = juries;
+        next: ([participant, juries, juryBureaus, bureausStats]) => {
           this.participant = participant;
+          this.juries = {
+            juries: juries,
+            juryBureaus: juryBureaus,
+            bureausStats: bureausStats,
+          };
 
           this.isDataLoading = false;
           this.cdr.markForCheck();

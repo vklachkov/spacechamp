@@ -21,7 +21,7 @@
             @if (isDataLoading) {
                 <nz-spin class="spin-height-100"></nz-spin>
             } @else {
-                @if (participant) {
+                @if (participant && juries) {
                     <nz-tabset>
                         <nz-tab nzTitle="Анкета">
                             <app-participant-questionnarie-tab [participant]="participant" />

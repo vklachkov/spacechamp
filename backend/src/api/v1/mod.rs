@@ -1,3 +1,4 @@
+mod bureau;
 mod jury;
 mod login;
 mod org;
@@ -48,6 +49,8 @@ fn orgs_methods() -> Router<Arc<BackendState>> {
         .route("/adults", get(org::all_adults))
         .route("/adult", post(org::create_adult))
         .route("/adult/:id", delete(org::delete_adult))
+        .route("/bureaus/juries", get(bureau::juries))
+        .route("/bureaus/stats", get(bureau::stats))
         .route_layer(axum_login::permission_required!(
             auth::Backend,
             AdultRole::Org,
@@ -56,6 +59,7 @@ fn orgs_methods() -> Router<Arc<BackendState>> {
 
 fn juries_methods() -> Router<Arc<BackendState>> {
     Router::new()
+        .route("/stats", get(jury::stats))
         .route("/participants", get(jury::all_participants))
         .route("/participant/:id", get(jury::get_participant))
         .route("/participant/:id/rate", post(jury::set_rate))

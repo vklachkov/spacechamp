@@ -16,7 +16,7 @@ import { MainButtonComponent } from '@components/main-button/main-button.compone
 import { LogoutButtonComponent } from '@components/logout-button/logout-button.component';
 import { HeaderComponent } from '@components/header/header.component';
 import { JuryService } from '@services/jury.service';
-import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
+import { JuryParticipant } from '@models/api/jury-participant.interface';
 import { JuryRate } from '@models/api/participant.interface';
 
 @Component({
@@ -39,7 +39,7 @@ import { JuryRate } from '@models/api/participant.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JuryApplicationPage extends BaseComponent {
-  protected participant: AnonymousParticipant | null = null;
+  protected participant: JuryParticipant | null = null;
   protected isParticipantLoading: boolean = false;
 
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
@@ -63,7 +63,7 @@ export class JuryApplicationPage extends BaseComponent {
         }),
       )
       .subscribe({
-        next: (data: AnonymousParticipant | null) => {
+        next: (data: JuryParticipant | null) => {
           this.participant = data;
           this.isParticipantLoading = false;
           this.cdr.markForCheck();
@@ -81,7 +81,7 @@ export class JuryApplicationPage extends BaseComponent {
   }
 
   openRateModal(): void {
-    this.modalService.create<RateApplicationModalComponent, AnonymousParticipant | null, JuryRate>({
+    this.modalService.create<RateApplicationModalComponent, JuryParticipant | null, JuryRate>({
       nzTitle: 'Оценка',
       nzContent: RateApplicationModalComponent,
       nzData: this.participant
@@ -94,7 +94,7 @@ export class JuryApplicationPage extends BaseComponent {
 
           this.isParticipantLoading = true;
           this.cdr.markForCheck();
-          return this.juryService.rateParticipant((<AnonymousParticipant>this.participant).id, data);
+          return this.juryService.rateParticipant((<JuryParticipant>this.participant).id, data);
         }),
         takeUntil(this.destroy$)
       )

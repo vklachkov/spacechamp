@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment.local';
 import { Adult } from '@models/api/adult.interface';
+import { BureauStats } from '@models/api/bureau-stats.interface';
 import { FilterOptions } from '@models/api/filter-options.enum';
 import { ParticipantUpdateInfo } from '@models/api/participant-update-info.interface';
 import { Participant } from '@models/api/participant.interface';
@@ -69,5 +70,13 @@ export class OrganizerService {
 
   deleteAdult(id: number): Observable<void> {
     return this.http.delete<void>(`${environment.API_URL}/org/adult/${id}`);
+  }
+  
+  getJuryBureau(): Observable<Record<string, string>> {
+    return this.http.get<Record<string, string>>(`${environment.API_URL}/org/bureaus/juries`);
+  }
+  
+  getBureausStats(): Observable<Record<string, BureauStats>> {
+    return this.http.get<Record<string, BureauStats>>(`${environment.API_URL}/org/bureaus/stats`);
   }
 }

@@ -1,6 +1,6 @@
 import { KeyValuePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { Answers } from '@models/api/participant.interface';
+import { QA } from '@models/api/participant.interface';
 import { decode } from 'he';
 import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 
@@ -24,7 +24,7 @@ export const QUESTIONS: string[] = [
 export class AnswersComponent {
   protected readonly QUESTIONS: string[] = QUESTIONS;
 
-  @Input({ required: true }) answers!: Answers;
+  @Input({ required: true }) answers!: QA;
 
   protected textDecode(text: string): string {
     return decode(text);

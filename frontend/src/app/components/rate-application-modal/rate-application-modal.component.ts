@@ -23,7 +23,7 @@ import { NzInputDirective } from 'ng-zorro-antd/input';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 import { salaryValidator } from '@validators/salary.validator';
 import { JuryRate } from '@models/api/participant.interface';
-import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
+import { JuryParticipant } from '@models/api/jury-participant.interface';
 
 export type FormGroupType = {
   salary: FormControl<number | null>,
@@ -67,7 +67,7 @@ export class RateApplicationModalComponent implements OnInit {
     comment: new FormControl<string | null>(null),
   });
 
-  private readonly modalData: AnonymousParticipant | null = inject(NZ_MODAL_DATA);
+  private readonly modalData: JuryParticipant | null = inject(NZ_MODAL_DATA);
   private readonly modalRef: NzModalRef<undefined, JuryRate> = inject(NzModalRef);
 
   ngOnInit(): void {

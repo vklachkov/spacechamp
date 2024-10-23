@@ -1,5 +1,6 @@
 use crate::{
     api::{error::*, BackendState},
+    datasource::DataSource,
     domain::*,
 };
 use anyhow::Context;
@@ -13,46 +14,35 @@ use serde::Serialize;
 use std::{collections::HashMap, sync::Arc};
 
 #[derive(Serialize)]
-struct AnonymousRate {
+struct Report {
+    pub bureaus: Vec<Bureau>,
+    pub bureaus_participants_count: HashMap<Bureau, usize>,
+    pub max_participants_per_bureau: usize,
+    pub salaries: Vec<ParticipantSalaries>,
+}
+
+#[derive(Serialize)]
+struct ParticipantSalaries {
     pub code: String,
-    pub rates: HashMap<&'static str, Option<i32>>,
+    pub bureaus: HashMap<Bureau, Option<i32>>,
 }
 
 pub async fn build_report(State(state): State<Arc<BackendState>>) -> Result<Response> {
-    let participants = state
-        .datasource
-        .participants
-        .get_all(None, Sort::Id, Order::Asc, false)
-        .await?;
+    let participants = get_participants(&state.datasource).await?;
+
+    let bureaus_participants_count = count_participants(&participants);
 
     let adults = state.datasource.adults.get_all().await?;
+    let salaries = code_salaries(&participants, &adults);
 
-    let get_design_bureau_rate = |participant: &Participant, adult_name: &str| {
-        adults
-            .iter()
-            .find(|adult| adult.name == adult_name)
-            .map(|adult| adult.id)
-            .and_then(|adult_id| participant.rates.get(&adult_id).cloned())
-            .flatten()
-            .map(|rate| rate.salary)
+    let report = Report {
+        bureaus: Bureau::all().to_vec(),
+        bureaus_participants_count,
+        max_participants_per_bureau: MAX_PARTICIPANTS_PER_BUREAU,
+        salaries,
     };
 
-    let data = participants
-        .into_iter()
-        .filter(|p| p.jury.is_none())
-        .map(|p| AnonymousRate {
-            rates: HashMap::from_iter([
-                ("1D", get_design_bureau_rate(&p, "Матюхин Андрей")),
-                ("Салют", get_design_bureau_rate(&p, "Кириевский Дмитрий")),
-                ("Звёздное", get_design_bureau_rate(&p, "Каменева Вероника")),
-                ("Родное", get_design_bureau_rate(&p, "Овчинников Илья")),
-                ("Око", get_design_bureau_rate(&p, "Калинкин Александр")),
-            ]),
-            code: p.code,
-        })
-        .collect();
-
-    let response = match get_report(&state.services.report_generator, data).await {
+    let response = match get_report(&state.services.report_generator, report).await {
         Ok(pdf) => ([(axum::http::header::CONTENT_TYPE, "application/pdf")], pdf).into_response(),
         Err(err) => {
             tracing::error!("Failed to generate pdf report: {err:#}");
@@ -63,10 +53,53 @@ pub async fn build_report(State(state): State<Arc<BackendState>>) -> Result<Resp
     Ok(response)
 }
 
-async fn get_report(url: &Url, data: Vec<AnonymousRate>) -> anyhow::Result<Vec<u8>> {
+async fn get_participants(datasource: &DataSource) -> Result<Vec<Participant>> {
+    datasource
+        .participants
+        .get_all(None, Sort::Id, Order::Asc, false)
+        .await
+        .map_err(Into::into)
+}
+
+fn count_participants(participants: &[Participant]) -> HashMap<Bureau, usize> {
+    let bureau = Bureau::all().into_iter().map(|b| (b, 0)).collect();
+
+    participants.iter().fold(bureau, |mut acc, p| {
+        if let Some(bureau) = p.jury.as_ref().and_then(|j| Bureau::from_jury(&j.name)) {
+            *acc.entry(bureau).or_default() += 1;
+        }
+
+        acc
+    })
+}
+
+fn code_salaries(participants: &[Participant], adults: &[Adult]) -> Vec<ParticipantSalaries> {
+    let adult_ids = adults
+        .iter()
+        .map(|adult| (adult.name.as_str(), adult.id))
+        .collect::<HashMap<&str, AdultId>>();
+
+    participants
+        .iter()
+        .filter(|p| p.jury.is_none())
+        .map(|p| ParticipantSalaries {
+            code: p.code.clone(),
+            bureaus: Bureau::all()
+                .into_iter()
+                .map(|b| {
+                    let adult_id = adult_ids[b.jury()];
+                    let rate = p.rates.get(&adult_id).and_then(Option::as_ref);
+                    (b, rate.map(|r| r.salary))
+                })
+                .collect(),
+        })
+        .collect()
+}
+
+async fn get_report(url: &Url, report: Report) -> anyhow::Result<Vec<u8>> {
     reqwest::Client::new()
         .post(url.to_owned())
-        .json(&data)
+        .json(&report)
         .send()
         .await
         .context("sending request")?

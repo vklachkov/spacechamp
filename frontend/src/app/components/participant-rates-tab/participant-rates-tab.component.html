@@ -7,15 +7,15 @@
     </nz-card>
 } @else {
     <div class="team">
-        <p nz-typography class="team__title">Команда участника:</p>
+        <p nz-typography class="team__title">Конструкторское бюро:</p>
     
         <nz-spin [nzSpinning]="isSettingCommandLoading">
             <nz-select class="team__select" nzPlaceHolder="Не выбрано" [nzAllowClear]="true" [formControl]="teamControl">
-                @for (jury of juries; track jury.id) {
+                @for (jury of juries.juries; track jury.id) {
                     <nz-option
                         [nzValue]="jury.id"
-                        [nzLabel]="jury.name"
-                        [nzDisabled]="!participant.rates[jury.id] || participant.rates[jury.id]?.salary === 0">
+                        [nzLabel]="bureauSelectorText(jury)"
+                        [nzDisabled]="!canSelectBureau(jury)">
                     </nz-option>
                 }
             </nz-select>
@@ -26,7 +26,7 @@
 <nz-table #basicTable [nzData]="ratesTableData" [nzShowPagination]="false">
     <thead>
         <tr>
-            <th style="background-color: white; font-weight: 700;" nzWidth="20%">Имя жюри</th>
+            <th style="background-color: white; font-weight: 700;" nzWidth="20%">Конструкторское Бюро</th>
             <th style="background-color: white; font-weight: 700;" nzWidth="10%">Зарплата</th>
             <th style="background-color: white; font-weight: 700;">Комментарий</th>
         </tr>

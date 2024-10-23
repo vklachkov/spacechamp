@@ -19,7 +19,7 @@ import { AnswersComponent } from '@components/answers/answers.component';
 import { AnswersEditableComponent } from '@components/answers-editable/answers-editable.component';
 import { OrganizerService } from '@services/organizer.service';
 import { DownloadService } from '@services/download.service';
-import { Answers, Participant, ParticipantInfo } from '@models/api/participant.interface';
+import { QA, Participant, ParticipantInfo } from '@models/api/participant.interface';
 import { ParticipantUpdateInfo } from '@models/api/participant-update-info.interface';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
@@ -44,7 +44,7 @@ type FormGroupType = {
   answers: FormGroup<AnswersFormType>
 }
 
-type FormValue = Omit<ParticipantInfo, 'photo_url'> & { answers: Answers }; 
+type FormValue = Omit<ParticipantInfo, 'photo_url'> & { answers: QA }; 
 
 @Component({
   selector: 'app-participant-questionnarie-tab',

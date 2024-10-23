@@ -4,7 +4,7 @@ import { NzTypographyComponent } from 'ng-zorro-antd/typography';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { JURY_ROOT_PATHS } from '../../app.routes';
 import { BaseComponent } from '@components/base/base.component';
-import { AnonymousParticipant } from '@models/api/anonymous-participant.interface';
+import { JuryParticipant } from '@models/api/jury-participant.interface';
 
 @Component({
   selector: 'app-applications-group',
@@ -18,5 +18,5 @@ export class ApplicationsGroupComponent extends BaseComponent {
   protected readonly applicationPath: string = JURY_ROOT_PATHS.Application;
   
   @Input({ required: true }) title!: string;
-  @Input({ required: true }) participants!: AnonymousParticipant[];
+  @Input({ required: true }) participants!: JuryParticipant[];
 }
