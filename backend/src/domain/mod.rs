@@ -11,4 +11,4 @@ pub use participant::{
     ParticipantInfo, ParticipantRate,
 };
 
-pub const MAX_PARTICIPANTS_PER_BUREAU: usize = 23;
+pub const MAX_PARTICIPANTS_PER_BUREAU: usize = 24;
